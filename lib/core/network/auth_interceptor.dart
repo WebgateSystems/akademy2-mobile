@@ -1,0 +1,55 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../auth/auth_provider.dart';
+import 'api.dart';
+import 'dio_client.dart';
+
+class AuthInterceptor extends Interceptor {
+  final Ref ref;
+
+  AuthInterceptor(this.ref);
+
+  @override
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    try {
+      final notifier = ref.read(authProvider.notifier);
+      final accessToken = await notifier.getAccessToken();
+      if (accessToken != null) {
+        options.headers['Authorization'] = 'Bearer $accessToken';
+      }
+    } catch (_) {
+      // ignore and continue without auth header
+    }
+    handler.next(options);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    final req = err.requestOptions;
+    final status = err.response?.statusCode;
+    if (status == 401 && (req.extra['retry'] != true)) {
+      final notifier = ref.read(authProvider.notifier);
+      final refreshed = await notifier.refreshAccessToken();
+      if (refreshed) {
+        final newToken = await notifier.getAccessToken();
+        if (newToken != null) {
+          final clone = req
+            ..headers['Authorization'] = 'Bearer $newToken'
+            ..extra = {...req.extra, 'retry': true}
+            ..baseUrl = req.baseUrl.isEmpty ? Api.baseUrl : req.baseUrl;
+          try {
+            final response = await DioClient().dio.fetch(clone);
+            return handler.resolve(response);
+          } catch (e) {
+            // proceed to original error handling
+          }
+        }
+      }
+    }
+    handler.next(err);
+  }
+}
