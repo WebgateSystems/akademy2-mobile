@@ -21,5 +21,16 @@
   "downloadsPlaceholder": "Ekran pobrań (M1)",
   "profileTitle": "Profil",
   "profilePlaceholder": "Ekran profilu (M1)",
-  "inviteToken": "Token zaproszenia: {token}"
+  "inviteToken": "Token zaproszenia: {token}",
+  "createAnAccount": "Utwórz konto",
+  "firstNameField": "Imię",
+  "lastNameField": "Nazwisko",
+  "dateOfBirthField": "Data urodzenia",
+  "emailField": "Email",
+  "phoneField": "Telefon",
+  "dateOfBirthHintField": "DD.MM.YYYY",
+  "emailHintField": "emily.corner@gmail.com",
+  "phoneHintField": "+48 XXX XXX XXX",
+  "iAgreeToReceive": "Podając mój adres e-mail, zgadzam się na otrzymywanie komunikatów od Akademii 2.0. Rozumiem, że mogę zrezygnować w dowolnym momencie.",
+  "createAccountButton": "Utwórz konto"
 }

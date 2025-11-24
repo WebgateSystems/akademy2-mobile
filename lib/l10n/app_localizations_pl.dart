@@ -75,4 +75,35 @@ class AppLocalizationsPl extends AppLocalizations {
   String inviteToken(Object token) {
     return 'Token zaproszenia: $token';
   }
+
+  @override
+  String get createAnAccount => 'Utwórz konto';
+
+  @override
+  String get firstNameField => 'Imię';
+
+  @override
+  String get lastNameField => 'Nazwisko';
+
+  @override
+  String get dateOfBirthField => 'Data urodzenia';
+
+  @override
+  String get phoneField => 'Telefon';
+
+  @override
+  String get dateOfBirthHintField => 'DD.MM.YYYY';
+
+  @override
+  String get emailHintField => 'emily.corner@gmail.com';
+
+  @override
+  String get phoneHintField => '+48 XXX XXX XXX';
+
+  @override
+  String get iAgreeToReceive =>
+      'Podając mój adres e-mail, zgadzam się na otrzymywanie komunikatów od Akademii 2.0. Rozumiem, że mogę zrezygnować w dowolnym momencie.';
+
+  @override
+  String get createAccountButton => 'Utwórz konto';
 }

@@ -75,4 +75,35 @@ class AppLocalizationsUk extends AppLocalizations {
   String inviteToken(Object token) {
     return 'Токен запрошення: $token';
   }
+
+  @override
+  String get createAnAccount => 'Створити обліковий запис';
+
+  @override
+  String get firstNameField => 'Ім’я';
+
+  @override
+  String get lastNameField => 'Прізвище';
+
+  @override
+  String get dateOfBirthField => 'Дата народження';
+
+  @override
+  String get phoneField => 'Телефон';
+
+  @override
+  String get dateOfBirthHintField => 'DD.MM.YYYY';
+
+  @override
+  String get emailHintField => 'emily.corner@gmail.com';
+
+  @override
+  String get phoneHintField => '+48 XXX XXX XXX';
+
+  @override
+  String get iAgreeToReceive =>
+      'Надаючи свою електронну адресу, я погоджуюся отримувати повідомлення від Академії 2.0. Я розумію, що можу відмовитися в будь-який час.';
+
+  @override
+  String get createAccountButton => 'Створити обліковий запис';
 }

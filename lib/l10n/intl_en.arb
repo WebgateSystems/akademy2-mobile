@@ -21,5 +21,16 @@
   "downloadsPlaceholder": "Downloads placeholder (M1)",
   "profileTitle": "Profile",
   "profilePlaceholder": "Profile placeholder (M1)",
-  "inviteToken": "Invite token: {token}"
+  "inviteToken": "Invite token: {token}",
+  "createAnAccount": "Create an Account",
+  "firstNameField": "First name",
+  "lastNameField": "Last name",
+  "dateOfBirthField": "Date of birth",
+  "emailField": "Email",
+  "phoneField": "Phone",
+  "dateOfBirthHintField": "DD.MM.YYYY",
+  "emailHintField": "emily.corner@gmail.com",
+  "phoneHintField": "+48 XXX XXX XXX",
+  "iAgreeToReceive": "By providing my email I agree to receive communications from Academy 2.0 I understand I can opt out at any time.",
+  "createAccountButton": "Create account"
 }

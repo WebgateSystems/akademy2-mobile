@@ -21,5 +21,16 @@
   "downloadsPlaceholder": "Заглушка завантажень (M1)",
   "profileTitle": "Профіль",
   "profilePlaceholder": "Заглушка профілю (M1)",
-  "inviteToken": "Токен запрошення: {token}"
+  "inviteToken": "Токен запрошення: {token}",
+  "createAnAccount": "Створити обліковий запис",
+  "firstNameField": "Ім’я",
+  "lastNameField": "Прізвище",
+  "dateOfBirthField": "Дата народження",
+  "emailField": "Email",
+  "phoneField": "Телефон",
+  "dateOfBirthHintField": "DD.MM.YYYY",
+  "emailHintField": "emily.corner@gmail.com",
+  "phoneHintField": "+48 XXX XXX XXX",
+  "iAgreeToReceive": "Надаючи свою електронну адресу, я погоджуюся отримувати повідомлення від Академії 2.0. Я розумію, що можу відмовитися в будь-який час.",
+  "createAccountButton": "Створити обліковий запис"
 }

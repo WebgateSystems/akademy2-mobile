@@ -1,4 +1,10 @@
+import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/checkbox_widget.dart';
+import 'package:academy_2_app/app/view/edit_text_widget.dart';
+import 'package:academy_2_app/app/view/toolbar_widget.dart';
+import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import 'auth_flow_models.dart';
@@ -101,80 +107,68 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Create an Account')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTextField('First name', _firstNameCtrl),
-            _buildTextField('Last name', _lastNameCtrl),
+            SizedBox(height: 44.h),
+            Padding(
+              padding: EdgeInsets.only(top: 16.h),
+              child: ToolbarWidget(
+                title: loc?.createAnAccount ?? 'Create an Account',
+              ),
+            ),
+            SizedBox(height: 20.h),
+            EditTextWidget(
+                label: loc?.firstNameField ?? 'First name',
+                hint: loc?.firstNameField ?? 'First name',
+                controller: _firstNameCtrl),
+            SizedBox(height: 12.h),
+            EditTextWidget(
+                label: loc?.lastNameField ?? 'Last name',
+                hint: loc?.lastNameField ?? 'Last name',
+                controller: _lastNameCtrl),
+            SizedBox(height: 12.h),
             GestureDetector(
               onTap: _pickDob,
               child: AbsorbPointer(
-                child: _buildTextField(
-                  'Date of birth',
-                  _dobCtrl,
-                  suffix: const Icon(Icons.calendar_today, size: 18),
+                child: EditTextWidget(
+                  label: loc?.dateOfBirthField ?? 'Date of birth',
+                  hint: loc?.dateOfBirthHintField ?? 'Date of birth',
+                  controller: _dobCtrl,
                 ),
               ),
             ),
-            _buildTextField('Email', _emailCtrl, errorText: _emailError),
-            _buildTextField(
-              'Phone',
-              _phoneCtrl,
+            SizedBox(height: 12.h),
+            EditTextWidget(
+                label: loc?.emailField ?? 'Email',
+                hint: loc?.emailHintField ?? 'Email',
+                controller: _emailCtrl,
+                errorText: _emailError),
+            SizedBox(height: 12.h),
+            EditTextWidget(
+              label: loc?.phoneField ?? 'Phone',
+              hint: loc?.phoneHintField ?? 'Phone',
+              controller: _phoneCtrl,
               keyboard: TextInputType.phone,
               errorText: _phoneError,
             ),
-            const SizedBox(height: 8),
-            CheckboxListTile(
+            SizedBox(height: 20.h),
+            CheckboxWidget(
+              text: loc?.iAgreeToReceive ?? '',
               value: _agree,
               onChanged: (v) => setState(() => _agree = v ?? false),
-              controlAffinity: ListTileControlAffinity.leading,
-              contentPadding: EdgeInsets.zero,
-              title: const Text(
-                'By providing my email I agree to receive communications from Academy 2.0 I understand I can opt out at any time.',
-              ),
             ),
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isFormValid && !_loading ? _submit : null,
-                child: _loading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Create account'),
-              ),
+            SizedBox(height: 20.h),
+            ActionButtonWidget(
+              onPressed: _isFormValid && !_loading ? _submit : null,
+              text: loc?.createAccountButton ?? 'Create account',
+              loading: _loading,
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTextField(
-    String label,
-    TextEditingController controller, {
-    TextInputType keyboard = TextInputType.text,
-    String? errorText,
-    Widget? suffix,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboard,
-        onChanged: (_) => setState(() {}),
-        decoration: InputDecoration(
-          labelText: label,
-          errorText: errorText,
-          suffixIcon: suffix,
-          border: const OutlineInputBorder(),
         ),
       ),
     );

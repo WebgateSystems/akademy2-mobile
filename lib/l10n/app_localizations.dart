@@ -231,6 +231,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Invite token: {token}'**
   String inviteToken(Object token);
+
+  /// No description provided for @createAnAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an Account'**
+  String get createAnAccount;
+
+  /// No description provided for @firstNameField.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get firstNameField;
+
+  /// No description provided for @lastNameField.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get lastNameField;
+
+  /// No description provided for @dateOfBirthField.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get dateOfBirthField;
+
+  /// No description provided for @phoneField.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get phoneField;
+
+  /// No description provided for @dateOfBirthHintField.
+  ///
+  /// In en, this message translates to:
+  /// **'DD.MM.YYYY'**
+  String get dateOfBirthHintField;
+
+  /// No description provided for @emailHintField.
+  ///
+  /// In en, this message translates to:
+  /// **'emily.corner@gmail.com'**
+  String get emailHintField;
+
+  /// No description provided for @phoneHintField.
+  ///
+  /// In en, this message translates to:
+  /// **'+48 XXX XXX XXX'**
+  String get phoneHintField;
+
+  /// No description provided for @iAgreeToReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'By providing my email I agree to receive communications from Academy 2.0 I understand I can opt out at any time.'**
+  String get iAgreeToReceive;
+
+  /// No description provided for @createAccountButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get createAccountButton;
 }
 
 class _AppLocalizationsDelegate
