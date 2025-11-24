@@ -15,9 +15,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginTitle => 'Sign in';
 
   @override
-  String get emailField => 'Email';
-
-  @override
   String get passwordField => 'Password';
 
   @override
@@ -87,6 +84,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dateOfBirthField => 'Date of birth';
+
+  @override
+  String get emailField => 'Email';
 
   @override
   String get phoneField => 'Phone';

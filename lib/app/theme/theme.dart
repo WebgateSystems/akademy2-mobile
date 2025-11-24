@@ -6,13 +6,13 @@ class AppTheme {
   static final light = ThemeData(
     brightness: Brightness.light,
     colorScheme: ColorScheme.fromSeed(
-        seedColor: AppColors.primary, surface: AppColors.backgroundLight),
-    scaffoldBackgroundColor: AppColors.backgroundLight,
+        seedColor: AppColors.primary, surface: AppColors.blue05),
+    scaffoldBackgroundColor: AppColors.blue05,
     appBarTheme: const AppBarTheme(backgroundColor: AppColors.primary),
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: AppColors.contentPrimaryLight),
-      bodyMedium: TextStyle(color: AppColors.contentPrimaryLight),
-      bodySmall: TextStyle(color: AppColors.contentPrimaryLight),
+      bodyLarge: TextStyle(color: AppColors.blue90),
+      bodyMedium: TextStyle(color: AppColors.blue90),
+      bodySmall: TextStyle(color: AppColors.blue90),
     ),
   );
 
@@ -21,14 +21,14 @@ class AppTheme {
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.primary,
       brightness: Brightness.dark,
-      surface: AppColors.backgroundDark,
+      surface: AppColors.blue90,
     ),
-    scaffoldBackgroundColor: AppColors.backgroundDark,
+    scaffoldBackgroundColor: AppColors.blue90,
     appBarTheme: const AppBarTheme(backgroundColor: AppColors.primary),
     textTheme: const TextTheme(
-      bodyLarge: TextStyle(color: AppColors.contentPrimaryDark),
-      bodyMedium: TextStyle(color: AppColors.contentPrimaryDark),
-      bodySmall: TextStyle(color: AppColors.contentPrimaryDark),
+      bodyLarge: TextStyle(color: AppColors.blue05),
+      bodyMedium: TextStyle(color: AppColors.blue05),
+      bodySmall: TextStyle(color: AppColors.blue05),
     ),
   );
 }

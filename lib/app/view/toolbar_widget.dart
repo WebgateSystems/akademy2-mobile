@@ -14,7 +14,7 @@ class ToolbarWidget extends StatelessWidget {
     final theme = Theme.of(context);
     return Text(
       title,
-      style: AppTextStyles.H1.copyWith(
+      style: AppTextStyles.h1(context).copyWith(
         color: theme.textTheme.bodyMedium?.color,
       ),
     );

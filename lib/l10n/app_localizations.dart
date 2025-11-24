@@ -112,12 +112,6 @@ abstract class AppLocalizations {
   /// **'Sign in'**
   String get loginTitle;
 
-  /// No description provided for @emailField.
-  ///
-  /// In en, this message translates to:
-  /// **'Email'**
-  String get emailField;
-
   /// No description provided for @passwordField.
   ///
   /// In en, this message translates to:
@@ -255,6 +249,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Date of birth'**
   String get dateOfBirthField;
+
+  /// No description provided for @emailField.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get emailField;
 
   /// No description provided for @phoneField.
   ///

@@ -15,9 +15,6 @@ class AppLocalizationsUk extends AppLocalizations {
   String get loginTitle => 'Увійти';
 
   @override
-  String get emailField => 'Email';
-
-  @override
   String get passwordField => 'Пароль';
 
   @override
@@ -87,6 +84,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get dateOfBirthField => 'Дата народження';
+
+  @override
+  String get emailField => 'Email';
 
   @override
   String get phoneField => 'Телефон';

@@ -114,7 +114,7 @@ class _SplashPageState extends State<SplashPage> {
                 SizedBox(height: 24.h),
                 Text(
                   AppLocalizations.of(context)?.appTitle ?? 'Academy 2.0',
-                  style: AppTextStyles.H1.copyWith(
+                  style: AppTextStyles.h1(context).copyWith(
                     color: theme.textTheme.bodyMedium?.color,
                   ),
                 ),

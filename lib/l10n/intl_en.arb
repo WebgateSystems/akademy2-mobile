@@ -2,7 +2,6 @@
   "@@locale": "en",
   "appTitle": "Academy 2.0",
   "loginTitle": "Sign in",
-  "emailField": "Email",
   "passwordField": "Password",
   "subjectsTitle": "Subjects",
   "joinTitle": "Join class",

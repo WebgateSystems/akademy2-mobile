@@ -36,7 +36,7 @@ class CheckboxWidget extends StatelessWidget {
         Flexible(
           child: Text(
             text,
-            style: AppTextStyles.B2.copyWith(
+            style: AppTextStyles.b2(context).copyWith(
               color: theme.textTheme.bodyMedium?.color,
             ),
           ),

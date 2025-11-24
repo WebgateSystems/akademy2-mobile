@@ -8,6 +8,7 @@ class EditTextWidget extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType keyboard;
   final String? errorText;
+  final bool readOnly;
   final Widget? suffixIcon;
   final Function(String)? onChanged;
 
@@ -20,6 +21,7 @@ class EditTextWidget extends StatelessWidget {
     required this.controller,
     this.keyboard = TextInputType.text,
     this.onChanged,
+    this.readOnly = false,
   });
 
   @override
@@ -31,51 +33,52 @@ class EditTextWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label ?? '',
-              style: AppTextStyles.B2.copyWith(
+              style: AppTextStyles.b2(context).copyWith(
                 color: theme.textTheme.bodyMedium?.color,
               )),
           SizedBox(height: 4.h),
           TextField(
             controller: controller,
             keyboardType: keyboard,
+            readOnly: readOnly,
             onChanged: onChanged,
             decoration: InputDecoration(
               filled: true,
-              fillColor: AppColors.surfacePrimary,
+              fillColor: AppColors.surface(context),
               hintText: hint,
-              hintStyle: AppTextStyles.B2.copyWith(
+              hintStyle: AppTextStyles.b2(context).copyWith(
                 color: AppColors.contentPlaceholder,
               ),
               errorText: errorText,
-              errorStyle: AppTextStyles.B3.copyWith(
-                color: AppColors.contentError,
+              errorStyle: AppTextStyles.b3(context).copyWith(
+                color: AppColors.contentError(context),
               ),
               suffixIcon: suffixIcon,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4.r),
                 borderSide: BorderSide(
-                  color: AppColors.borderPrimary,
+                  color: AppColors.borderPrimary(context),
                   width: 1.w,
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4.r),
                 borderSide: BorderSide(
-                  color: AppColors.borderFocused,
+                  color: AppColors.borderFocused(context),
                   width: 1.w,
                 ),
               ),
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4.r),
                 borderSide: BorderSide(
-                  color: AppColors.borderError,
+                  color: AppColors.borderError(context),
                   width: 1.w,
                 ),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4.r),
                 borderSide: BorderSide(
-                  color: AppColors.borderError,
+                  color: AppColors.borderError(context),
                   width: 1.w,
                 ),
               ),

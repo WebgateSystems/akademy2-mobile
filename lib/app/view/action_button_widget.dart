@@ -16,8 +16,6 @@ class ActionButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return SizedBox(
       height: 56.h,
       width: double.infinity,
@@ -25,8 +23,8 @@ class ActionButtonWidget extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: onPressed != null || loading
-              ? AppColors.buttonPrimary
-              : AppColors.buttonPrimaryDisabled,
+              ? AppColors.button(context)
+              : AppColors.buttonDisabled(context),
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: TextButton(
@@ -39,15 +37,16 @@ class ActionButtonWidget extends StatelessWidget {
                       strokeWidth: 1.w,
                       valueColor: AlwaysStoppedAnimation<Color>(
                           onPressed != null || loading
-                              ? AppColors.contentOnButtonPrimary
-                              : AppColors.contentOnButtonPrimaryDisabled)),
+                              ? AppColors.button(context)
+                              : AppColors.buttonDisabled(context)
+                                  .withValues(alpha: 0.6))),
                 )
               : Text(
                   text.toUpperCase(),
-                  style: AppTextStyles.BUTTON.copyWith(
+                  style: AppTextStyles.button(context).copyWith(
                     color: onPressed != null
-                        ? AppColors.contentOnButtonPrimary
-                        : AppColors.contentOnButtonPrimaryDisabled,
+                        ? AppColors.contentButtonPrimary(context)
+                        : AppColors.contentOnPrimaryDisabled(context),
                   ),
                 ),
         ),
