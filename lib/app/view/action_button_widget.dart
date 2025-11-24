@@ -10,7 +10,7 @@ class ActionButtonWidget extends StatelessWidget {
   const ActionButtonWidget({
     super.key,
     required this.text,
-    required this.loading,
+    this.loading = false,
     required this.onPressed,
   });
 

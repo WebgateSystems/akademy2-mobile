@@ -291,6 +291,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create account'**
   String get createAccountButton;
+
+  /// No description provided for @verifyPhoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your phone number'**
+  String get verifyPhoneTitle;
+
+  /// No description provided for @verifyPhoneSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a 4-digit code to your phone\n{phone}.'**
+  String verifyPhoneSubtitle(String phone);
+
+  /// No description provided for @verifyPhoneInvalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid verification code. Please request a new one.'**
+  String get verifyPhoneInvalidCode;
+
+  /// No description provided for @verifyPhoneResendCountdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend (in 0:{seconds})'**
+  String verifyPhoneResendCountdown(String seconds);
+
+  /// No description provided for @verifyPhoneResendButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend code'**
+  String get verifyPhoneResendButton;
+
+  /// No description provided for @verifyPhoneCodeResentSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Code resent'**
+  String get verifyPhoneCodeResentSnack;
+
+  /// No description provided for @verifyYourAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify your account'**
+  String get verifyYourAccount;
+
+  /// No description provided for @verifyEmailMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ve sent a confirmation link to {email}. Open your inbox and click the link to finish signing up.'**
+  String verifyEmailMessage(Object email);
+
+  /// No description provided for @checkSpam.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t see it? Check your spam folder.'**
+  String get checkSpam;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
 }
 
 class _AppLocalizationsDelegate

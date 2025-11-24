@@ -106,4 +106,41 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get createAccountButton => 'Utwórz konto';
+
+  @override
+  String get verifyPhoneTitle => 'Zweryfikuj swój numer telefonu';
+
+  @override
+  String verifyPhoneSubtitle(String phone) {
+    return 'Wysłaliśmy czterocyfrowy kod na Twój telefon\n$phone.';
+  }
+
+  @override
+  String get verifyPhoneInvalidCode =>
+      'Nieprawidłowy kod weryfikacyjny. Poproś o nowy.';
+
+  @override
+  String verifyPhoneResendCountdown(String seconds) {
+    return 'Wyślij ponownie (za 0:$seconds)';
+  }
+
+  @override
+  String get verifyPhoneResendButton => 'Wyślij kod ponownie';
+
+  @override
+  String get verifyPhoneCodeResentSnack => 'Kod został wysłany ponownie';
+
+  @override
+  String get verifyYourAccount => 'Zweryfikuj swoje konto';
+
+  @override
+  String verifyEmailMessage(Object email) {
+    return 'Wysłaliśmy link potwierdzający na $email. Otwórz swoją skrzynkę i kliknij link, aby zakończyć rejestrację.';
+  }
+
+  @override
+  String get checkSpam => 'Nie widzisz go? Sprawdź folder spam.';
+
+  @override
+  String get next => 'Dalej';
 }

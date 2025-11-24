@@ -11,6 +11,11 @@ class EditTextWidget extends StatelessWidget {
   final bool readOnly;
   final Widget? suffixIcon;
   final Function(String)? onChanged;
+  final int maxLength;
+  final FocusNode? focusNode;
+  final TextAlign textAlign;
+  final TextStyle? textStyle;
+  final EdgeInsetsGeometry? contentPadding;
 
   const EditTextWidget({
     super.key,
@@ -22,6 +27,11 @@ class EditTextWidget extends StatelessWidget {
     this.keyboard = TextInputType.text,
     this.onChanged,
     this.readOnly = false,
+    this.maxLength = 1,
+    this.focusNode,
+    this.textAlign = TextAlign.start,
+    this.textStyle,
+    this.contentPadding,
   });
 
   @override
@@ -32,16 +42,21 @@ class EditTextWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label ?? '',
-              style: AppTextStyles.b2(context).copyWith(
-                color: theme.textTheme.bodyMedium?.color,
-              )),
-          SizedBox(height: 4.h),
+          if (label != null)
+            Text(label ?? '',
+                style: AppTextStyles.b2(context).copyWith(
+                  color: theme.textTheme.bodyMedium?.color,
+                )),
+          if (label != null) SizedBox(height: 4.h),
           TextField(
+            style: textStyle ?? AppTextStyles.b2(context),
+            textAlign: textAlign,
             controller: controller,
             keyboardType: keyboard,
+            focusNode: focusNode,
             readOnly: readOnly,
             onChanged: onChanged,
+            maxLength: maxLength,
             decoration: InputDecoration(
               filled: true,
               fillColor: AppColors.surface(context),
@@ -54,6 +69,9 @@ class EditTextWidget extends StatelessWidget {
                 color: AppColors.contentError(context),
               ),
               suffixIcon: suffixIcon,
+              counterText: '',
+              counter: const SizedBox.shrink(),
+              contentPadding: contentPadding,
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4.r),
                 borderSide: BorderSide(

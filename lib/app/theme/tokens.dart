@@ -46,6 +46,9 @@ class AppColors {
   static Color contentPrimary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue05 : blue90;
 
+  static Color contentSecondary(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? grey40 : grey60;
+
   static Color contentButtonPrimary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? grey90 : grey05;
 
@@ -88,6 +91,14 @@ class AppTextStyles {
         color: AppColors.contentPrimary(context),
         height: 1.5,
         letterSpacing: -0.24,
+      );
+
+  static TextStyle b1(BuildContext context) => TextStyle(
+        fontSize: 16.sp,
+        fontFamily: 'Inter',
+        fontWeight: FontWeight.w400,
+        color: AppColors.contentPrimary(context),
+        height: 1.3,
       );
 
   static TextStyle b2(BuildContext context) => TextStyle(

@@ -1,4 +1,9 @@
+import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/toolbar_widget.dart';
+import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class VerifyEmailPage extends StatelessWidget {
@@ -8,39 +13,57 @@ class VerifyEmailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () => context.pop(),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Verify your account',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              "We've sent a confirmation link to $email. Open your inbox and click the link to finish signing up.",
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              "Don't see it? Check your spam folder.",
-              style: TextStyle(fontSize: 16),
-            ),
-            const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () => context.go('/create-pin'),
-                child: const Text('Next'),
+            SizedBox(height: 44.h),
+            Padding(
+              padding: EdgeInsets.only(top: 16.h),
+              child: ToolbarWidget(
+                leftIcon: IconButton(
+                  icon: Image.asset(
+                    'assets/images/ic_chevron_left.png',
+                    color: AppColors.contentPrimary(context),
+                  ),
+                  onPressed: () => context.pop(),
+                ),
               ),
+            ),
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ToolbarWidget(
+                        title: l10n.verifyYourAccount,
+                      ),
+                      SizedBox(height: 12.h),
+                      Text(
+                        l10n.verifyEmailMessage(email),
+                        style: AppTextStyles.b1(context).copyWith(
+                          color: AppColors.contentSecondary(context),
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      Text(
+                        l10n.checkSpam,
+                        style: AppTextStyles.b1(context).copyWith(
+                          color: AppColors.contentSecondary(context),
+                        ),
+                      ),
+                      SizedBox(height: 32.h),
+                      ActionButtonWidget(
+                        onPressed: () => context.go('/create-pin'),
+                        text: l10n.next,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),

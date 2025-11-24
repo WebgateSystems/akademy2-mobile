@@ -31,5 +31,29 @@
   "emailHintField": "emily.corner@gmail.com",
   "phoneHintField": "+48 XXX XXX XXX",
   "iAgreeToReceive": "Надаючи свою електронну адресу, я погоджуюся отримувати повідомлення від Академії 2.0. Я розумію, що можу відмовитися в будь-який час.",
-  "createAccountButton": "Створити обліковий запис"
+  "createAccountButton": "Створити обліковий запис",
+  "verifyPhoneTitle": "Підтвердіть номер телефону",
+  "verifyPhoneSubtitle": "Ми надіслали 4-значний код на ваш телефон\n{phone}.",
+  "@verifyPhoneSubtitle": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyPhoneInvalidCode": "Неправильний код підтвердження. Запросіть новий.",
+  "verifyPhoneResendCountdown": "Надіслати ще раз (через 0:{seconds})",
+  "@verifyPhoneResendCountdown": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyPhoneResendButton": "Надіслати код ще раз",
+  "verifyPhoneCodeResentSnack": "Код повторно надіслано",
+  "verifyYourAccount": "Підтвердіть свій акаунт",
+  "verifyEmailMessage": "Ми надіслали підтверджувальне посилання на {email}. Відкрийте пошту та перейдіть за посиланням, щоб завершити реєстрацію.",
+  "checkSpam": "Не знайшли? Перевірте папку «Спам».",
+  "next": "Далі"
 }

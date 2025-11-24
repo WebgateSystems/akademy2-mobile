@@ -31,5 +31,29 @@
   "emailHintField": "emily.corner@gmail.com",
   "phoneHintField": "+48 XXX XXX XXX",
   "iAgreeToReceive": "Podając mój adres e-mail, zgadzam się na otrzymywanie komunikatów od Akademii 2.0. Rozumiem, że mogę zrezygnować w dowolnym momencie.",
-  "createAccountButton": "Utwórz konto"
+  "createAccountButton": "Utwórz konto",
+  "verifyPhoneTitle": "Zweryfikuj swój numer telefonu",
+  "verifyPhoneSubtitle": "Wysłaliśmy czterocyfrowy kod na Twój telefon\n{phone}.",
+  "@verifyPhoneSubtitle": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyPhoneInvalidCode": "Nieprawidłowy kod weryfikacyjny. Poproś o nowy.",
+  "verifyPhoneResendCountdown": "Wyślij ponownie (za 0:{seconds})",
+  "@verifyPhoneResendCountdown": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyPhoneResendButton": "Wyślij kod ponownie",
+  "verifyPhoneCodeResentSnack": "Kod został wysłany ponownie",
+  "verifyYourAccount": "Zweryfikuj swoje konto",
+  "verifyEmailMessage": "Wysłaliśmy link potwierdzający na {email}. Otwórz swoją skrzynkę i kliknij link, aby zakończyć rejestrację.",
+  "checkSpam": "Nie widzisz go? Sprawdź folder spam.",
+  "next": "Dalej"
 }

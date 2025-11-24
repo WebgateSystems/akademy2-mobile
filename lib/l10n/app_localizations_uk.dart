@@ -106,4 +106,41 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get createAccountButton => 'Створити обліковий запис';
+
+  @override
+  String get verifyPhoneTitle => 'Підтвердіть номер телефону';
+
+  @override
+  String verifyPhoneSubtitle(String phone) {
+    return 'Ми надіслали 4-значний код на ваш телефон\n$phone.';
+  }
+
+  @override
+  String get verifyPhoneInvalidCode =>
+      'Неправильний код підтвердження. Запросіть новий.';
+
+  @override
+  String verifyPhoneResendCountdown(String seconds) {
+    return 'Надіслати ще раз (через 0:$seconds)';
+  }
+
+  @override
+  String get verifyPhoneResendButton => 'Надіслати код ще раз';
+
+  @override
+  String get verifyPhoneCodeResentSnack => 'Код повторно надіслано';
+
+  @override
+  String get verifyYourAccount => 'Підтвердіть свій акаунт';
+
+  @override
+  String verifyEmailMessage(Object email) {
+    return 'Ми надіслали підтверджувальне посилання на $email. Відкрийте пошту та перейдіть за посиланням, щоб завершити реєстрацію.';
+  }
+
+  @override
+  String get checkSpam => 'Не знайшли? Перевірте папку «Спам».';
+
+  @override
+  String get next => 'Далі';
 }

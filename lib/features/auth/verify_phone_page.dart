@@ -1,6 +1,12 @@
 import 'dart:async';
 
+import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/edit_text_widget.dart';
+import 'package:academy_2_app/app/view/toolbar_widget.dart';
+import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import 'auth_flow_models.dart';
@@ -44,8 +50,10 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
     _resendSeconds = 59;
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
       if (_resendSeconds == 0) {
         timer.cancel();
+        setState(() {});
       } else {
         setState(() => _resendSeconds--);
       }
@@ -54,27 +62,56 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
 
   String get _code => _controllers.map((c) => c.text).join();
 
+  bool get _isCodeComplete =>
+      _code.length == 4 && RegExp(r'^\d{4}$').hasMatch(_code);
+
+  bool get _canResend => !_loading && _resendSeconds == 0;
+
   Future<void> _verify() async {
-    if (_code.length != 4 || !_code.contains(RegExp(r'^\d{4}$'))) {
+    if (_loading) return;
+
+    if (!_isCodeComplete) {
       setState(() => _invalid = true);
       return;
     }
+
     setState(() {
       _invalid = false;
       _loading = true;
     });
+
+    // TODO: замінити це на реальний виклик бекенду / Firebase
     await Future<void>.delayed(const Duration(milliseconds: 800));
     if (!mounted) return;
+
+    final isValid = true;
+
+    if (!isValid) {
+      setState(() {
+        _loading = false;
+        _invalid = true;
+      });
+      return;
+    }
+
     context.go('/verify-email', extra: widget.args.email);
   }
 
   void _resend() {
+    if (!_canResend) return;
+
+    final l10n = AppLocalizations.of(context)!;
+
     for (final c in _controllers) {
       c.clear();
     }
+    setState(() {
+      _invalid = false;
+    });
     _startTimer();
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Code resent')),
+      SnackBar(content: Text(l10n.verifyPhoneCodeResentSnack)),
     );
   }
 
@@ -83,89 +120,103 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
       _controllers[index].text = value.substring(0, 1);
       _controllers[index].selection = const TextSelection.collapsed(offset: 1);
     }
+
     if (value.isNotEmpty && index < _focusNodes.length - 1) {
       _focusNodes[index + 1].requestFocus();
     }
     if (value.isEmpty && index > 0) {
       _focusNodes[index - 1].requestFocus();
     }
+
     setState(() {});
+
+    if (_isCodeComplete && !_loading) {
+      _verify();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final phone = widget.args.phone;
+
+    final String buttonText;
+    if (_loading) {
+      buttonText = '';
+    } else if (_resendSeconds > 0) {
+      final seconds = _resendSeconds.toString().padLeft(2, '0');
+      buttonText = l10n.verifyPhoneResendCountdown(seconds);
+    } else {
+      buttonText = l10n.verifyPhoneResendButton;
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () => context.pop(),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Verify your phone number',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            SizedBox(height: 44.h),
+            Padding(
+              padding: EdgeInsets.only(top: 16.h),
+              child: ToolbarWidget(
+                leftIcon: IconButton(
+                  icon: Image.asset(
+                    'assets/images/ic_chevron_left.png',
+                    color: AppColors.contentPrimary(context),
+                  ),
+                  onPressed: () => context.pop(),
+                ),
+              ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              'We sent a 4-digit code on your phone\n$phone.',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(_controllers.length, (index) {
-                return SizedBox(
-                  width: 64,
-                  child: TextField(
-                    controller: _controllers[index],
-                    focusNode: _focusNodes[index],
-                    keyboardType: TextInputType.number,
-                    maxLength: 1,
-                    textAlign: TextAlign.center,
-                    onChanged: (v) => _onDigitChanged(index, v),
-                    decoration: const InputDecoration(
-                      counterText: '',
-                      border: OutlineInputBorder(),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ToolbarWidget(
+                    title: l10n.verifyPhoneTitle,
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(
+                    l10n.verifyPhoneSubtitle(phone),
+                    style: AppTextStyles.b1(context).copyWith(
+                      color: AppColors.contentSecondary(context),
                     ),
                   ),
-                );
-              }),
-            ),
-            const SizedBox(height: 12),
-            if (_invalid)
-              const Text(
-                'Invalid verification code. Resend a new one?',
-                style: TextStyle(color: Colors.red),
-              ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                TextButton(
-                  onPressed: _resendSeconds == 0 ? _resend : null,
-                  child: Text(
-                    _resendSeconds == 0
-                        ? 'Resend'
-                        : 'Resend (in 0:${_resendSeconds.toString().padLeft(2, '0')})',
+                  const SizedBox(height: 24),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(_controllers.length, (index) {
+                      return SizedBox(
+                        height: 80.w,
+                        width: 70.w,
+                        child: EditTextWidget(
+                          controller: _controllers[index],
+                          focusNode: _focusNodes[index],
+                          keyboard: TextInputType.number,
+                          maxLength: 1,
+                          textAlign: TextAlign.center,
+                          onChanged: (v) => _onDigitChanged(index, v),
+                          errorText: _invalid ? "" : null,
+                          textStyle: AppTextStyles.h1(context),
+                        ),
+                      );
+                    }),
                   ),
-                ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: _code.length == 4 && !_loading ? _verify : null,
-                  child: _loading
-                      ? const SizedBox(
-                          height: 18,
-                          width: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Verify'),
-                ),
-              ],
+                  SizedBox(height: 12.h),
+                  if (_invalid)
+                    Text(
+                      l10n.verifyPhoneInvalidCode,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  SizedBox(height: 12.h),
+                  ActionButtonWidget(
+                    onPressed: _canResend ? _resend : null,
+                    text: buttonText,
+                    loading: _loading,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
