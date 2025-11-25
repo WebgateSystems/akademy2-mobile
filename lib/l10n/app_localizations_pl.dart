@@ -216,4 +216,13 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get waitApprovalRetryButton => 'Wyślij ponownie';
+
+  @override
+  String get bottomNavCourses => 'Kursy';
+
+  @override
+  String get bottomNavSchoolVideos => 'Filmy szkolne';
+
+  @override
+  String get bottomNavAccount => 'Konto';
 }

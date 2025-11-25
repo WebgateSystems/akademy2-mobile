@@ -90,5 +90,8 @@
   },
   "waitApprovalTitle": "Poczekaj na zatwierdzenie nauczyciela",
   "waitApprovalSubtitle": "Twój nauczyciel wkrótce rozpatrzy Twoje zgłoszenie – chwilę poczekaj!",
-  "waitApprovalRetryButton": "Wyślij ponownie"
+  "waitApprovalRetryButton": "Wyślij ponownie",
+  "bottomNavCourses": "Kursy",
+  "bottomNavSchoolVideos": "Filmy szkolne",
+  "bottomNavAccount": "Konto"
 }

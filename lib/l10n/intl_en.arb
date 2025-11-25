@@ -90,6 +90,9 @@
   },
   "waitApprovalTitle": "Wait for teacher's approval",
   "waitApprovalSubtitle": "Your teacher will review your request soon - hang tight!",
-  "waitApprovalRetryButton": "Submit again"
+  "waitApprovalRetryButton": "Submit again",
+  "bottomNavCourses": "Courses",
+  "bottomNavSchoolVideos": "School videos",
+  "bottomNavAccount": "Account"
 
 }

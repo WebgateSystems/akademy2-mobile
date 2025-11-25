@@ -1,5 +1,8 @@
+import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/toolbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/db/entities/module_entity.dart';
@@ -37,8 +40,7 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
 
   Future<void> _handleSubjectTap(SubjectEntity subject) async {
     final isar = IsarService();
-    List<ModuleEntity> modules =
-        await isar.getModulesBySubjectId(subject.id);
+    List<ModuleEntity> modules = await isar.getModulesBySubjectId(subject.id);
 
     if (modules.isEmpty) {
       await ref.read(syncManagerProvider).bootstrap();
@@ -71,35 +73,39 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        'Courses',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                child: Column(
+                  children: [
+                    SizedBox(height: 44.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 16.h),
+                          ToolbarWidget(
+                            title: 'Courses',
+                          ),
+                          SizedBox(height: 16.h),
+                          Text(
+                            'Choose a subject to begin your learning adventure!',
+                            style: AppTextStyles.b1(context).copyWith(
+                              color: AppColors.contentSecondary(context),
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Choose a subject to begin your learning adventure!',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.w),
                 sliver: SliverGrid(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    mainAxisSpacing: 12,
-                    crossAxisSpacing: 12,
-                    childAspectRatio: 1.05,
+                    mainAxisSpacing: 10.w,
+                    crossAxisSpacing: 10.w,
+                    childAspectRatio: 1,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {

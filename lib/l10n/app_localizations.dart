@@ -477,6 +477,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Submit again'**
   String get waitApprovalRetryButton;
+
+  /// No description provided for @bottomNavCourses.
+  ///
+  /// In en, this message translates to:
+  /// **'Courses'**
+  String get bottomNavCourses;
+
+  /// No description provided for @bottomNavSchoolVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'School videos'**
+  String get bottomNavSchoolVideos;
+
+  /// No description provided for @bottomNavAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get bottomNavAccount;
 }
 
 class _AppLocalizationsDelegate

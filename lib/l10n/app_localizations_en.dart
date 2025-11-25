@@ -215,4 +215,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get waitApprovalRetryButton => 'Submit again';
+
+  @override
+  String get bottomNavCourses => 'Courses';
+
+  @override
+  String get bottomNavSchoolVideos => 'School videos';
+
+  @override
+  String get bottomNavAccount => 'Account';
 }

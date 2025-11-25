@@ -216,4 +216,13 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get waitApprovalRetryButton => 'Надіслати ще раз';
+
+  @override
+  String get bottomNavCourses => 'Курси';
+
+  @override
+  String get bottomNavSchoolVideos => 'Шкільні відео';
+
+  @override
+  String get bottomNavAccount => 'Акаунт';
 }

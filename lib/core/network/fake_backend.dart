@@ -20,7 +20,7 @@ class FakeBackend {
   }
 
   static final List<Map<String, dynamic>> _subjects = List.generate(
-    6,
+    7,
     (i) => {
       'id': 'subject-${i + 1}',
       'title': 'Subject ${i + 1}',
@@ -99,7 +99,6 @@ class FakeBackend {
     return {'success': true};
   }
 
-
   static Map<String, dynamic> mockAccountUpdate() {
     return {'success': true};
   }
@@ -107,7 +106,6 @@ class FakeBackend {
   static Map<String, dynamic> mockAccountDelete() {
     return {'success': true};
   }
-
 
   static final List<Map<String, dynamic>> _videos = List.generate(4, (i) {
     return {
@@ -126,7 +124,8 @@ class FakeBackend {
       list = list.where((v) => v['subjectId'] == subjectId);
     }
     if (query != null && query.isNotEmpty) {
-      list = list.where((v) => v['title'].toString().toLowerCase().contains(query.toLowerCase()));
+      list = list.where((v) =>
+          v['title'].toString().toLowerCase().contains(query.toLowerCase()));
     }
     return {'videos': list.toList()};
   }
@@ -149,6 +148,7 @@ class FakeBackend {
     _videos.removeWhere((v) => v['id'] == id);
     return {'success': true};
   }
+
   static final Map<String, _JoinRequest> _joinRequests = {};
 
   static Map<String, dynamic> mockJoin(String code) {
@@ -176,7 +176,6 @@ class FakeBackend {
     }
     return {'status': 'pending'};
   }
-
 }
 
 class _JoinRequest {
