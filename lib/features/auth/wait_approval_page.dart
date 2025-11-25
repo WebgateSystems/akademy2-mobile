@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -83,7 +84,9 @@ class _WaitApprovalPageState extends ConsumerState<WaitApprovalPage> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context)!;
     final rejected = _status == 'rejected';
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -97,23 +100,24 @@ class _WaitApprovalPageState extends ConsumerState<WaitApprovalPage> {
             children: [
               const Spacer(),
               Text(
-                "Wait for teacher's approval",
+                loc.waitApprovalTitle,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.h1(context)
                     .copyWith(color: AppColors.contentOnAccentPrimary(context)),
               ),
               SizedBox(height: 16.h),
               Text(
-                'Your teacher will review your request soon - hang tight!',
+                loc.waitApprovalSubtitle,
                 textAlign: TextAlign.center,
                 style: AppTextStyles.b1(context).copyWith(
-                    color: AppColors.contentOnAccentSecondary(context)),
+                  color: AppColors.contentOnAccentSecondary(context),
+                ),
               ),
               if (rejected) SizedBox(height: 16.h),
               if (rejected)
                 ActionButtonWidget(
                   onPressed: _retry,
-                  text: 'Submit again',
+                  text: loc.waitApprovalRetryButton,
                 ),
               const Spacer(),
             ],

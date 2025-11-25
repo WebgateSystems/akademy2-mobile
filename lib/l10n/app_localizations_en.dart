@@ -205,4 +205,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String joinGroupSubmitError(String error) {
     return 'Failed to submit code: $error';
   }
+
+  @override
+  String get waitApprovalTitle => 'Wait for teacher\'s approval';
+
+  @override
+  String get waitApprovalSubtitle =>
+      'Your teacher will review your request soon - hang tight!';
+
+  @override
+  String get waitApprovalRetryButton => 'Submit again';
 }

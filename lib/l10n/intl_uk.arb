@@ -87,6 +87,9 @@
         "type": "String"
       }
     }
-  }
+  },
+  "waitApprovalTitle": "Зачекайте на підтвердження вчителя",
+  "waitApprovalSubtitle": "Ваш учитель незабаром розгляне ваш запит — трошки зачекайте!",
+  "waitApprovalRetryButton": "Надіслати ще раз"
 
 }

@@ -459,6 +459,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to submit code: {error}'**
   String joinGroupSubmitError(String error);
+
+  /// No description provided for @waitApprovalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for teacher\'s approval'**
+  String get waitApprovalTitle;
+
+  /// No description provided for @waitApprovalSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your teacher will review your request soon - hang tight!'**
+  String get waitApprovalSubtitle;
+
+  /// No description provided for @waitApprovalRetryButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit again'**
+  String get waitApprovalRetryButton;
 }
 
 class _AppLocalizationsDelegate

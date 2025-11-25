@@ -206,4 +206,14 @@ class AppLocalizationsPl extends AppLocalizations {
   String joinGroupSubmitError(String error) {
     return 'Nie udało się wysłać kodu: $error';
   }
+
+  @override
+  String get waitApprovalTitle => 'Poczekaj na zatwierdzenie nauczyciela';
+
+  @override
+  String get waitApprovalSubtitle =>
+      'Twój nauczyciel wkrótce rozpatrzy Twoje zgłoszenie – chwilę poczekaj!';
+
+  @override
+  String get waitApprovalRetryButton => 'Wyślij ponownie';
 }

@@ -206,4 +206,14 @@ class AppLocalizationsUk extends AppLocalizations {
   String joinGroupSubmitError(String error) {
     return 'Не вдалося надіслати код: $error';
   }
+
+  @override
+  String get waitApprovalTitle => 'Зачекайте на підтвердження вчителя';
+
+  @override
+  String get waitApprovalSubtitle =>
+      'Ваш учитель незабаром розгляне ваш запит — трошки зачекайте!';
+
+  @override
+  String get waitApprovalRetryButton => 'Надіслати ще раз';
 }
