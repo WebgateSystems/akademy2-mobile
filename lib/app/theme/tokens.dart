@@ -41,6 +41,17 @@ class AppColors {
   static const red90 = Color(0xFF7F0000);
 
   static const green40 = Color(0xFF88CD6C);
+  static const green50 = Color(0xFF6CC24A);
+  static const green60 = Color(0xFF529C35);
+
+  static const yellow50 = Color(0xFFFFD74B);
+  static const yellow70 = Color(0xFFF4B400);
+
+  static const pink50 = Color(0xFFF56CA0);
+  static const pink70 = Color(0xFFC9356A);
+
+  static const orange50 = Color(0xFFFF9B42);
+  static const orange70 = Color(0xFFFB8C00);
 
   static Color background(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue90 : blue05;
@@ -78,6 +89,9 @@ class AppColors {
   static Color surface(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue85 : grey05;
 
+  static Color surfaceIcon(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? grey05 : grey05;
+
   static Color borderFocused(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue50 : blue50;
 
@@ -92,6 +106,28 @@ class AppColors {
 
   static Color buttonDisabled(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? grey60 : grey60;
+
+  static Color cardColor(BuildContext context, int index) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final pos = index % 6;
+
+    switch (pos) {
+      case 0:
+        return isDark ? blue60 : blue50;
+      case 1:
+        return isDark ? green60 : green50;
+      case 2:
+        return isDark ? yellow70 : yellow50;
+      case 3:
+        return isDark ? pink70 : pink50;
+      case 4:
+        return isDark ? green60 : green50;
+      case 5:
+        return isDark ? orange70 : orange50;
+      default:
+        return isDark ? blue60 : blue50;
+    }
+  }
 }
 
 class AppSpacing {
@@ -108,6 +144,14 @@ class AppTextStyles {
         color: AppColors.contentPrimary(context),
         height: 1.5,
         letterSpacing: -0.24,
+      );
+
+  static TextStyle h4(BuildContext context) => TextStyle(
+        fontSize: 16.sp,
+        fontFamily: 'Rubik',
+        fontWeight: FontWeight.w500,
+        color: AppColors.contentPrimary(context),
+        height: 1.3,
       );
 
   static TextStyle b1(BuildContext context) => TextStyle(

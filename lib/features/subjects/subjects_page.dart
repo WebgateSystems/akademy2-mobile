@@ -114,6 +114,7 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
                         id: subject.id,
                         title: subject.title,
                         moduleCount: subject.moduleCount,
+                        color: AppColors.cardColor(context, index),
                         onTap: () => _handleSubjectTap(subject),
                       );
                     },

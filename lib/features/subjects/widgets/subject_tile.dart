@@ -1,9 +1,12 @@
+import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SubjectTile extends StatelessWidget {
   final String id;
   final String title;
   final int moduleCount;
+  final Color? color;
   final VoidCallback? onTap;
 
   const SubjectTile({
@@ -11,36 +14,40 @@ class SubjectTile extends StatelessWidget {
     required this.id,
     required this.title,
     required this.moduleCount,
+    required this.color,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 0,
+      color: color,
       child: InkWell(
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 8),
-              Text(
-                '$moduleCount module${moduleCount == 1 ? '' : 's'}',
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: const [
-                  Icon(Icons.video_library, size: 16),
-                  SizedBox(width: 8),
-                  Icon(Icons.picture_as_pdf, size: 16),
-                  SizedBox(width: 8),
-                  Icon(Icons.quiz, size: 16),
-                ],
-              )
-            ],
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 56.w / 2,
+                  backgroundColor: AppColors.surfaceIcon(context),
+                  child: Text(
+                    moduleCount.toString(),
+                    style: AppTextStyles.h4(context).copyWith(
+                      color: AppColors.surfaceIcon(context),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16.h),
+                Text(title,
+                    style: AppTextStyles.h4(context),
+                    textAlign: TextAlign.center),
+              ],
+            ),
           ),
         ),
       ),
