@@ -93,5 +93,7 @@
   "waitApprovalRetryButton": "Надіслати ще раз",
   "bottomNavCourses": "Курси",
   "bottomNavSchoolVideos": "Шкільні відео",
-  "bottomNavAccount": "Акаунт"
+  "bottomNavAccount": "Акаунт",
+  "coursesTitle": "Курси",
+  "chooseSubjectSubtitle": "Обери предмет, щоб розпочати свою навчальну подорож!"
 }

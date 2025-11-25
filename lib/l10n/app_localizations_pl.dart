@@ -225,4 +225,11 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get bottomNavAccount => 'Konto';
+
+  @override
+  String get coursesTitle => 'Kursy';
+
+  @override
+  String get chooseSubjectSubtitle =>
+      'Wybierz przedmiot, aby rozpocząć swoją edukacyjną przygodę!';
 }

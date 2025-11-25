@@ -93,5 +93,7 @@
   "waitApprovalRetryButton": "Wyślij ponownie",
   "bottomNavCourses": "Kursy",
   "bottomNavSchoolVideos": "Filmy szkolne",
-  "bottomNavAccount": "Konto"
+  "bottomNavAccount": "Konto",
+  "coursesTitle": "Kursy",
+  "chooseSubjectSubtitle": "Wybierz przedmiot, aby rozpocząć swoją edukacyjną przygodę!"
 }

@@ -224,4 +224,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bottomNavAccount => 'Account';
+
+  @override
+  String get coursesTitle => 'Courses';
+
+  @override
+  String get chooseSubjectSubtitle =>
+      'Choose a subject to begin your learning adventure!';
 }

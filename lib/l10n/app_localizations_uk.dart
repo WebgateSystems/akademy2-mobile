@@ -225,4 +225,11 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get bottomNavAccount => 'Акаунт';
+
+  @override
+  String get coursesTitle => 'Курси';
+
+  @override
+  String get chooseSubjectSubtitle =>
+      'Обери предмет, щоб розпочати свою навчальну подорож!';
 }

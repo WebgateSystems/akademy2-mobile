@@ -83,11 +83,11 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
                         children: [
                           SizedBox(height: 16.h),
                           ToolbarWidget(
-                            title: 'Courses',
+                            title: l10n.coursesTitle,
                           ),
                           SizedBox(height: 16.h),
                           Text(
-                            'Choose a subject to begin your learning adventure!',
+                            l10n.chooseSubjectSubtitle,
                             style: AppTextStyles.b1(context).copyWith(
                               color: AppColors.contentSecondary(context),
                             ),

@@ -495,6 +495,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Account'**
   String get bottomNavAccount;
+
+  /// No description provided for @coursesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Courses'**
+  String get coursesTitle;
+
+  /// No description provided for @chooseSubjectSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a subject to begin your learning adventure!'**
+  String get chooseSubjectSubtitle;
 }
 
 class _AppLocalizationsDelegate

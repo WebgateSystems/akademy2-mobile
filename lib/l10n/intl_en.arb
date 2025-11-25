@@ -93,6 +93,8 @@
   "waitApprovalRetryButton": "Submit again",
   "bottomNavCourses": "Courses",
   "bottomNavSchoolVideos": "School videos",
-  "bottomNavAccount": "Account"
+  "bottomNavAccount": "Account",
+  "coursesTitle": "Courses",
+  "chooseSubjectSubtitle": "Choose a subject to begin your learning adventure!"
 
 }
