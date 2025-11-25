@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/auth/auth_provider.dart';
@@ -82,38 +85,39 @@ class _WaitApprovalPageState extends ConsumerState<WaitApprovalPage> {
   Widget build(BuildContext context) {
     final rejected = _status == 'rejected';
     return Scaffold(
-      appBar: AppBar(title: const Text("Wait for teacher's approval")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Your teacher will review your request soon - hang tight!',
-              style: TextStyle(fontSize: 16),
-            ),
-            if (_code != null && _code!.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Text('Code: $_code'),
+      body: Container(
+        decoration: BoxDecoration(
+          color: AppColors.backgroundAccent(context),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Spacer(),
+              Text(
+                "Wait for teacher's approval",
+                textAlign: TextAlign.center,
+                style: AppTextStyles.h1(context)
+                    .copyWith(color: AppColors.contentOnAccentPrimary(context)),
               ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                const Text('Status: '),
-                Chip(label: Text(_status)),
-              ],
-            ),
-            const Spacer(),
-            if (rejected)
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
+              SizedBox(height: 16.h),
+              Text(
+                'Your teacher will review your request soon - hang tight!',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.b1(context).copyWith(
+                    color: AppColors.contentOnAccentSecondary(context)),
+              ),
+              if (rejected) SizedBox(height: 16.h),
+              if (rejected)
+                ActionButtonWidget(
                   onPressed: _retry,
-                  child: const Text('Submit again'),
+                  text: 'Submit again',
                 ),
-              ),
-          ],
+              const Spacer(),
+            ],
+          ),
         ),
       ),
     );

@@ -45,8 +45,17 @@ class AppColors {
   static Color background(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue90 : blue05;
 
+  static Color backgroundAccent(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? blue05 : blue90;
+
   static Color contentPrimary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue05 : blue90;
+
+  static Color contentOnAccentPrimary(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? blue90 : grey05;
+
+  static Color contentOnAccentSecondary(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? grey30 : grey30;
 
   static Color contentSecondary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? grey40 : grey60;
