@@ -176,4 +176,16 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get enableBiometricNotNow => 'Nie teraz';
+
+  @override
+  String get enableBiometricSelectOption => 'Wybierz co najmniej jedną opcję';
+
+  @override
+  String get enableBiometricNotAvailable =>
+      'Uwierzytelnianie biometryczne nie jest dostępne na tym urządzeniu.';
+
+  @override
+  String enableBiometricFailed(String error) {
+    return 'Nie udało się włączyć biometrii: $error';
+  }
 }

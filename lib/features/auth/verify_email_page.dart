@@ -28,7 +28,7 @@ class VerifyEmailPage extends StatelessWidget {
           ),
           SizedBox(height: 32.h),
           ActionButtonWidget(
-            onPressed: () => context.go('/create-pin'),
+            onPressed: () => context.push('/create-pin'),
             text: l10n.next,
           ),
         ],

@@ -176,4 +176,16 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get enableBiometricNotNow => 'Не зараз';
+
+  @override
+  String get enableBiometricSelectOption => 'Виберіть принаймні один варіант';
+
+  @override
+  String get enableBiometricNotAvailable =>
+      'Біометрична автентифікація недоступна на цьому пристрої.';
+
+  @override
+  String enableBiometricFailed(String error) {
+    return 'Не вдалося увімкнути біометрію: $error';
+  }
 }

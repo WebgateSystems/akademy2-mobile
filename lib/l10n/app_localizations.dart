@@ -411,6 +411,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'not now'**
   String get enableBiometricNotNow;
+
+  /// No description provided for @enableBiometricSelectOption.
+  ///
+  /// In en, this message translates to:
+  /// **'Select at least one option'**
+  String get enableBiometricSelectOption;
+
+  /// No description provided for @enableBiometricNotAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Biometric authentication is not available on this device.'**
+  String get enableBiometricNotAvailable;
+
+  /// No description provided for @enableBiometricFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to enable biometrics: {error}'**
+  String enableBiometricFailed(String error);
 }
 
 class _AppLocalizationsDelegate

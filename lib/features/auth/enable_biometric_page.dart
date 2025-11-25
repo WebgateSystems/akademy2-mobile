@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:local_auth/local_auth.dart';
 
 import '../../core/storage/secure_storage.dart';
 
@@ -19,6 +20,7 @@ class EnableBiometricPage extends ConsumerStatefulWidget {
 }
 
 class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
+  final _auth = LocalAuthentication();
   bool _fingerprint = false;
   bool _face = false;
   bool _saving = false;
@@ -26,14 +28,55 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
   void _toggleFingerprint() => setState(() => _fingerprint = !_fingerprint);
   void _toggleFace() => setState(() => _face = !_face);
 
-  Future<void> _finish({required bool enable}) async {
+  Future<void> _enableWithAuth() async {
+    final l10n = AppLocalizations.of(context)!;
+    if (_saving) return;
+    if (!_fingerprint && !_face) {
+      _showMessage(l10n.enableBiometricSelectOption);
+      return;
+    }
     setState(() => _saving = true);
+    try {
+      final supported = await _auth.isDeviceSupported();
+      final canCheck = await _auth.canCheckBiometrics;
+      if (!supported || !canCheck) {
+        _showMessage(l10n.enableBiometricNotAvailable);
+        if (mounted) setState(() => _saving = false);
+        return;
+      }
+      final didAuthenticate = await _auth.authenticate(
+        localizedReason: l10n.enableBiometricTitle,
+        options: const AuthenticationOptions(biometricOnly: true),
+      );
+      if (!didAuthenticate) {
+        if (mounted) setState(() => _saving = false);
+        return;
+      }
+      await _saveAndClose(enable: true);
+    } catch (e) {
+      _showMessage(l10n.enableBiometricFailed(error: '$e'));
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  Future<void> _skipBiometric() async {
+    if (_saving) return;
+    setState(() => _saving = true);
+    await _saveAndClose(enable: false);
+  }
+
+  Future<void> _saveAndClose({required bool enable}) async {
     final storage = SecureStorage();
     await storage.write('biometricEnabled', enable.toString());
     await storage.write('biometricFingerprint', _fingerprint.toString());
     await storage.write('biometricFace', _face.toString());
     if (!mounted) return;
     context.go('/join-group');
+  }
+
+  void _showMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -69,12 +112,12 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
             children: [
               ActionButtonWidget(
                 text: l10n.enableBiometricEnable,
-                onPressed: () => _saving ? null : _finish(enable: true),
+                onPressed: _enableWithAuth,
                 loading: _saving,
               ),
               SizedBox(height: 12.h),
               ActionTextButtonWidget(
-                onPressed: () => _finish(enable: false),
+                onPressed: _saving ? null : _skipBiometric,
                 text: l10n.enableBiometricNotNow,
               ),
               SizedBox(height: 48.h),

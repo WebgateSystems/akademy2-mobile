@@ -65,6 +65,16 @@
   "enableBiometricTitle": "Włącz logowanie biometryczne",
   "enableBiometricSubtitle": "Zezwól na logowanie odciskiem palca lub skanem twarzy, aby szybko i bezpiecznie uzyskiwać dostęp do aplikacji.",
   "enableBiometricEnable": "Włącz",
-  "enableBiometricNotNow": "Nie teraz"
+  "enableBiometricNotNow": "Nie teraz",
+  "enableBiometricSelectOption": "Wybierz co najmniej jedną opcję",
+  "enableBiometricNotAvailable": "Uwierzytelnianie biometryczne nie jest dostępne na tym urządzeniu.",
+  "enableBiometricFailed": "Nie udało się włączyć biometrii: {error}",
+  "@enableBiometricFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 
 }

@@ -175,4 +175,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get enableBiometricNotNow => 'not now';
+
+  @override
+  String get enableBiometricSelectOption => 'Select at least one option';
+
+  @override
+  String get enableBiometricNotAvailable =>
+      'Biometric authentication is not available on this device.';
+
+  @override
+  String enableBiometricFailed(String error) {
+    return 'Failed to enable biometrics: $error';
+  }
 }

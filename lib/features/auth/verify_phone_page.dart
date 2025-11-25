@@ -94,7 +94,7 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
       return;
     }
 
-    context.go('/verify-email', extra: widget.args.email);
+    context.push('/verify-email', extra: widget.args.email);
   }
 
   void _resend() {

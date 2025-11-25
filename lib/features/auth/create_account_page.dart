@@ -152,7 +152,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       phone: _phoneCtrl.text.trim(),
       email: _emailCtrl.text.trim(),
     );
-    context.go('/verify-phone', extra: args);
+    context.push('/verify-phone', extra: args);
   }
 
   @override

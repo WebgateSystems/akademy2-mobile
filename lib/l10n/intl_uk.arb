@@ -65,6 +65,16 @@
   "enableBiometricTitle": "Увімкнути біометричний вхід",
   "enableBiometricSubtitle": "Дозвольте вхід за відбитком пальця або скануванням обличчя, щоб швидко й безпечно отримувати доступ до застосунку.",
   "enableBiometricEnable": "Увімкнути",
-  "enableBiometricNotNow": "Не зараз"
+  "enableBiometricNotNow": "Не зараз",
+  "enableBiometricSelectOption": "Виберіть принаймні один варіант",
+  "enableBiometricNotAvailable": "Біометрична автентифікація недоступна на цьому пристрої.",
+  "enableBiometricFailed": "Не вдалося увімкнути біометрію: {error}",
+  "@enableBiometricFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 
 }

@@ -29,7 +29,7 @@ class _CreatePinPageState extends State<CreatePinPage> {
     if (_current.length >= 4) return;
     setState(() => _current += value);
     if (_current.length == 4) {
-      context.go('/confirm-pin', extra: ConfirmPinArgs(pin: _current));
+      context.push('/confirm-pin', extra: ConfirmPinArgs(pin: _current));
     }
   }
 
@@ -83,7 +83,7 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
       });
       await SecureStorage().write('userPin', _current);
       if (!mounted) return;
-      context.go('/enable-biometric');
+      context.push('/enable-biometric');
     }
   }
 

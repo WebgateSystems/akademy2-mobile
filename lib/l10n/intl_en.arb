@@ -65,6 +65,16 @@
   "enableBiometricTitle": "Enable biometric login",
   "enableBiometricSubtitle": "Allow login with your fingerprint or face scan to quickly and securely access the app.",
   "enableBiometricEnable": "enable",
-  "enableBiometricNotNow": "not now"
+  "enableBiometricNotNow": "not now",
+  "enableBiometricSelectOption": "Select at least one option",
+  "enableBiometricNotAvailable": "Biometric authentication is not available on this device.",
+  "enableBiometricFailed": "Failed to enable biometrics: {error}",
+  "@enableBiometricFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 
 }
