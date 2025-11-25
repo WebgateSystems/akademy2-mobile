@@ -55,5 +55,11 @@
   "verifyYourAccount": "Zweryfikuj swoje konto",
   "verifyEmailMessage": "Wysłaliśmy link potwierdzający na {email}. Otwórz swoją skrzynkę i kliknij link, aby zakończyć rejestrację.",
   "checkSpam": "Nie widzisz go? Sprawdź folder spam.",
-  "next": "Dalej"
+  "next": "Dalej",
+  "pinCreateTitle": "Wymyśl 4-cyfrowy kod",
+  "pinCreateSubtitle": "Ten kod będzie potrzebny do logowania w aplikacji Academy 2.0.",
+  "pinConfirmTitle": "Powtórz 4-cyfrowy kod",
+  "pinConfirmSubtitle": "Potwierdź swój kod.",
+  "pinConfirmMismatchSubtitle": "Kody nie są jednakowe. Spróbuj ponownie.",
+  "pinMismatchInline": "Kody nie są jednakowe"
 }

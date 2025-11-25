@@ -351,6 +351,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next'**
   String get next;
+
+  /// No description provided for @pinCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Come up with a 4-digit code'**
+  String get pinCreateTitle;
+
+  /// No description provided for @pinCreateSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'This code will be needed to log in to the Academy 2.0 application.'**
+  String get pinCreateSubtitle;
+
+  /// No description provided for @pinConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat a 4-digit code'**
+  String get pinConfirmTitle;
+
+  /// No description provided for @pinConfirmSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your code.'**
+  String get pinConfirmSubtitle;
+
+  /// No description provided for @pinConfirmMismatchSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pins do not match. Try again.'**
+  String get pinConfirmMismatchSubtitle;
+
+  /// No description provided for @pinMismatchInline.
+  ///
+  /// In en, this message translates to:
+  /// **'Pins do not match'**
+  String get pinMismatchInline;
 }
 
 class _AppLocalizationsDelegate

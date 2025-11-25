@@ -55,5 +55,11 @@
   "verifyYourAccount": "Verify your account",
   "verifyEmailMessage": "We've sent a confirmation link to {email}. Open your inbox and click the link to finish signing up.",
   "checkSpam": "Don't see it? Check your spam folder.",
-  "next": "Next"
+  "next": "Next",
+  "pinCreateTitle": "Come up with a 4-digit code",
+  "pinCreateSubtitle": "This code will be needed to log in to the Academy 2.0 application.",
+  "pinConfirmTitle": "Repeat a 4-digit code",
+  "pinConfirmSubtitle": "Confirm your code.",
+  "pinConfirmMismatchSubtitle": "Pins do not match. Try again.",
+  "pinMismatchInline": "Pins do not match"
 }

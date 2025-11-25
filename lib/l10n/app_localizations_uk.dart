@@ -143,4 +143,24 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get next => 'Далі';
+
+  @override
+  String get pinCreateTitle => 'Придумайте 4-значний код';
+
+  @override
+  String get pinCreateSubtitle =>
+      'Цей код буде потрібен для входу в застосунок Academy 2.0.';
+
+  @override
+  String get pinConfirmTitle => 'Повторіть 4-значний код';
+
+  @override
+  String get pinConfirmSubtitle => 'Підтвердіть свій код.';
+
+  @override
+  String get pinConfirmMismatchSubtitle =>
+      'Коди не збігаються. Спробуйте ще раз.';
+
+  @override
+  String get pinMismatchInline => 'Коди не збігаються';
 }

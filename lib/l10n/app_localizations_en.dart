@@ -143,4 +143,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get next => 'Next';
+
+  @override
+  String get pinCreateTitle => 'Come up with a 4-digit code';
+
+  @override
+  String get pinCreateSubtitle =>
+      'This code will be needed to log in to the Academy 2.0 application.';
+
+  @override
+  String get pinConfirmTitle => 'Repeat a 4-digit code';
+
+  @override
+  String get pinConfirmSubtitle => 'Confirm your code.';
+
+  @override
+  String get pinConfirmMismatchSubtitle => 'Pins do not match. Try again.';
+
+  @override
+  String get pinMismatchInline => 'Pins do not match';
 }

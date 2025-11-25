@@ -1,5 +1,6 @@
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
+import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -34,10 +35,10 @@ class _CreatePinPageState extends State<CreatePinPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return PinScaffold(
-      title: 'Come up with a 4-digit code',
-      subtitle:
-          'This code will be needed to log in to the Academy 2.0 application.',
+      title: l10n.pinCreateTitle,
+      subtitle: l10n.pinCreateSubtitle,
       pin: _current,
       onKey: _handleKey,
     );
@@ -88,10 +89,11 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return PinScaffold(
-      title: 'Repeat a 4-digit code',
+      title: l10n.pinConfirmTitle,
       subtitle:
-          _mismatch ? 'Pins do not match. Try again.' : 'Confirm your code.',
+          _mismatch ? l10n.pinConfirmMismatchSubtitle : l10n.pinConfirmSubtitle,
       pin: _current,
       onKey: _handleKey,
       mismatch: _mismatch,
@@ -120,6 +122,7 @@ class PinScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: BasePageWithToolbar(
         title: title,
@@ -135,7 +138,7 @@ class PinScaffold extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Pins do not match',
+                  l10n.pinMismatchInline,
                   textAlign: TextAlign.center,
                   style: AppTextStyles.b2(context).copyWith(
                     color: AppColors.contentError(context),

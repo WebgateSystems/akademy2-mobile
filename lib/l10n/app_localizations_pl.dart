@@ -143,4 +143,24 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get next => 'Dalej';
+
+  @override
+  String get pinCreateTitle => 'Wymyśl 4-cyfrowy kod';
+
+  @override
+  String get pinCreateSubtitle =>
+      'Ten kod będzie potrzebny do logowania w aplikacji Academy 2.0.';
+
+  @override
+  String get pinConfirmTitle => 'Powtórz 4-cyfrowy kod';
+
+  @override
+  String get pinConfirmSubtitle => 'Potwierdź swój kod.';
+
+  @override
+  String get pinConfirmMismatchSubtitle =>
+      'Kody nie są jednakowe. Spróbuj ponownie.';
+
+  @override
+  String get pinMismatchInline => 'Kody nie są jednakowe';
 }
