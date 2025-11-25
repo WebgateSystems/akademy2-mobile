@@ -75,6 +75,17 @@
         "type": "String"
       }
     }
+  },
+  "joinGroupTitle": "Dołącz do swojej grupy",
+  "joinGroupSubtitle": "Ostatni krok. Wpisz kod lub zeskanuj kod QR, aby dołączyć 🚀",
+  "joinGroupHint": "PPSW1286GR",
+  "joinGroupCodeCaptured": "Kod zeskanowany",
+  "joinGroupSubmitError": "Nie udało się wysłać kodu: {error}",
+  "@joinGroupSubmitError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   }
-
 }

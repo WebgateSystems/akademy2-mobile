@@ -187,4 +187,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String enableBiometricFailed(String error) {
     return 'Failed to enable biometrics: $error';
   }
+
+  @override
+  String get joinGroupTitle => 'Join your group';
+
+  @override
+  String get joinGroupSubtitle =>
+      'The last step. Enter the code or scan the QR code to join 🚀';
+
+  @override
+  String get joinGroupHint => 'PPSW1286GR';
+
+  @override
+  String get joinGroupCodeCaptured => 'Code captured';
+
+  @override
+  String joinGroupSubmitError(String error) {
+    return 'Failed to submit code: $error';
+  }
 }

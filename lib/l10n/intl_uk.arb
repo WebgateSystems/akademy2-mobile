@@ -75,6 +75,18 @@
         "type": "String"
       }
     }
+  },
+  "joinGroupTitle": "Приєднайтеся до своєї групи",
+  "joinGroupSubtitle": "Останній крок. Введіть код або відскануйте QR-код, щоб приєднатися 🚀",
+  "joinGroupHint": "PPSW1286GR",
+  "joinGroupCodeCaptured": "Код зчитано",
+  "joinGroupSubmitError": "Не вдалося надіслати код: {error}",
+  "@joinGroupSubmitError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
   }
 
 }

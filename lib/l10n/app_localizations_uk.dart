@@ -188,4 +188,22 @@ class AppLocalizationsUk extends AppLocalizations {
   String enableBiometricFailed(String error) {
     return 'Не вдалося увімкнути біометрію: $error';
   }
+
+  @override
+  String get joinGroupTitle => 'Приєднайтеся до своєї групи';
+
+  @override
+  String get joinGroupSubtitle =>
+      'Останній крок. Введіть код або відскануйте QR-код, щоб приєднатися 🚀';
+
+  @override
+  String get joinGroupHint => 'PPSW1286GR';
+
+  @override
+  String get joinGroupCodeCaptured => 'Код зчитано';
+
+  @override
+  String joinGroupSubmitError(String error) {
+    return 'Не вдалося надіслати код: $error';
+  }
 }

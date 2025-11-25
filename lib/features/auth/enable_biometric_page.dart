@@ -54,7 +54,7 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
       }
       await _saveAndClose(enable: true);
     } catch (e) {
-      _showMessage(l10n.enableBiometricFailed(error: '$e'));
+      _showMessage(l10n.enableBiometricFailed('$e'));
       if (mounted) setState(() => _saving = false);
     }
   }
@@ -76,7 +76,8 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
 
   void _showMessage(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -89,6 +90,7 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
         showBackButton: true,
         stickChildrenToBottom: true,
         children: [
+          const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 20.w,
@@ -120,7 +122,6 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
                 onPressed: _saving ? null : _skipBiometric,
                 text: l10n.enableBiometricNotNow,
               ),
-              SizedBox(height: 48.h),
             ],
           ),
         ],

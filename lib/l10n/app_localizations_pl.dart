@@ -188,4 +188,22 @@ class AppLocalizationsPl extends AppLocalizations {
   String enableBiometricFailed(String error) {
     return 'Nie udało się włączyć biometrii: $error';
   }
+
+  @override
+  String get joinGroupTitle => 'Dołącz do swojej grupy';
+
+  @override
+  String get joinGroupSubtitle =>
+      'Ostatni krok. Wpisz kod lub zeskanuj kod QR, aby dołączyć 🚀';
+
+  @override
+  String get joinGroupHint => 'PPSW1286GR';
+
+  @override
+  String get joinGroupCodeCaptured => 'Kod zeskanowany';
+
+  @override
+  String joinGroupSubmitError(String error) {
+    return 'Nie udało się wysłać kodu: $error';
+  }
 }

@@ -429,6 +429,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to enable biometrics: {error}'**
   String enableBiometricFailed(String error);
+
+  /// No description provided for @joinGroupTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join your group'**
+  String get joinGroupTitle;
+
+  /// No description provided for @joinGroupSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The last step. Enter the code or scan the QR code to join 🚀'**
+  String get joinGroupSubtitle;
+
+  /// No description provided for @joinGroupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'PPSW1286GR'**
+  String get joinGroupHint;
+
+  /// No description provided for @joinGroupCodeCaptured.
+  ///
+  /// In en, this message translates to:
+  /// **'Code captured'**
+  String get joinGroupCodeCaptured;
+
+  /// No description provided for @joinGroupSubmitError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit code: {error}'**
+  String joinGroupSubmitError(String error);
 }
 
 class _AppLocalizationsDelegate

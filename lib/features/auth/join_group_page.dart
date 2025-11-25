@@ -1,6 +1,11 @@
 import 'dart:async';
 
+import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
+import 'package:academy_2_app/app/view/edit_text_widget.dart';
+import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -16,6 +21,7 @@ class JoinGroupPage extends StatefulWidget {
 
 class _JoinGroupPageState extends State<JoinGroupPage> {
   final _codeCtrl = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +36,6 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
     }
   }
 
-
   bool _submitting = false;
   bool _scanPaused = false;
   String? _error;
@@ -44,6 +49,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
   bool get _canSubmit => _codeCtrl.text.trim().isNotEmpty && !_submitting;
 
   Future<void> _submit() async {
+    final l10n = AppLocalizations.of(context)!;
     final code = _codeCtrl.text.trim().toUpperCase();
     if (code.isEmpty) return;
     setState(() {
@@ -58,7 +64,7 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
       if (!mounted) return;
       context.go('/wait-approval');
     } catch (e) {
-      setState(() => _error = 'Failed to submit code: $e');
+      setState(() => _error = l10n.joinGroupSubmitError(e.toString()));
     } finally {
       if (mounted) {
         setState(() => _submitting = false);
@@ -68,7 +74,8 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
 
   void _onDetect(BarcodeCapture capture) {
     if (_scanPaused) return;
-    final raw = capture.barcodes.isNotEmpty ? capture.barcodes.first.rawValue : null;
+    final raw =
+        capture.barcodes.isNotEmpty ? capture.barcodes.first.rawValue : null;
     if (raw != null && raw.isNotEmpty) {
       setState(() {
         _scanPaused = true;
@@ -79,74 +86,63 @@ class _JoinGroupPageState extends State<JoinGroupPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Join your group')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'The last step. Enter the code or scan the QR code to join 🚀',
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _codeCtrl,
-              onChanged: (_) => setState(() {}),
-              decoration: const InputDecoration(
-                labelText: 'Enter code',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            if (_error != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(_error!, style: const TextStyle(color: Colors.red)),
-              ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 220,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Stack(
-                  children: [
-                    MobileScanner(
-                      onDetect: _onDetect,
-                      controller: MobileScannerController(torchEnabled: false),
-                    ),
-                    if (_scanPaused)
-                      Positioned.fill(
-                        child: Container(
-                          color: Colors.black45,
-                          child: const Center(
-                            child: Text(
-                              'Code captured',
-                              style: TextStyle(color: Colors.white),
+      body: BasePageWithToolbar(
+        title: l10n.joinGroupTitle,
+        subtitle: l10n.joinGroupSubtitle,
+        stickChildrenToBottom: true,
+        showBackButton: true,
+        children: [
+          SizedBox(height: 32.h),
+          EditTextWidget(
+            controller: _codeCtrl,
+            onChanged: (_) => setState(() {}),
+            hint: l10n.joinGroupHint,
+            errorText: _error,
+          ),
+          const Spacer(),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 240.w,
+                height: 240.w,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.r),
+                  child: Stack(
+                    children: [
+                      MobileScanner(
+                        onDetect: _onDetect,
+                        controller:
+                            MobileScannerController(torchEnabled: false),
+                      ),
+                      if (_scanPaused)
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors.black45,
+                            child: Center(
+                              child: Text(
+                                l10n.joinGroupCodeCaptured,
+                                style: const TextStyle(color: Colors.white),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _canSubmit ? _submit : null,
-                child: _submitting
-                    ? const SizedBox(
-                        height: 18,
-                        width: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Submit'),
-              ),
-            ),
-          ],
-        ),
+            ],
+          ),
+          const Spacer(),
+          ActionButtonWidget(
+            onPressed: _canSubmit ? _submit : null,
+            text: l10n.next,
+          ),
+        ],
       ),
     );
   }
