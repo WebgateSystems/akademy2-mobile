@@ -1,4 +1,7 @@
+import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/storage/secure_storage.dart';
@@ -87,7 +90,8 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
   Widget build(BuildContext context) {
     return PinScaffold(
       title: 'Repeat a 4-digit code',
-      subtitle: _mismatch ? 'Pins do not match. Try again.' : 'Confirm your code.',
+      subtitle:
+          _mismatch ? 'Pins do not match. Try again.' : 'Confirm your code.',
       pin: _current,
       onKey: _handleKey,
       mismatch: _mismatch,
@@ -117,55 +121,69 @@ class PinScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () => context.pop(),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(subtitle, textAlign: TextAlign.center),
-            const SizedBox(height: 32),
+      body: BasePageWithToolbar(
+        title: title,
+        subtitle: subtitle,
+        showBackButton: true,
+        children: [
+          SizedBox(height: 56.h),
+          DotsWidget(pin: pin),
+          if (mismatch) SizedBox(height: 16.h),
+          if (mismatch)
             Row(
+              mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(4, (index) {
-                final filled = index < pin.length;
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: filled ? Colors.black : Colors.transparent,
-                    border: Border.all(color: Colors.grey.shade400),
-                  ),
-                );
-              }),
-            ),
-            if (mismatch)
-              const Padding(
-                padding: EdgeInsets.only(top: 12),
-                child: Text(
+              children: [
+                Text(
                   'Pins do not match',
-                  style: TextStyle(color: Colors.red),
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.b2(context).copyWith(
+                    color: AppColors.contentError(context),
+                  ),
                 ),
-              ),
-            const Spacer(),
-            if (showProgress) const CircularProgressIndicator(),
-            if (!showProgress) _PinKeypad(onKey: onKey),
-          ],
-        ),
+              ],
+            ),
+          SizedBox(height: 101.h),
+          if (showProgress) const CircularProgressIndicator(),
+          if (!showProgress)
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _PinKeypad(onKey: onKey),
+              ],
+            ),
+        ],
       ),
+    );
+  }
+}
+
+class DotsWidget extends StatelessWidget {
+  const DotsWidget({
+    super.key,
+    required this.pin,
+  });
+
+  final String pin;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(4, (index) {
+        final filled = index < pin.length;
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 10.w),
+          width: 10.w,
+          height: 10.w,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: filled ? AppColors.blue30 : Colors.transparent,
+            border: Border.all(color: AppColors.blue30, width: 2.w),
+          ),
+        );
+      }),
     );
   }
 }
@@ -178,13 +196,22 @@ class _PinKeypad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final keys = [
-      '1', '2', '3',
-      '4', '5', '6',
-      '7', '8', '9',
-      '', '0', 'back',
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '',
+      '0',
+      'back',
     ];
     return SizedBox(
-      height: 320,
+      width: 280.w,
+      height: 384.h,
       child: GridView.builder(
         physics: const NeverScrollableScrollPhysics(),
         itemCount: keys.length,
@@ -199,16 +226,73 @@ class _PinKeypad extends StatelessWidget {
           if (key.isEmpty) {
             return const SizedBox.shrink();
           }
-          return ElevatedButton(
-            onPressed: () => onKey(key),
-            child: key == 'back'
-                ? const Icon(Icons.backspace_outlined)
-                : Text(
-                    key,
-                    style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          return key == 'back'
+              ? RoundButton(
+                  size: 72.r,
+                  onTap: () => onKey('back'),
+                  backgroundColor: Colors.transparent,
+                  splashColor: AppColors.green40,
+                  child: Image.asset(
+                    'assets/images/ic_back_button.png',
+                    width: 34.w,
+                    height: 24.h,
                   ),
-          );
+                )
+              : RoundButton(
+                  size: 72.r,
+                  onTap: () => onKey(key),
+                  backgroundColor: AppColors.blue10,
+                  splashColor: AppColors.green40,
+                  child: Text(
+                    key,
+                    style: AppTextStyles.h1(context),
+                  ),
+                );
         },
+      ),
+    );
+  }
+}
+
+class RoundButton extends StatelessWidget {
+  final double size;
+  final VoidCallback onTap;
+  final Widget child;
+  final Color backgroundColor;
+  final Color splashColor;
+  final Color? borderColor;
+  final double borderWidth;
+
+  const RoundButton({
+    super.key,
+    required this.onTap,
+    required this.child,
+    this.size = 72, // діаметр кнопки
+    this.backgroundColor = Colors.white,
+    this.splashColor = Colors.black26, // колір кліку
+    this.borderColor,
+    this.borderWidth = 0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Material(
+        color: backgroundColor,
+        shape: CircleBorder(
+          side: borderWidth > 0
+              ? BorderSide(
+                  color: borderColor ?? Colors.black, width: borderWidth)
+              : BorderSide.none,
+        ),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          splashColor: splashColor,
+          onTap: onTap,
+          child: Center(child: child),
+        ),
       ),
     );
   }

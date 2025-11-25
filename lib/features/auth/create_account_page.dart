@@ -1,7 +1,7 @@
 import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/checkbox_widget.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
-import 'package:academy_2_app/app/view/toolbar_widget.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -159,68 +159,58 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 44.h),
-            Padding(
-              padding: EdgeInsets.only(top: 16.h),
-              child: ToolbarWidget(
-                title: loc?.createAnAccount ?? 'Create an Account',
+      body: BasePageWithToolbar(
+        showBackButton: false,
+        title: loc?.createAnAccount ?? 'Create an Account',
+        children: [
+          EditTextWidget(
+              label: loc?.firstNameField ?? 'First name',
+              hint: loc?.firstNameField ?? 'First name',
+              controller: _firstNameCtrl),
+          SizedBox(height: 12.h),
+          EditTextWidget(
+              label: loc?.lastNameField ?? 'Last name',
+              hint: loc?.lastNameField ?? 'Last name',
+              controller: _lastNameCtrl),
+          SizedBox(height: 12.h),
+          GestureDetector(
+            onTap: _pickDob,
+            child: AbsorbPointer(
+              child: EditTextWidget(
+                label: loc?.dateOfBirthField ?? 'Date of birth',
+                hint: loc?.dateOfBirthHintField ?? 'Date of birth',
+                controller: _dobCtrl,
+                readOnly: true,
               ),
             ),
-            SizedBox(height: 20.h),
-            EditTextWidget(
-                label: loc?.firstNameField ?? 'First name',
-                hint: loc?.firstNameField ?? 'First name',
-                controller: _firstNameCtrl),
-            SizedBox(height: 12.h),
-            EditTextWidget(
-                label: loc?.lastNameField ?? 'Last name',
-                hint: loc?.lastNameField ?? 'Last name',
-                controller: _lastNameCtrl),
-            SizedBox(height: 12.h),
-            GestureDetector(
-              onTap: _pickDob,
-              child: AbsorbPointer(
-                child: EditTextWidget(
-                  label: loc?.dateOfBirthField ?? 'Date of birth',
-                  hint: loc?.dateOfBirthHintField ?? 'Date of birth',
-                  controller: _dobCtrl,
-                  readOnly: true,
-                ),
-              ),
-            ),
-            SizedBox(height: 12.h),
-            EditTextWidget(
-                label: loc?.emailField ?? 'Email',
-                hint: loc?.emailHintField ?? 'Email',
-                controller: _emailCtrl,
-                errorText: _emailError),
-            SizedBox(height: 12.h),
-            EditTextWidget(
-              label: loc?.phoneField ?? 'Phone',
-              hint: loc?.phoneHintField ?? 'Phone',
-              controller: _phoneCtrl,
-              keyboard: TextInputType.phone,
-              errorText: _phoneError,
-            ),
-            SizedBox(height: 20.h),
-            CheckboxWidget(
-              text: loc?.iAgreeToReceive ?? '',
-              value: _agree,
-              onChanged: (v) => setState(() => _agree = v ?? false),
-            ),
-            SizedBox(height: 20.h),
-            ActionButtonWidget(
-              onPressed: _isFormValid && !_loading ? _submit : null,
-              text: loc?.createAccountButton ?? 'Create account',
-              loading: _loading,
-            ),
-          ],
-        ),
+          ),
+          SizedBox(height: 12.h),
+          EditTextWidget(
+              label: loc?.emailField ?? 'Email',
+              hint: loc?.emailHintField ?? 'Email',
+              controller: _emailCtrl,
+              errorText: _emailError),
+          SizedBox(height: 12.h),
+          EditTextWidget(
+            label: loc?.phoneField ?? 'Phone',
+            hint: loc?.phoneHintField ?? 'Phone',
+            controller: _phoneCtrl,
+            keyboard: TextInputType.phone,
+            errorText: _phoneError,
+          ),
+          SizedBox(height: 20.h),
+          CheckboxWidget(
+            text: loc?.iAgreeToReceive ?? '',
+            value: _agree,
+            onChanged: (v) => setState(() => _agree = v ?? false),
+          ),
+          SizedBox(height: 20.h),
+          ActionButtonWidget(
+            onPressed: _isFormValid && !_loading ? _submit : null,
+            text: loc?.createAccountButton ?? 'Create account',
+            loading: _loading,
+          ),
+        ],
       ),
     );
   }

@@ -40,6 +40,8 @@ class AppColors {
   static const red80 = Color(0xFFB71C1C);
   static const red90 = Color(0xFF7F0000);
 
+  static const green40 = Color(0xFF88CD6C);
+
   static Color background(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue90 : blue05;
 

@@ -11,7 +11,7 @@ class EditTextWidget extends StatelessWidget {
   final bool readOnly;
   final Widget? suffixIcon;
   final Function(String)? onChanged;
-  final int maxLength;
+  final int? maxLength;
   final FocusNode? focusNode;
   final TextAlign textAlign;
   final TextStyle? textStyle;
@@ -27,7 +27,7 @@ class EditTextWidget extends StatelessWidget {
     this.keyboard = TextInputType.text,
     this.onChanged,
     this.readOnly = false,
-    this.maxLength = 1,
+    this.maxLength = null,
     this.focusNode,
     this.textAlign = TextAlign.start,
     this.textStyle,

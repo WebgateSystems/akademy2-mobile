@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
-import 'package:academy_2_app/app/view/toolbar_widget.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -151,75 +151,44 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
     }
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 44.h),
-            Padding(
-              padding: EdgeInsets.only(top: 16.h),
-              child: ToolbarWidget(
-                leftIcon: IconButton(
-                  icon: Image.asset(
-                    'assets/images/ic_chevron_left.png',
-                    color: AppColors.contentPrimary(context),
-                  ),
-                  onPressed: () => context.pop(),
+      body: BasePageWithToolbar(
+        title: l10n.verifyPhoneTitle,
+        subtitle: l10n.verifyPhoneSubtitle(phone),
+        showBackButton: true,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: List.generate(_controllers.length, (index) {
+              return SizedBox(
+                height: 80.w,
+                width: 70.w,
+                child: EditTextWidget(
+                  controller: _controllers[index],
+                  focusNode: _focusNodes[index],
+                  keyboard: TextInputType.number,
+                  maxLength: 1,
+                  textAlign: TextAlign.center,
+                  onChanged: (v) => _onDigitChanged(index, v),
+                  errorText: _invalid ? "" : null,
+                  textStyle: AppTextStyles.h1(context),
                 ),
-              ),
+              );
+            }),
+          ),
+          SizedBox(height: 12.h),
+          if (_invalid)
+            Text(
+              l10n.verifyPhoneInvalidCode,
+              style: const TextStyle(color: Colors.red),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ToolbarWidget(
-                    title: l10n.verifyPhoneTitle,
-                  ),
-                  SizedBox(height: 8.h),
-                  Text(
-                    l10n.verifyPhoneSubtitle(phone),
-                    style: AppTextStyles.b1(context).copyWith(
-                      color: AppColors.contentSecondary(context),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(_controllers.length, (index) {
-                      return SizedBox(
-                        height: 80.w,
-                        width: 70.w,
-                        child: EditTextWidget(
-                          controller: _controllers[index],
-                          focusNode: _focusNodes[index],
-                          keyboard: TextInputType.number,
-                          maxLength: 1,
-                          textAlign: TextAlign.center,
-                          onChanged: (v) => _onDigitChanged(index, v),
-                          errorText: _invalid ? "" : null,
-                          textStyle: AppTextStyles.h1(context),
-                        ),
-                      );
-                    }),
-                  ),
-                  SizedBox(height: 12.h),
-                  if (_invalid)
-                    Text(
-                      l10n.verifyPhoneInvalidCode,
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                  SizedBox(height: 12.h),
-                  ActionButtonWidget(
-                    onPressed: _canResend ? _resend : null,
-                    text: buttonText,
-                    loading: _loading,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          SizedBox(height: 12.h),
+          ActionButtonWidget(
+            onPressed: _canResend ? _resend : null,
+            text: buttonText,
+            loading: _loading,
+          ),
+        ],
       ),
     );
   }
