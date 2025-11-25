@@ -1,5 +1,11 @@
+import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
+import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
+import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/storage/secure_storage.dart';
@@ -8,7 +14,8 @@ class EnableBiometricPage extends ConsumerStatefulWidget {
   const EnableBiometricPage({super.key});
 
   @override
-  ConsumerState<EnableBiometricPage> createState() => _EnableBiometricPageState();
+  ConsumerState<EnableBiometricPage> createState() =>
+      _EnableBiometricPageState();
 }
 
 class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
@@ -31,66 +38,93 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: () => context.pop(),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(
-              'Enable biometric login',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Allow login with your fingerprint or face scan to quickly and securely access the app.',
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 12,
-              children: [
-                ChoiceChip(
-                  label: const Text('Fingerprint'),
-                  selected: _fingerprint,
-                  onSelected: (_) => _toggleFingerprint(),
-                ),
-                ChoiceChip(
-                  label: const Text('Face ID'),
-                  selected: _face,
-                  onSelected: (_) => _toggleFace(),
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
-            if (_saving) const CircularProgressIndicator(),
-            if (!_saving)
-              Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => _finish(enable: true),
-                      child: const Text('ENABLE'),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: () => _finish(enable: false),
-                      child: const Text('NOT NOW'),
-                    ),
-                  ),
-                ],
+      body: BasePageWithToolbar(
+        title: l10n.enableBiometricTitle,
+        subtitle: l10n.enableBiometricSubtitle,
+        showBackButton: true,
+        stickChildrenToBottom: true,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 20.w,
+            children: [
+              CustomImageChip(
+                selected: _fingerprint,
+                onTap: _toggleFingerprint,
+                assetPath: 'assets/images/ic_fingerprint_id.png',
+                size: 64.h,
               ),
+              CustomImageChip(
+                selected: _face,
+                onTap: _toggleFace,
+                assetPath: 'assets/images/ic_face_id.png',
+                size: 64.h,
+              ),
+            ],
+          ),
+          SizedBox(height: 64.h),
+          Column(
+            children: [
+              ActionButtonWidget(
+                text: l10n.enableBiometricEnable,
+                onPressed: () => _saving ? null : _finish(enable: true),
+                loading: _saving,
+              ),
+              SizedBox(height: 12.h),
+              ActionTextButtonWidget(
+                onPressed: () => _finish(enable: false),
+                text: l10n.enableBiometricNotNow,
+              ),
+              SizedBox(height: 48.h),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class CustomImageChip extends StatelessWidget {
+  final bool selected;
+  final VoidCallback onTap;
+  final String assetPath;
+  final double size;
+
+  const CustomImageChip({
+    super.key,
+    required this.selected,
+    required this.onTap,
+    required this.assetPath,
+    required this.size,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bgColor = selected ? AppColors.surface(context) : Colors.transparent;
+
+    final borderColor =
+        selected ? AppColors.borderFocused(context) : Colors.transparent;
+
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: EdgeInsets.symmetric(horizontal: 1.w, vertical: 1.w),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: borderColor, width: 1.w),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              assetPath,
+              width: size,
+              height: size,
+            ),
           ],
         ),
       ),

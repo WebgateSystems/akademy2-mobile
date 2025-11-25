@@ -54,6 +54,9 @@ class AppColors {
   static Color contentButtonPrimary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? grey90 : grey05;
 
+  static Color contentOnSecondaryButton(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? blue50 : blue50;
+
   static Color contentOnPrimaryDisabled(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? grey20 : grey20;
 

@@ -61,5 +61,10 @@
   "pinConfirmTitle": "Powtórz 4-cyfrowy kod",
   "pinConfirmSubtitle": "Potwierdź swój kod.",
   "pinConfirmMismatchSubtitle": "Kody nie są jednakowe. Spróbuj ponownie.",
-  "pinMismatchInline": "Kody nie są jednakowe"
+  "pinMismatchInline": "Kody nie są jednakowe",
+  "enableBiometricTitle": "Włącz logowanie biometryczne",
+  "enableBiometricSubtitle": "Zezwól na logowanie odciskiem palca lub skanem twarzy, aby szybko i bezpiecznie uzyskiwać dostęp do aplikacji.",
+  "enableBiometricEnable": "Włącz",
+  "enableBiometricNotNow": "Nie teraz"
+
 }

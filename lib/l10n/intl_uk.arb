@@ -61,5 +61,10 @@
   "pinConfirmTitle": "Повторіть 4-значний код",
   "pinConfirmSubtitle": "Підтвердіть свій код.",
   "pinConfirmMismatchSubtitle": "Коди не збігаються. Спробуйте ще раз.",
-  "pinMismatchInline": "Коди не збігаються"
+  "pinMismatchInline": "Коди не збігаються",
+  "enableBiometricTitle": "Увімкнути біометричний вхід",
+  "enableBiometricSubtitle": "Дозвольте вхід за відбитком пальця або скануванням обличчя, щоб швидко й безпечно отримувати доступ до застосунку.",
+  "enableBiometricEnable": "Увімкнути",
+  "enableBiometricNotNow": "Не зараз"
+
 }

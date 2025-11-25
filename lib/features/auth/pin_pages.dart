@@ -83,7 +83,7 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
       });
       await SecureStorage().write('userPin', _current);
       if (!mounted) return;
-      context.go('/join-group');
+      context.go('/enable-biometric');
     }
   }
 

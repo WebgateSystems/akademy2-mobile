@@ -163,4 +163,17 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get pinMismatchInline => 'Коди не збігаються';
+
+  @override
+  String get enableBiometricTitle => 'Увімкнути біометричний вхід';
+
+  @override
+  String get enableBiometricSubtitle =>
+      'Дозвольте вхід за відбитком пальця або скануванням обличчя, щоб швидко й безпечно отримувати доступ до застосунку.';
+
+  @override
+  String get enableBiometricEnable => 'Увімкнути';
+
+  @override
+  String get enableBiometricNotNow => 'Не зараз';
 }

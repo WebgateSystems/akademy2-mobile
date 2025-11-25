@@ -387,6 +387,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pins do not match'**
   String get pinMismatchInline;
+
+  /// No description provided for @enableBiometricTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable biometric login'**
+  String get enableBiometricTitle;
+
+  /// No description provided for @enableBiometricSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow login with your fingerprint or face scan to quickly and securely access the app.'**
+  String get enableBiometricSubtitle;
+
+  /// No description provided for @enableBiometricEnable.
+  ///
+  /// In en, this message translates to:
+  /// **'enable'**
+  String get enableBiometricEnable;
+
+  /// No description provided for @enableBiometricNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'not now'**
+  String get enableBiometricNotNow;
 }
 
 class _AppLocalizationsDelegate

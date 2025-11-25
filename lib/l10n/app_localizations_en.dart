@@ -162,4 +162,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pinMismatchInline => 'Pins do not match';
+
+  @override
+  String get enableBiometricTitle => 'Enable biometric login';
+
+  @override
+  String get enableBiometricSubtitle =>
+      'Allow login with your fingerprint or face scan to quickly and securely access the app.';
+
+  @override
+  String get enableBiometricEnable => 'enable';
+
+  @override
+  String get enableBiometricNotNow => 'not now';
 }

@@ -61,5 +61,10 @@
   "pinConfirmTitle": "Repeat a 4-digit code",
   "pinConfirmSubtitle": "Confirm your code.",
   "pinConfirmMismatchSubtitle": "Pins do not match. Try again.",
-  "pinMismatchInline": "Pins do not match"
+  "pinMismatchInline": "Pins do not match",
+  "enableBiometricTitle": "Enable biometric login",
+  "enableBiometricSubtitle": "Allow login with your fingerprint or face scan to quickly and securely access the app.",
+  "enableBiometricEnable": "enable",
+  "enableBiometricNotNow": "not now"
+
 }

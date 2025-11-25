@@ -163,4 +163,17 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get pinMismatchInline => 'Kody nie są jednakowe';
+
+  @override
+  String get enableBiometricTitle => 'Włącz logowanie biometryczne';
+
+  @override
+  String get enableBiometricSubtitle =>
+      'Zezwól na logowanie odciskiem palca lub skanem twarzy, aby szybko i bezpiecznie uzyskiwać dostęp do aplikacji.';
+
+  @override
+  String get enableBiometricEnable => 'Włącz';
+
+  @override
+  String get enableBiometricNotNow => 'Nie teraz';
 }
