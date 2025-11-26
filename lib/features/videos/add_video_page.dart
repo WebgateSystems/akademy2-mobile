@@ -1,7 +1,12 @@
 import 'dart:io';
 
+import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
+import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../core/db/entities/subject_entity.dart';
@@ -60,7 +65,8 @@ class _AddVideoPageState extends State<AddVideoPage> {
   }
 
   Future<void> _submit() async {
-    if (_file == null || _subjectId == null || _titleCtrl.text.trim().isEmpty) return;
+    if (_file == null || _subjectId == null || _titleCtrl.text.trim().isEmpty)
+      return;
     setState(() => _saving = true);
     try {
       await VideoService().addVideo(
@@ -83,103 +89,179 @@ class _AddVideoPageState extends State<AddVideoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final canSubmit =
-        _file != null && _subjectId != null && _titleCtrl.text.trim().isNotEmpty;
+    final canSubmit = _file != null &&
+        _subjectId != null &&
+        _titleCtrl.text.trim().isNotEmpty;
     return Scaffold(
-      appBar: AppBar(title: const Text('Add video')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-              onTap: _pickFile,
-              child: Container(
-                height: 200,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(12),
-                  color: Colors.grey.shade100,
-                ),
-                child: _controller != null && _controller!.value.isInitialized
-                    ? Stack(
-                        children: [
-                          Center(
-                            child: AspectRatio(
-                              aspectRatio: _controller!.value.aspectRatio,
-                              child: VideoPlayer(_controller!),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 8,
-                            right: 8,
-                            child: IconButton(
-                              icon: Icon(_controller!.value.isPlaying
-                                  ? Icons.pause
-                                  : Icons.play_arrow),
-                              onPressed: () {
-                                setState(() {
-                                  if (_controller!.value.isPlaying) {
-                                    _controller!.pause();
-                                  } else {
-                                    _controller!.play();
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      )
-                    : const Center(child: Text('Tap to choose a video')),
-              ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _subjectId,
-              decoration: const InputDecoration(
-                labelText: 'Choose the topic',
-                border: OutlineInputBorder(),
-              ),
-              items: _subjects
-                  .map((s) => DropdownMenuItem(value: s.id, child: Text(s.title)))
-                  .toList(),
-              onChanged: (v) => setState(() => _subjectId = v),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _titleCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (_) => setState(() {}),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _descCtrl,
-              maxLines: 3,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
+      body: BasePageWithToolbar(
+        title: 'Add video',
+        showBackButton: true,
+        stickChildrenToBottom: true,
+        children: [
+          GestureDetector(
+            onTap: _pickFile,
+            child: Container(
+              height: 200.h,
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: canSubmit && !_saving ? _submit : null,
-                child: _saving
-                    ? const SizedBox(
-                        height: 18,
-                        width: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Add'),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16.r),
+                image: DecorationImage(
+                  image: AssetImage('assets/images/placeholder.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: _controller != null && _controller!.value.isInitialized
+                  ? Stack(
+                      children: [
+                        Center(
+                          child: AspectRatio(
+                            aspectRatio: _controller!.value.aspectRatio,
+                            child: VideoPlayer(_controller!),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 8,
+                          right: 8,
+                          child: IconButton(
+                            icon: Icon(_controller!.value.isPlaying
+                                ? Icons.pause
+                                : Icons.play_arrow),
+                            onPressed: () {
+                              setState(() {
+                                if (_controller!.value.isPlaying) {
+                                  _controller!.pause();
+                                } else {
+                                  _controller!.play();
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : Center(
+                      child: CircleAvatar(
+                        radius: 48.w / 2,
+                        backgroundColor: AppColors.surfaceIcon(context),
+                        child: Image.asset(
+                          'assets/images/ic_upload.png',
+                          width: 24.w,
+                          height: 24.w,
+                          color: AppColors.contentPrimary(context),
+                        ),
+                      ),
+                    ),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          _dropdown<String>(
+            label: 'Choose the topic',
+            value: _subjectId,
+            items: _subjects
+                .map((s) => DropdownMenuItem(value: s.id, child: Text(s.title)))
+                .toList(),
+            onChanged: (v) => setState(() => _subjectId = v),
+          ),
+          SizedBox(height: 8.h),
+          EditTextWidget(
+            controller: _titleCtrl,
+            label: 'Title',
+            onChanged: (_) => setState(() {}),
+          ),
+          SizedBox(height: 8.h),
+          EditTextWidget(
+            controller: _descCtrl,
+            maxLines: 3,
+            label: 'Description',
+          ),
+          Spacer(),
+          ActionButtonWidget(
+            onPressed: canSubmit && !_saving ? _submit : null,
+            loading: _saving,
+            text: 'Add',
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _dropdown<T>({
+    required String label,
+    required T? value,
+    required List<DropdownMenuItem<T>> items,
+    required ValueChanged<T?> onChanged,
+    String? hint,
+    String? errorText,
+    bool enabled = true,
+    EdgeInsetsGeometry? contentPadding,
+  }) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: AppTextStyles.b2(context).copyWith(
+              color: theme.textTheme.bodyMedium?.color,
+            ),
+          ),
+          SizedBox(height: 4.h),
+          DropdownButtonFormField<T>(
+            value: value,
+            items: items,
+            onChanged: enabled ? onChanged : null,
+            isExpanded: true,
+            style: AppTextStyles.b2(context),
+            icon: Image.asset(
+              'assets/images/ic_chevron_down.png',
+              color: AppColors.contentPlaceholder(context),
+            ),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: AppColors.surfacePrimary(context),
+              hintText: hint,
+              hintStyle: AppTextStyles.b2(context).copyWith(
+                color: AppColors.contentPlaceholder(context),
+              ),
+              errorText: errorText,
+              errorStyle: AppTextStyles.b3(context).copyWith(
+                color: AppColors.contentError(context),
+              ),
+              contentPadding: contentPadding,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4.r),
+                borderSide: BorderSide(
+                  color: AppColors.borderPrimary(context),
+                  width: 1.w,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4.r),
+                borderSide: BorderSide(
+                  color: AppColors.borderFocused(context),
+                  width: 1.w,
+                ),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4.r),
+                borderSide: BorderSide(
+                  color: AppColors.borderError(context),
+                  width: 1.w,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(4.r),
+                borderSide: BorderSide(
+                  color: AppColors.borderError(context),
+                  width: 1.w,
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
