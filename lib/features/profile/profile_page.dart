@@ -1,5 +1,6 @@
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/action_outlinedbutton_widget.dart';
 import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
@@ -140,26 +141,18 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   }
 
   Future<void> _logout() async {
-    final l10n = AppLocalizations.of(context)!;
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.profileLogoutTitle),
-        content: Text(l10n.profileLogoutMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(l10n.profileLogoutCancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(l10n.profileLogoutConfirm),
-          ),
-        ],
-      ),
+      barrierDismissible: false, // щоб не закривалось тапом поза діалогом
+      builder: (context) {
+        return LogoutDialog();
+      },
     );
+
     if (confirm != true) return;
+
     await ref.read(authProvider.notifier).logout();
+
     if (mounted) {
       context.go('/join-group');
     }
@@ -402,5 +395,65 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     if (dirtyNow != _dirty && mounted) {
       setState(() => _dirty = dirtyNow);
     }
+  }
+}
+
+class LogoutDialog extends StatelessWidget {
+  const LogoutDialog({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.all(20.w),
+      child: Container(
+        padding: EdgeInsets.all(20.w),
+        decoration: BoxDecoration(
+          color: AppColors.surfacePrimary(context),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.profileLogoutTitle,
+              style: AppTextStyles.h3(context),
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              l10n.profileLogoutMessage,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.b1(context)
+                  .copyWith(color: AppColors.contentSecondary(context)),
+            ),
+            SizedBox(height: 40.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: ActionOutlinedButtonWidget(
+                    onPressed: () => Navigator.pop(context, false),
+                    text: l10n.profileLogoutCancel,
+                  ),
+                ),
+                SizedBox(width: 20.w),
+                Flexible(
+                  flex: 1,
+                  child: ActionButtonWidget(
+                    onPressed: () => Navigator.pop(context, true),
+                    text: l10n.profileLogoutConfirm,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
