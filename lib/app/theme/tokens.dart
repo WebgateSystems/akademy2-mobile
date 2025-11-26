@@ -44,6 +44,7 @@ class AppColors {
   static const green60 = Color(0xFF529C35);
 
   static const yellow50 = Color(0xFFFFD74B);
+  static const yellow60 = Color(0xFFFDC832);
   static const yellow70 = Color(0xFFF4B400);
 
   static const pink50 = Color(0xFFF56CA0);
@@ -87,6 +88,9 @@ class AppColors {
 
   static Color contentOnPrimaryDisabled(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? grey20 : grey20;
+
+  static Color contentWarning(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? yellow60 : yellow70;
 
   static Color contentError(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? red60 : red70;

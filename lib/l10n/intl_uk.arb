@@ -159,5 +159,7 @@
         "type": "String"
       }
     }
-  }
+  },
+  "unverifiedEmailAddress": "Неперевірена адреса електронної пошти.",
+  "unverifiedPhoneNubmer": "Неперевірений номер телефону."
 }

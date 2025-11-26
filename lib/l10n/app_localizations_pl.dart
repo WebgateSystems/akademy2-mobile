@@ -349,4 +349,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String profileDeleteFailed(String error) {
     return 'Nie udało się usunąć: $error';
   }
+
+  @override
+  String get unverifiedEmailAddress => 'Niezweryfikowany adres e-mail.';
+
+  @override
+  String get unverifiedPhoneNubmer => 'Niezweryfikowany numer telefonu.';
 }

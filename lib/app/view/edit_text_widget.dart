@@ -8,6 +8,7 @@ class EditTextWidget extends StatelessWidget {
   final TextEditingController controller;
   final TextInputType keyboard;
   final String? errorText;
+  final String? infoText;
   final bool readOnly;
   final bool obscureText;
   final Widget? suffixIcon;
@@ -23,6 +24,7 @@ class EditTextWidget extends StatelessWidget {
     this.label,
     this.hint,
     this.errorText,
+    this.infoText,
     this.suffixIcon,
     required this.controller,
     this.keyboard = TextInputType.text,
@@ -67,9 +69,11 @@ class EditTextWidget extends StatelessWidget {
               hintStyle: AppTextStyles.b2(context).copyWith(
                 color: AppColors.contentPlaceholder(context),
               ),
-              errorText: errorText,
+              errorText: infoText ?? errorText,
               errorStyle: AppTextStyles.b3(context).copyWith(
-                color: AppColors.contentError(context),
+                color: infoText == null
+                    ? AppColors.contentError(context)
+                    : AppColors.contentWarning(context),
               ),
               suffixIcon: suffixIcon,
               counterText: '',
@@ -92,14 +96,18 @@ class EditTextWidget extends StatelessWidget {
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4.r),
                 borderSide: BorderSide(
-                  color: AppColors.borderError(context),
+                  color: infoText == null
+                      ? AppColors.borderError(context)
+                      : AppColors.contentWarning(context),
                   width: 1.w,
                 ),
               ),
               focusedErrorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(4.r),
                 borderSide: BorderSide(
-                  color: AppColors.borderError(context),
+                  color: infoText == null
+                      ? AppColors.borderError(context)
+                      : AppColors.contentWarning(context),
                   width: 1.w,
                 ),
               ),

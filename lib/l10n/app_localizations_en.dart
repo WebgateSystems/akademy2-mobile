@@ -346,4 +346,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String profileDeleteFailed(String error) {
     return 'Delete failed: $error';
   }
+
+  @override
+  String get unverifiedEmailAddress => 'Unverified email address.';
+
+  @override
+  String get unverifiedPhoneNubmer => 'Unverified phone nubmer.';
 }

@@ -216,6 +216,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               readOnly: false,
               keyboard: TextInputType.emailAddress,
               controller: _emailCtrl,
+              infoText:
+                  _emailCtrl.text.isEmpty ? l10n.unverifiedEmailAddress : null,
             ),
             SizedBox(height: 8.h),
             EditTextWidget(
@@ -223,6 +225,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               readOnly: false,
               keyboard: TextInputType.phone,
               controller: _phoneCtrl,
+              infoText:
+                  _phoneCtrl.text.isEmpty ? l10n.unverifiedPhoneNubmer : null,
             ),
             SizedBox(height: 8.h),
             EditTextWidget(
@@ -273,7 +277,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 loading: _loading,
                 text: l10n.profileSaveButton,
               ),
-            SizedBox(height: 8.h),
+            if (_dirty) SizedBox(height: 8.h),
             Row(
               children: [
                 Flexible(

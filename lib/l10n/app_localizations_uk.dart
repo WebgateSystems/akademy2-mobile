@@ -347,4 +347,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String profileDeleteFailed(String error) {
     return 'Не вдалося видалити: $error';
   }
+
+  @override
+  String get unverifiedEmailAddress => 'Неперевірена адреса електронної пошти.';
+
+  @override
+  String get unverifiedPhoneNubmer => 'Неперевірений номер телефону.';
 }

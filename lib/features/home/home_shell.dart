@@ -2,7 +2,6 @@ import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 
 import '../profile/profile_page.dart';
 import '../subjects/subjects_page.dart';
@@ -36,11 +35,6 @@ class _HomeShellState extends State<HomeShell> {
           currentIndex: _index,
           onTap: (i) {
             setState(() => _index = i);
-            if (i == 2) {
-              context.go('/profile');
-            } else if (i == 0) {
-              context.go('/home');
-            }
           },
           items: [
             CustomBottomItem(

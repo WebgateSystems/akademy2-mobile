@@ -159,6 +159,7 @@
         "type": "String"
       }
     }
-  }
-
+  },
+  "unverifiedEmailAddress": "Unverified email address.",
+  "unverifiedPhoneNubmer": "Unverified phone nubmer."
 }

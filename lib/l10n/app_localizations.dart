@@ -717,6 +717,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete failed: {error}'**
   String profileDeleteFailed(String error);
+
+  /// No description provided for @unverifiedEmailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Unverified email address.'**
+  String get unverifiedEmailAddress;
+
+  /// No description provided for @unverifiedPhoneNubmer.
+  ///
+  /// In en, this message translates to:
+  /// **'Unverified phone nubmer.'**
+  String get unverifiedPhoneNubmer;
 }
 
 class _AppLocalizationsDelegate
