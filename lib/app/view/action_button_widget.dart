@@ -5,19 +5,21 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ActionButtonWidget extends StatelessWidget {
   final String text;
   final bool loading;
+  final double? height;
   final VoidCallback? onPressed;
 
   const ActionButtonWidget({
     super.key,
     required this.text,
     this.loading = false,
+    this.height,
     required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 56.h,
+      height: height ?? 56.h,
       width: double.infinity,
       child: Container(
         alignment: Alignment.center,

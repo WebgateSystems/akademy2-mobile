@@ -6,6 +6,7 @@ class ActionOutlinedButtonWidget extends StatelessWidget {
   final String text;
   final bool loading;
   final Color? color;
+  final double? height;
   final VoidCallback? onPressed;
 
   const ActionOutlinedButtonWidget({
@@ -13,13 +14,14 @@ class ActionOutlinedButtonWidget extends StatelessWidget {
     required this.text,
     this.loading = false,
     this.color,
+    this.height,
     required this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 56.h,
+      height: height ?? 56.h,
       width: double.infinity,
       child: Container(
         alignment: Alignment.center,

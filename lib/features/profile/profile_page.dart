@@ -437,6 +437,7 @@ class LogoutDialog extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: ActionOutlinedButtonWidget(
+                    height: 48.h,
                     onPressed: () => Navigator.pop(context, false),
                     text: l10n.profileLogoutCancel,
                   ),
@@ -445,6 +446,7 @@ class LogoutDialog extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: ActionButtonWidget(
+                    height: 48.h,
                     onPressed: () => Navigator.pop(context, true),
                     text: l10n.profileLogoutConfirm,
                   ),
