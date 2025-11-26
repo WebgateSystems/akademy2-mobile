@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/app/view/toolbar_widget.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
@@ -210,10 +213,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    title,
-                                    style: AppTextStyles.h3(context),
-                                  ),
+                                  GroupTitleWidget(title: title),
                                   SizedBox(height: 8.h),
                                   ...entry.value.map(
                                     (video) {
@@ -229,131 +229,8 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                                       final isLiked =
                                           _likedIds.contains(video.id) ||
                                               video.liked;
-                                      return Card(
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(
-                                          side: BorderSide(
-                                            color: AppColors.borderPrimary(
-                                                context),
-                                            width: 1.w,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(12.r),
-                                        ),
-                                        color:
-                                            AppColors.surfacePrimary(context),
-                                        margin: EdgeInsets.only(bottom: 16.h),
-                                        child: InkWell(
-                                          borderRadius:
-                                              BorderRadius.circular(12.r),
-                                          onTap: () {
-                                            if (video.status == 'pending') {
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) =>
-                                                    _PendingDialog(l10n: l10n),
-                                              );
-                                            }
-                                          },
-                                          child: Padding(
-                                            padding: EdgeInsets.all(6.w),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.max,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                _VideoPreview(
-                                                  url: video.thumbnailUrl
-                                                          .isNotEmpty
-                                                      ? video.thumbnailUrl
-                                                      : video.url,
-                                                ),
-                                                SizedBox(width: 12.w),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        video.title,
-                                                        style: AppTextStyles.h4(
-                                                            context),
-                                                      ),
-                                                      SizedBox(height: 4.h),
-                                                      Text(
-                                                        video.description,
-                                                        style: AppTextStyles.b2(
-                                                                context)
-                                                            .copyWith(
-                                                          color: AppColors
-                                                              .contentSecondary(
-                                                                  context),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                if (video.status == 'pending')
-                                                  IconButton(
-                                                    icon: Image.asset(
-                                                      'assets/images/ic_close.png',
-                                                      color: AppColors
-                                                          .contentPrimary(
-                                                              context),
-                                                      width: 18.w,
-                                                      height: 18.w,
-                                                    ),
-                                                    onPressed: () async {
-                                                      await VideoService()
-                                                          .deleteVideo(
-                                                              video.id);
-                                                      ref.invalidate(
-                                                          videosProvider);
-                                                    },
-                                                  )
-                                                else
-                                                  Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      IconButton(
-                                                        icon: Icon(
-                                                          isLiked
-                                                              ? Icons.favorite
-                                                              : Icons
-                                                                  .favorite_border,
-                                                          color: isLiked
-                                                              ? Colors.red
-                                                              : AppColors
-                                                                  .contentSecondary(
-                                                                      context),
-                                                        ),
-                                                        onPressed: () =>
-                                                            _toggleLike(
-                                                                video.id,
-                                                                likeCount,
-                                                                isLiked),
-                                                      ),
-                                                      Text(
-                                                        '$likeCount',
-                                                        style: AppTextStyles.b3(
-                                                                context)
-                                                            .copyWith(
-                                                          color: AppColors
-                                                              .contentSecondary(
-                                                                  context),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
+                                      return _getVideoCard(
+                                          context, video, isLiked, likeCount);
                                     },
                                   ),
                                 ],
@@ -395,18 +272,178 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       ),
     );
   }
+
+  Card _getVideoCard(
+      BuildContext context, SchoolVideo video, bool isLiked, int likeCount) {
+    return Card(
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(
+          color: AppColors.borderPrimary(context),
+          width: 1.w,
+        ),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      color: AppColors.surfacePrimary(context),
+      margin: EdgeInsets.only(bottom: 16.h),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12.r),
+        onTap: () {
+          if (video.status == 'pending') {
+            showDialog(
+              context: context,
+              builder: (context) => _PendingDialog(),
+            );
+          }
+        },
+        child: Padding(
+          padding: EdgeInsets.all(6.w),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _VideoPreview(
+                url: video.thumbnailUrl.isNotEmpty
+                    ? video.thumbnailUrl
+                    : video.url,
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      video.title,
+                      style: AppTextStyles.h4(context),
+                    ),
+                    SizedBox(height: 4.h),
+                    Text(
+                      video.description,
+                      style: AppTextStyles.b2(context).copyWith(
+                        color: AppColors.contentSecondary(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (video.status == 'pending')
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(
+                    minWidth: 32.w,
+                    minHeight: 32.w,
+                  ),
+                  icon: Image.asset(
+                    'assets/images/ic_close.png',
+                    color: AppColors.contentPrimary(context),
+                    width: 16.w,
+                    height: 16.w,
+                  ),
+                  onPressed: () async {
+                    await VideoService().deleteVideo(video.id);
+                    ref.invalidate(videosProvider);
+                  },
+                )
+              else
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      constraints: BoxConstraints(
+                        minWidth: 32.w,
+                        minHeight: 32.w,
+                      ),
+                      icon: isLiked
+                          ? Image.asset(
+                              'assets/images/ic_favorite.png',
+                              color: AppColors.contentAccent(context),
+                            )
+                          : Image.asset(
+                              'assets/images/ic_favorite_border.png',
+                              color: AppColors.contentAccent(context),
+                            ),
+                      onPressed: () =>
+                          _toggleLike(video.id, likeCount, isLiked),
+                    ),
+                    Text(
+                      '$likeCount',
+                      style: AppTextStyles.b3(context).copyWith(
+                        color: AppColors.contentSecondary(context),
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-class _PendingDialog extends StatelessWidget {
-  const _PendingDialog({required this.l10n});
+class GroupTitleWidget extends StatelessWidget {
+  const GroupTitleWidget({
+    super.key,
+    required this.title,
+  });
 
-  final AppLocalizations l10n;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(l10n.schoolVideosPendingTitle),
-      content: Text(l10n.schoolVideosPendingMessage),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        CircleAvatar(
+          radius: 32.w / 2,
+          backgroundColor: AppColors.surfaceIcon(context),
+          child: null,
+        ),
+        SizedBox(width: 8.w),
+        Expanded(
+          child: Text(
+            title,
+            style: AppTextStyles.h3(context),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PendingDialog extends StatefulWidget {
+  const _PendingDialog();
+
+  @override
+  State<_PendingDialog> createState() => _PendingDialogState();
+}
+
+class _PendingDialogState extends State<_PendingDialog> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(const Duration(seconds: 3), () {
+      if (mounted) Navigator.pop(context, false);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return BaseWaitApprovalPage(
+      title: l10n.schoolVideosPendingTitle,
+      subtitle: l10n.schoolVideosPendingMessage,
     );
   }
 }
@@ -422,18 +459,23 @@ class _VideoPreview extends StatelessWidget {
       width: 56.w,
       height: 56.w,
       decoration: BoxDecoration(
-        color: AppColors.surfacePrimary(context),
-        borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: AppColors.borderPrimary(context)),
+        image: DecorationImage(
+          image: AssetImage('assets/images/placeholder.png'),
+          fit: BoxFit.cover,
+        ),
+        borderRadius: BorderRadius.circular(4.r),
       ),
-      child: Icon(Icons.play_arrow,
-          color: AppColors.contentSecondary(context), size: 28.w),
+      child: Image.asset(
+        'assets/images/ic_play_arrow.png',
+        width: 20.w,
+        height: 20.w,
+      ),
     );
 
     if (url.isEmpty) return placeholder;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(8.r),
+      borderRadius: BorderRadius.circular(4.r),
       child: SizedBox(
         width: 56.w,
         height: 56.w,
