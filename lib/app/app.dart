@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../app/theme/theme.dart';
+import '../core/settings/settings_provider.dart';
 import 'router.dart';
 
 class App extends ConsumerWidget {
@@ -14,6 +15,7 @@ class App extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(routerProvider);
+    final settings = ref.watch(settingsProvider);
     return ScreenUtilInit(
         designSize: const Size(375, 812),
         minTextAdapt: false,
@@ -30,6 +32,8 @@ class App extends ConsumerWidget {
                 title: 'Academy 2.0',
                 theme: AppTheme.light,
                 darkTheme: AppTheme.dark,
+                themeMode: settings.themeMode,
+                locale: settings.locale,
                 routerConfig: router,
                 onGenerateTitle: (context) =>
                     AppLocalizations.of(context)?.appTitle ?? 'Academy 2.0',

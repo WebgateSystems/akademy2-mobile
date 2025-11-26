@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/auth/auth_provider.dart';
 import '../../core/network/dio_provider.dart';
 import '../../core/storage/secure_storage.dart';
+import '../../core/settings/settings_provider.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -246,6 +247,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ],
               onChanged: (v) {
                 setState(() => _theme = v ?? 'light');
+                ref.read(settingsProvider.notifier).setTheme(_theme);
                 _updateDirty();
               },
             ),
@@ -260,6 +262,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ],
               onChanged: (v) {
                 setState(() => _language = v ?? 'en');
+                ref.read(settingsProvider.notifier).setLanguage(_language);
                 _updateDirty();
               },
             ),
