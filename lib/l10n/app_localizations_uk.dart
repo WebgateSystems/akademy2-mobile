@@ -63,7 +63,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get downloadsPlaceholder => 'Заглушка завантажень (M1)';
 
   @override
-  String get profileTitle => 'Профіль';
+  String get profileTitle => 'Акаунт';
 
   @override
   String get profilePlaceholder => 'Заглушка профілю (M1)';
@@ -232,4 +232,119 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get chooseSubjectSubtitle =>
       'Обери предмет, щоб розпочати свою навчальну подорож!';
+
+  @override
+  String get schoolVideosTitle => 'Шкільні відео';
+
+  @override
+  String get schoolVideosSubtitle =>
+      'Дивіться відео, створені учнями, і додавайте свої.';
+
+  @override
+  String get schoolVideosFilterAll => 'Усі';
+
+  @override
+  String get schoolVideosSearchHint => 'Шукати відео';
+
+  @override
+  String get schoolVideosEmpty => 'Відео ще немає.';
+
+  @override
+  String get schoolVideosGroupUnknown => 'Інші відео';
+
+  @override
+  String schoolVideosStatusLabel(String status) {
+    return 'Статус: $status';
+  }
+
+  @override
+  String get schoolVideosStatusPending => 'Очікує на підтвердження';
+
+  @override
+  String get schoolVideosStatusApproved => 'Схвалено';
+
+  @override
+  String get schoolVideosPendingTitle => 'Зачекайте на підтвердження вчителя';
+
+  @override
+  String get schoolVideosPendingMessage =>
+      'Ваш учитель незабаром розгляне ваш запит — трошки зачекайте!';
+
+  @override
+  String schoolVideosError(String error) {
+    return 'Помилка: $error';
+  }
+
+  @override
+  String get profileFirstName => 'Ім\'я';
+
+  @override
+  String get profileLastName => 'Прізвище';
+
+  @override
+  String get profileDob => 'Дата народження';
+
+  @override
+  String get profileEmail => 'Email';
+
+  @override
+  String get profilePhone => 'Телефон';
+
+  @override
+  String get profilePin => 'PIN код';
+
+  @override
+  String get profileTheme => 'Тема';
+
+  @override
+  String get profileLanguage => 'Мова';
+
+  @override
+  String get profileThemeLight => 'Світла';
+
+  @override
+  String get profileThemeDark => 'Темна';
+
+  @override
+  String get profileLangEn => 'Англійська';
+
+  @override
+  String get profileLangUk => 'Українська';
+
+  @override
+  String get profileLangPl => 'Польська';
+
+  @override
+  String get profileSaveButton => 'Зберегти зміни';
+
+  @override
+  String get profileLogoutButton => 'Вийти';
+
+  @override
+  String get profileDeleteButton => 'Видалити акаунт';
+
+  @override
+  String get profileLogoutTitle => 'Вийти';
+
+  @override
+  String get profileLogoutMessage => 'Вийти з акаунту?';
+
+  @override
+  String get profileLogoutCancel => 'Скасувати';
+
+  @override
+  String get profileLogoutConfirm => 'Вийти';
+
+  @override
+  String get profileSaveSuccess => 'Профіль збережено';
+
+  @override
+  String profileSaveFailed(String error) {
+    return 'Не вдалося зберегти: $error';
+  }
+
+  @override
+  String profileDeleteFailed(String error) {
+    return 'Не вдалося видалити: $error';
+  }
 }

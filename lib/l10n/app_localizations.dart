@@ -211,7 +211,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileTitle.
   ///
   /// In en, this message translates to:
-  /// **'Profile'**
+  /// **'Account'**
   String get profileTitle;
 
   /// No description provided for @profilePlaceholder.
@@ -507,6 +507,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose a subject to begin your learning adventure!'**
   String get chooseSubjectSubtitle;
+
+  /// No description provided for @schoolVideosTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'School videos'**
+  String get schoolVideosTitle;
+
+  /// No description provided for @schoolVideosSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch videos created by pupils and upload your own.'**
+  String get schoolVideosSubtitle;
+
+  /// No description provided for @schoolVideosFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get schoolVideosFilterAll;
+
+  /// No description provided for @schoolVideosSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search videos'**
+  String get schoolVideosSearchHint;
+
+  /// No description provided for @schoolVideosEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No videos yet.'**
+  String get schoolVideosEmpty;
+
+  /// No description provided for @schoolVideosGroupUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Other videos'**
+  String get schoolVideosGroupUnknown;
+
+  /// No description provided for @schoolVideosStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {status}'**
+  String schoolVideosStatusLabel(String status);
+
+  /// No description provided for @schoolVideosStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending approval'**
+  String get schoolVideosStatusPending;
+
+  /// No description provided for @schoolVideosStatusApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get schoolVideosStatusApproved;
+
+  /// No description provided for @schoolVideosPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Wait for teacher\'s approval'**
+  String get schoolVideosPendingTitle;
+
+  /// No description provided for @schoolVideosPendingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your teacher will review your request soon - hang tight!'**
+  String get schoolVideosPendingMessage;
+
+  /// No description provided for @schoolVideosError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String schoolVideosError(String error);
+
+  /// No description provided for @profileFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get profileFirstName;
+
+  /// No description provided for @profileLastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get profileLastName;
+
+  /// No description provided for @profileDob.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get profileDob;
+
+  /// No description provided for @profileEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get profileEmail;
+
+  /// No description provided for @profilePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get profilePhone;
+
+  /// No description provided for @profilePin.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN code'**
+  String get profilePin;
+
+  /// No description provided for @profileTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get profileTheme;
+
+  /// No description provided for @profileLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get profileLanguage;
+
+  /// No description provided for @profileThemeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get profileThemeLight;
+
+  /// No description provided for @profileThemeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get profileThemeDark;
+
+  /// No description provided for @profileLangEn.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get profileLangEn;
+
+  /// No description provided for @profileLangUk.
+  ///
+  /// In en, this message translates to:
+  /// **'Ukrainian'**
+  String get profileLangUk;
+
+  /// No description provided for @profileLangPl.
+  ///
+  /// In en, this message translates to:
+  /// **'Polish'**
+  String get profileLangPl;
+
+  /// No description provided for @profileSaveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get profileSaveButton;
+
+  /// No description provided for @profileLogoutButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get profileLogoutButton;
+
+  /// No description provided for @profileDeleteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get profileDeleteButton;
+
+  /// No description provided for @profileLogoutTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get profileLogoutTitle;
+
+  /// No description provided for @profileLogoutMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to logout from your account?'**
+  String get profileLogoutMessage;
+
+  /// No description provided for @profileLogoutCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get profileLogoutCancel;
+
+  /// No description provided for @profileLogoutConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get profileLogoutConfirm;
+
+  /// No description provided for @profileSaveSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get profileSaveSuccess;
+
+  /// No description provided for @profileSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Save failed: {error}'**
+  String profileSaveFailed(String error);
+
+  /// No description provided for @profileDeleteFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete failed: {error}'**
+  String profileDeleteFailed(String error);
 }
 
 class _AppLocalizationsDelegate

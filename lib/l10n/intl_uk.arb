@@ -95,5 +95,69 @@
   "bottomNavSchoolVideos": "Шкільні відео",
   "bottomNavAccount": "Акаунт",
   "coursesTitle": "Курси",
-  "chooseSubjectSubtitle": "Обери предмет, щоб розпочати свою навчальну подорож!"
+  "chooseSubjectSubtitle": "Обери предмет, щоб розпочати свою навчальну подорож!",
+  "schoolVideosTitle": "Шкільні відео",
+  "schoolVideosSubtitle": "Дивіться відео, створені учнями, і додавайте свої.",
+  "schoolVideosFilterAll": "Усі",
+  "schoolVideosSearchHint": "Шукати відео",
+  "schoolVideosEmpty": "Відео ще немає.",
+  "schoolVideosGroupUnknown": "Інші відео",
+  "schoolVideosStatusLabel": "Статус: {status}",
+  "@schoolVideosStatusLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "schoolVideosStatusPending": "Очікує на підтвердження",
+  "schoolVideosStatusApproved": "Схвалено",
+  "schoolVideosPendingTitle": "Зачекайте на підтвердження вчителя",
+  "schoolVideosPendingMessage": "Ваш учитель незабаром розгляне ваш запит — трошки зачекайте!",
+  "schoolVideosError": "Помилка: {error}",
+  "@schoolVideosError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "profileTitle": "Акаунт",
+  "profileFirstName": "Ім'я",
+  "profileLastName": "Прізвище",
+  "profileDob": "Дата народження",
+  "profileEmail": "Email",
+  "profilePhone": "Телефон",
+  "profilePin": "PIN код",
+  "profileTheme": "Тема",
+  "profileLanguage": "Мова",
+  "profileThemeLight": "Світла",
+  "profileThemeDark": "Темна",
+  "profileLangEn": "Англійська",
+  "profileLangUk": "Українська",
+  "profileLangPl": "Польська",
+  "profileSaveButton": "Зберегти зміни",
+  "profileLogoutButton": "Вийти",
+  "profileDeleteButton": "Видалити акаунт",
+  "profileLogoutTitle": "Вийти",
+  "profileLogoutMessage": "Вийти з акаунту?",
+  "profileLogoutCancel": "Скасувати",
+  "profileLogoutConfirm": "Вийти",
+  "profileSaveSuccess": "Профіль збережено",
+  "profileSaveFailed": "Не вдалося зберегти: {error}",
+  "@profileSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "profileDeleteFailed": "Не вдалося видалити: {error}",
+  "@profileDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

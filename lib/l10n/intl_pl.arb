@@ -95,5 +95,69 @@
   "bottomNavSchoolVideos": "Filmy szkolne",
   "bottomNavAccount": "Konto",
   "coursesTitle": "Kursy",
-  "chooseSubjectSubtitle": "Wybierz przedmiot, aby rozpocząć swoją edukacyjną przygodę!"
+  "chooseSubjectSubtitle": "Wybierz przedmiot, aby rozpocząć swoją edukacyjną przygodę!",
+  "schoolVideosTitle": "Filmy szkolne",
+  "schoolVideosSubtitle": "Oglądaj filmy tworzone przez uczniów i dodawaj własne.",
+  "schoolVideosFilterAll": "Wszystkie",
+  "schoolVideosSearchHint": "Szukaj filmów",
+  "schoolVideosEmpty": "Brak filmów.",
+  "schoolVideosGroupUnknown": "Inne filmy",
+  "schoolVideosStatusLabel": "Status: {status}",
+  "@schoolVideosStatusLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "schoolVideosStatusPending": "Oczekuje na akceptację",
+  "schoolVideosStatusApproved": "Zatwierdzony",
+  "schoolVideosPendingTitle": "Poczekaj na zatwierdzenie nauczyciela",
+  "schoolVideosPendingMessage": "Twój nauczyciel wkrótce rozpatrzy Twoje zgłoszenie – chwilę poczekaj!",
+  "schoolVideosError": "Błąd: {error}",
+  "@schoolVideosError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "profileTitle": "Konto",
+  "profileFirstName": "Imię",
+  "profileLastName": "Nazwisko",
+  "profileDob": "Data urodzenia",
+  "profileEmail": "Email",
+  "profilePhone": "Telefon",
+  "profilePin": "Kod PIN",
+  "profileTheme": "Motyw",
+  "profileLanguage": "Język",
+  "profileThemeLight": "Jasny",
+  "profileThemeDark": "Ciemny",
+  "profileLangEn": "Angielski",
+  "profileLangUk": "Ukraiński",
+  "profileLangPl": "Polski",
+  "profileSaveButton": "Zapisz zmiany",
+  "profileLogoutButton": "Wyloguj się",
+  "profileDeleteButton": "Usuń konto",
+  "profileLogoutTitle": "Wyloguj się",
+  "profileLogoutMessage": "Czy chcesz wylogować się ze swojego konta?",
+  "profileLogoutCancel": "Anuluj",
+  "profileLogoutConfirm": "Wyloguj się",
+  "profileSaveSuccess": "Profil zapisany",
+  "profileSaveFailed": "Nie udało się zapisać: {error}",
+  "@profileSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "profileDeleteFailed": "Nie udało się usunąć: {error}",
+  "@profileDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

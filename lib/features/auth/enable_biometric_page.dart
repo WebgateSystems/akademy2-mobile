@@ -146,7 +146,8 @@ class CustomImageChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = selected ? AppColors.surface(context) : Colors.transparent;
+    final bgColor =
+        selected ? AppColors.surfacePrimary(context) : Colors.transparent;
 
     final borderColor =
         selected ? AppColors.borderFocused(context) : Colors.transparent;

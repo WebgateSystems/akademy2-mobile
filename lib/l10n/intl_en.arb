@@ -95,6 +95,70 @@
   "bottomNavSchoolVideos": "School videos",
   "bottomNavAccount": "Account",
   "coursesTitle": "Courses",
-  "chooseSubjectSubtitle": "Choose a subject to begin your learning adventure!"
+  "chooseSubjectSubtitle": "Choose a subject to begin your learning adventure!",
+  "schoolVideosTitle": "School videos",
+  "schoolVideosSubtitle": "Watch videos created by pupils and upload your own.",
+  "schoolVideosFilterAll": "All",
+  "schoolVideosSearchHint": "Search videos",
+  "schoolVideosEmpty": "No videos yet.",
+  "schoolVideosGroupUnknown": "Other videos",
+  "schoolVideosStatusLabel": "Status: {status}",
+  "@schoolVideosStatusLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "schoolVideosStatusPending": "Pending approval",
+  "schoolVideosStatusApproved": "Approved",
+  "schoolVideosPendingTitle": "Wait for teacher's approval",
+  "schoolVideosPendingMessage": "Your teacher will review your request soon - hang tight!",
+  "schoolVideosError": "Error: {error}",
+  "@schoolVideosError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "profileTitle": "Account",
+  "profileFirstName": "First name",
+  "profileLastName": "Last name",
+  "profileDob": "Date of birth",
+  "profileEmail": "Email",
+  "profilePhone": "Phone",
+  "profilePin": "PIN code",
+  "profileTheme": "Theme",
+  "profileLanguage": "Language",
+  "profileThemeLight": "Light",
+  "profileThemeDark": "Dark",
+  "profileLangEn": "English",
+  "profileLangUk": "Ukrainian",
+  "profileLangPl": "Polish",
+  "profileSaveButton": "Save changes",
+  "profileLogoutButton": "Logout",
+  "profileDeleteButton": "Delete account",
+  "profileLogoutTitle": "Logout",
+  "profileLogoutMessage": "Do you want to logout from your account?",
+  "profileLogoutCancel": "Cancel",
+  "profileLogoutConfirm": "Logout",
+  "profileSaveSuccess": "Profile saved",
+  "profileSaveFailed": "Save failed: {error}",
+  "@profileSaveFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "profileDeleteFailed": "Delete failed: {error}",
+  "@profileDeleteFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 
 }

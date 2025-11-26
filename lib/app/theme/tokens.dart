@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class AppColors {
   static const primary = Color(0xFF3F51B5);
   static const accent = Color(0xFFFFC107);
-  static const contentPlaceholder = Color(0xFF929292);
 
   static const blue05 = Color(0xFFF2F7FD);
   static const blue10 = Color(0xFFD0E2F8);
@@ -62,6 +61,9 @@ class AppColors {
   static Color contentPrimary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue05 : blue90;
 
+  static Color contentTertiary(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? blue90 : grey05;
+
   static Color contentAccent(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue50 : blue50;
 
@@ -72,6 +74,9 @@ class AppColors {
       Theme.of(context).brightness == Brightness.dark ? grey30 : grey30;
 
   static Color contentSecondary(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? grey40 : grey60;
+
+  static Color contentPlaceholder(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? grey40 : grey60;
 
   static Color contentButtonPrimary(BuildContext context) =>
@@ -86,11 +91,14 @@ class AppColors {
   static Color contentError(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? red60 : red70;
 
-  static Color surface(BuildContext context) =>
+  static Color surfacePrimary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue85 : grey05;
 
   static Color surfaceIcon(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? grey05 : grey05;
+
+  static Color surfaceAccent(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? blue50 : blue50;
 
   static Color borderFocused(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue50 : blue50;
@@ -148,6 +156,14 @@ class AppTextStyles {
 
   static TextStyle h4(BuildContext context) => TextStyle(
         fontSize: 16.sp,
+        fontFamily: 'Rubik',
+        fontWeight: FontWeight.w500,
+        color: AppColors.contentPrimary(context),
+        height: 1.3,
+      );
+
+  static TextStyle h3(BuildContext context) => TextStyle(
+        fontSize: 18.sp,
         fontFamily: 'Rubik',
         fontWeight: FontWeight.w500,
         color: AppColors.contentPrimary(context),

@@ -9,6 +9,7 @@ class EditTextWidget extends StatelessWidget {
   final TextInputType keyboard;
   final String? errorText;
   final bool readOnly;
+  final bool obscureText;
   final Widget? suffixIcon;
   final Function(String)? onChanged;
   final int? maxLength;
@@ -27,7 +28,8 @@ class EditTextWidget extends StatelessWidget {
     this.keyboard = TextInputType.text,
     this.onChanged,
     this.readOnly = false,
-    this.maxLength = null,
+    this.obscureText = false,
+    this.maxLength,
     this.focusNode,
     this.textAlign = TextAlign.start,
     this.textStyle,
@@ -57,12 +59,13 @@ class EditTextWidget extends StatelessWidget {
             readOnly: readOnly,
             onChanged: onChanged,
             maxLength: maxLength,
+            obscureText: obscureText,
             decoration: InputDecoration(
               filled: true,
-              fillColor: AppColors.surface(context),
+              fillColor: AppColors.surfacePrimary(context),
               hintText: hint,
               hintStyle: AppTextStyles.b2(context).copyWith(
-                color: AppColors.contentPlaceholder,
+                color: AppColors.contentPlaceholder(context),
               ),
               errorText: errorText,
               errorStyle: AppTextStyles.b3(context).copyWith(

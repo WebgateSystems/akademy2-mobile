@@ -63,7 +63,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get downloadsPlaceholder => 'Ekran pobrań (M1)';
 
   @override
-  String get profileTitle => 'Profil';
+  String get profileTitle => 'Konto';
 
   @override
   String get profilePlaceholder => 'Ekran profilu (M1)';
@@ -232,4 +232,121 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get chooseSubjectSubtitle =>
       'Wybierz przedmiot, aby rozpocząć swoją edukacyjną przygodę!';
+
+  @override
+  String get schoolVideosTitle => 'Filmy szkolne';
+
+  @override
+  String get schoolVideosSubtitle =>
+      'Oglądaj filmy tworzone przez uczniów i dodawaj własne.';
+
+  @override
+  String get schoolVideosFilterAll => 'Wszystkie';
+
+  @override
+  String get schoolVideosSearchHint => 'Szukaj filmów';
+
+  @override
+  String get schoolVideosEmpty => 'Brak filmów.';
+
+  @override
+  String get schoolVideosGroupUnknown => 'Inne filmy';
+
+  @override
+  String schoolVideosStatusLabel(String status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String get schoolVideosStatusPending => 'Oczekuje na akceptację';
+
+  @override
+  String get schoolVideosStatusApproved => 'Zatwierdzony';
+
+  @override
+  String get schoolVideosPendingTitle =>
+      'Poczekaj na zatwierdzenie nauczyciela';
+
+  @override
+  String get schoolVideosPendingMessage =>
+      'Twój nauczyciel wkrótce rozpatrzy Twoje zgłoszenie – chwilę poczekaj!';
+
+  @override
+  String schoolVideosError(String error) {
+    return 'Błąd: $error';
+  }
+
+  @override
+  String get profileFirstName => 'Imię';
+
+  @override
+  String get profileLastName => 'Nazwisko';
+
+  @override
+  String get profileDob => 'Data urodzenia';
+
+  @override
+  String get profileEmail => 'Email';
+
+  @override
+  String get profilePhone => 'Telefon';
+
+  @override
+  String get profilePin => 'Kod PIN';
+
+  @override
+  String get profileTheme => 'Motyw';
+
+  @override
+  String get profileLanguage => 'Język';
+
+  @override
+  String get profileThemeLight => 'Jasny';
+
+  @override
+  String get profileThemeDark => 'Ciemny';
+
+  @override
+  String get profileLangEn => 'Angielski';
+
+  @override
+  String get profileLangUk => 'Ukraiński';
+
+  @override
+  String get profileLangPl => 'Polski';
+
+  @override
+  String get profileSaveButton => 'Zapisz zmiany';
+
+  @override
+  String get profileLogoutButton => 'Wyloguj się';
+
+  @override
+  String get profileDeleteButton => 'Usuń konto';
+
+  @override
+  String get profileLogoutTitle => 'Wyloguj się';
+
+  @override
+  String get profileLogoutMessage =>
+      'Czy chcesz wylogować się ze swojego konta?';
+
+  @override
+  String get profileLogoutCancel => 'Anuluj';
+
+  @override
+  String get profileLogoutConfirm => 'Wyloguj się';
+
+  @override
+  String get profileSaveSuccess => 'Profil zapisany';
+
+  @override
+  String profileSaveFailed(String error) {
+    return 'Nie udało się zapisać: $error';
+  }
+
+  @override
+  String profileDeleteFailed(String error) {
+    return 'Nie udało się usunąć: $error';
+  }
 }
