@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
-import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -56,99 +55,110 @@ class _SplashPageState extends State<SplashPage> {
     }
   }
 
-  Future<void> _onMinLogoTap() async {
-    _timer?.cancel();
-    setState(() {
-      _logoTapped = true;
-    });
-
-    final uri = Uri.parse(AppLinks.minLanding);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open link')),
-        );
-      }
-    }
-  }
-
-  Future<void> _onWSLogoTap() async {
-    _timer?.cancel();
-    setState(() {
-      _logoTapped = true;
-    });
-
-    final uri = Uri.parse(AppLinks.wsLanding);
-    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open link')),
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
+      backgroundColor: AppColors.blue05,
       body: Stack(
         children: [
           Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 140.h),
-                  child: GestureDetector(
-                    onTap: _onLogoTap,
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      width: 147.w,
-                      height: 147.w,
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 24.h),
-                Text(
-                  AppLocalizations.of(context)?.appTitle ?? 'Academy 2.0',
-                  style: AppTextStyles.h1(context).copyWith(
-                    color: theme.textTheme.bodyMedium?.color,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 161.h),
-                  child: GestureDetector(
-                    onTap: _onMinLogoTap,
-                    child: Image.asset(
-                      'assets/images/min_logo.png',
-                      width: 287.w,
-                      height: 100.w,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 23.h),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: _onWSLogoTap,
-                        child: Image.asset(
-                          'assets/images/ws_logo.png',
-                          width: 40.w,
-                          height: 38.w,
-                        ),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: SafeArea(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Spacer(),
+                    GestureDetector(
+                      onTap: _onLogoTap,
+                      child: Image.asset(
+                        'assets/images/logo_full.png',
+                        width: 265.w,
+                        height: 120.w,
                       ),
-                      SizedBox(
-                        width: 200.w,
+                    ),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: _onLogoTap,
+                      child: Image.asset(
+                        'assets/images/min_logo.png',
+                        width: double.infinity,
+                        fit: BoxFit.fitWidth,
                       ),
-                    ],
-                  ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.h),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          GestureDetector(
+                            onTap: _onLogoTap,
+                            child: Image.asset(
+                              'assets/images/logo_enchanced.png',
+                              width: 90.w,
+                              height: 90.w,
+                            ),
+                          ),
+                          Spacer(),
+                          GestureDetector(
+                            onTap: _onLogoTap,
+                            child: Image.asset(
+                              'assets/images/logo4.png',
+                              width: 110.w,
+                              height: 110.w,
+                            ),
+                          ),
+                          Spacer(),
+                          GestureDetector(
+                            onTap: _onLogoTap,
+                            child: Image.asset(
+                              'assets/images/logo8.png',
+                              width: 90.w,
+                              height: 90.w,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          GestureDetector(
+                            onTap: _onLogoTap,
+                            child: Image.asset(
+                              'assets/images/ws_logo.png',
+                              width: 118.w,
+                              height: 22.w,
+                            ),
+                          ),
+                          Spacer(),
+                          GestureDetector(
+                            onTap: _onLogoTap,
+                            child: Image.asset(
+                              'assets/images/logo6.png',
+                              width: 90.w,
+                              height: 90.w,
+                            ),
+                          ),
+                          Spacer(),
+                          GestureDetector(
+                            onTap: _onLogoTap,
+                            child: Image.asset(
+                              'assets/images/securhub.png',
+                              width: 118.w,
+                              height: 72.w,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
           if (_logoTapped)
