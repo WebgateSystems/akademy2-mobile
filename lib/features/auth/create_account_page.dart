@@ -1,8 +1,10 @@
+import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/checkbox_widget.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -68,12 +70,53 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
 
   Future<void> _pickDob() async {
     final now = DateTime.now();
-    final picked = await showDatePicker(
+    final initial = _dob ?? DateTime(now.year - 18, now.month, now.day);
+    final minDate = DateTime(1900);
+    final maxDate = now;
+    var tempDate = initial;
+
+    final picked = await showModalBottomSheet<DateTime>(
       context: context,
-      initialDate: DateTime(now.year - 18, now.month, now.day),
-      firstDate: DateTime(1900),
-      lastDate: now,
+      useSafeArea: true,
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
+        return SafeArea(
+          child: SizedBox(
+            height: 448.h,
+            child: Column(
+              children: [
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.w),
+                  child: Text(
+                    l10n.addBirthdate,
+                    style: AppTextStyles.h1(context),
+                  ),
+                ),
+                Expanded(
+                  child: CupertinoDatePicker(
+                    mode: CupertinoDatePickerMode.date,
+                    initialDateTime: initial,
+                    minimumDate: minDate,
+                    maximumDate: maxDate,
+                    onDateTimeChanged: (date) => tempDate = date,
+                  ),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.w),
+                  child: ActionButtonWidget(
+                    onPressed: () => Navigator.of(ctx).pop(tempDate),
+                    text: l10n.addButton,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
+
     if (picked != null) {
       setState(() {
         _dob = picked;

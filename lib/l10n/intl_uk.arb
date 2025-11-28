@@ -185,5 +185,7 @@
   },
   "unverifiedEmailAddress": "Неперевірена адреса електронної пошти.",
   "unverifiedPhoneNubmer": "Неперевірений номер телефону.",
-  "useAnotherAccount": "Використати інший акаунт"
+  "useAnotherAccount": "Використати інший акаунт",
+  "addBirthdate": "Додати дату народження",
+  "addButton": "Додати"
 }

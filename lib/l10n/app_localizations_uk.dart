@@ -388,4 +388,10 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get useAnotherAccount => 'Використати інший акаунт';
+
+  @override
+  String get addBirthdate => 'Додати дату народження';
+
+  @override
+  String get addButton => 'Додати';
 }

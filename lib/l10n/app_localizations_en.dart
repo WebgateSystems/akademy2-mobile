@@ -387,4 +387,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get useAnotherAccount => 'Use another account';
+
+  @override
+  String get addBirthdate => 'Add birth date';
+
+  @override
+  String get addButton => 'Add';
 }

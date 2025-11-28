@@ -789,6 +789,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Use another account'**
   String get useAnotherAccount;
+
+  /// No description provided for @addBirthdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Add birth date'**
+  String get addBirthdate;
+
+  /// No description provided for @addButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addButton;
 }
 
 class _AppLocalizationsDelegate

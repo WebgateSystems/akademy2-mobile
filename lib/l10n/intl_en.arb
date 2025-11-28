@@ -185,5 +185,7 @@
   },
   "unverifiedEmailAddress": "Unverified email address.",
   "unverifiedPhoneNubmer": "Unverified phone nubmer.",
-  "useAnotherAccount": "Use another account"
+  "useAnotherAccount": "Use another account",
+  "addBirthdate": "Add birth date",
+  "addButton": "Add"
 }

@@ -185,5 +185,7 @@
   },
   "unverifiedEmailAddress": "Niezweryfikowany adres e-mail.",
   "unverifiedPhoneNubmer": "Niezweryfikowany numer telefonu.",
-  "useAnotherAccount": "Użyj innego konta"
+  "useAnotherAccount": "Użyj innego konta",
+  "addBirthdate": "Dodaj datę urodzenia",
+  "addButton": "Dodaj"
 }

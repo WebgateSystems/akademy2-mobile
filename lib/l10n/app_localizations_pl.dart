@@ -390,4 +390,10 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get useAnotherAccount => 'Użyj innego konta';
+
+  @override
+  String get addBirthdate => 'Dodaj datę urodzenia';
+
+  @override
+  String get addButton => 'Dodaj';
 }
