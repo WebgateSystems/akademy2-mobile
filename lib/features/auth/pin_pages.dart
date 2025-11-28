@@ -111,6 +111,8 @@ class PinScaffold extends StatelessWidget {
     required this.onKey,
     this.mismatch = false,
     this.showProgress = false,
+    this.showBackButton = true,
+    this.footer,
   });
 
   final String title;
@@ -119,6 +121,8 @@ class PinScaffold extends StatelessWidget {
   final bool mismatch;
   final bool showProgress;
   final void Function(String value) onKey;
+  final bool showBackButton;
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +131,7 @@ class PinScaffold extends StatelessWidget {
       body: BasePageWithToolbar(
         title: title,
         subtitle: subtitle,
-        showBackButton: true,
+        showBackButton: showBackButton,
         children: [
           SizedBox(height: 56.h),
           DotsWidget(pin: pin),
@@ -147,7 +151,7 @@ class PinScaffold extends StatelessWidget {
               ],
             ),
           SizedBox(height: 101.h),
-          if (showProgress) const CircularProgressIndicator(),
+          if (showProgress) Center(child: const CircularProgressIndicator()),
           if (!showProgress)
             Row(
               mainAxisSize: MainAxisSize.max,
@@ -156,6 +160,8 @@ class PinScaffold extends StatelessWidget {
                 _PinKeypad(onKey: onKey),
               ],
             ),
+          if (footer != null) SizedBox(height: 24.h),
+          if (footer != null) footer!,
         ],
       ),
     );
@@ -230,26 +236,22 @@ class _PinKeypad extends StatelessWidget {
             return const SizedBox.shrink();
           }
           return key == 'back'
-              ? RoundButton(
+              ? RoundButton.image(
                   size: 72.r,
                   onTap: () => onKey('back'),
                   backgroundColor: Colors.transparent,
-                  splashColor: AppColors.green40,
-                  child: Image.asset(
-                    'assets/images/ic_back_button.png',
-                    width: 34.w,
-                    height: 24.h,
-                  ),
+                  splashColor: AppColors.surfaceAccent(context),
+                  assetImage: 'assets/images/ic_back_button.png',
+                  pressedImageOpacity: 0.5,
                 )
-              : RoundButton(
+              : RoundButton.text(
                   size: 72.r,
                   onTap: () => onKey(key),
                   backgroundColor: AppColors.blue10,
-                  splashColor: AppColors.green40,
-                  child: Text(
-                    key,
-                    style: AppTextStyles.h1(context),
-                  ),
+                  splashColor: AppColors.surfaceAccent(context),
+                  textColor: AppColors.contentPrimary(context),
+                  pressedTextColor: AppColors.background(context),
+                  text: key,
                 );
         },
       ),
@@ -257,46 +259,151 @@ class _PinKeypad extends StatelessWidget {
   }
 }
 
-class RoundButton extends StatelessWidget {
+class RoundButton extends StatefulWidget {
   final double size;
   final VoidCallback onTap;
-  final Widget child;
+
+  // Випадок 1: текст
+  final String? text;
+  final Color textColor;
+  final Color pressedTextColor;
+
+  // Випадок 2: картинка
+  final String? assetImage;
+  final double pressedImageOpacity;
+
   final Color backgroundColor;
   final Color splashColor;
   final Color? borderColor;
   final double borderWidth;
 
-  const RoundButton({
+  const RoundButton._internal({
     super.key,
     required this.onTap,
-    required this.child,
-    this.size = 72, // діаметр кнопки
-    this.backgroundColor = Colors.white,
-    this.splashColor = Colors.black26, // колір кліку
-    this.borderColor,
-    this.borderWidth = 0,
-  });
+    required this.size,
+    required this.backgroundColor,
+    required this.splashColor,
+    required this.borderColor,
+    required this.borderWidth,
+    this.text,
+    this.textColor = Colors.black,
+    this.pressedTextColor = Colors.red,
+    this.assetImage,
+    this.pressedImageOpacity = 0.6,
+  }) : assert(
+          (text != null && assetImage == null) ||
+              (text == null && assetImage != null),
+          'Або text, або assetImage, але не обидва одночасно',
+        );
+
+  /// Конструктор для текстової кнопки
+  factory RoundButton.text({
+    Key? key,
+    required VoidCallback onTap,
+    required String text,
+    double size = 72,
+    Color textColor = Colors.black,
+    Color pressedTextColor = Colors.red,
+    Color backgroundColor = Colors.white,
+    Color splashColor = Colors.black26,
+    Color? borderColor,
+    double borderWidth = 0,
+  }) {
+    return RoundButton._internal(
+      key: key,
+      onTap: onTap,
+      size: size,
+      backgroundColor: backgroundColor,
+      splashColor: splashColor,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
+      text: text,
+      textColor: textColor,
+      pressedTextColor: pressedTextColor,
+    );
+  }
+
+  /// Конструктор для кнопки з картинкою
+  factory RoundButton.image({
+    Key? key,
+    required VoidCallback onTap,
+    required String assetImage,
+    double size = 72,
+    double pressedImageOpacity = 0.6,
+    Color backgroundColor = Colors.white,
+    Color splashColor = Colors.black26,
+    Color? borderColor,
+    double borderWidth = 0,
+  }) {
+    return RoundButton._internal(
+      key: key,
+      onTap: onTap,
+      size: size,
+      backgroundColor: backgroundColor,
+      splashColor: splashColor,
+      borderColor: borderColor,
+      borderWidth: borderWidth,
+      assetImage: assetImage,
+      pressedImageOpacity: pressedImageOpacity,
+    );
+  }
+
+  @override
+  State<RoundButton> createState() => _RoundButtonState();
+}
+
+class _RoundButtonState extends State<RoundButton> {
+  bool _pressed = false;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: size,
-      height: size,
+      width: widget.size,
+      height: widget.size,
       child: Material(
-        color: backgroundColor,
+        color: widget.backgroundColor,
         shape: CircleBorder(
-          side: borderWidth > 0
+          side: widget.borderWidth > 0
               ? BorderSide(
-                  color: borderColor ?? Colors.black, width: borderWidth)
+                  color: widget.borderColor ?? Colors.black,
+                  width: widget.borderWidth,
+                )
               : BorderSide.none,
         ),
         child: InkWell(
           customBorder: const CircleBorder(),
-          splashColor: splashColor,
-          onTap: onTap,
-          child: Center(child: child),
+          splashColor: widget.splashColor,
+          onTap: widget.onTap,
+          onHighlightChanged: (isPressed) {
+            setState(() => _pressed = isPressed);
+          },
+          child: Center(
+            child: _buildChild(),
+          ),
         ),
       ),
     );
+  }
+
+  Widget _buildChild() {
+    if (widget.text != null) {
+      // Випадок з текстом: змінюємо колір
+      return AnimatedDefaultTextStyle(
+        duration: const Duration(milliseconds: 120),
+        style: AppTextStyles.h1(context).copyWith(
+          color: _pressed ? widget.pressedTextColor : widget.textColor,
+        ),
+        child: Text(widget.text!),
+      );
+    } else if (widget.assetImage != null) {
+      // Випадок з картинкою: змінюємо прозорість
+      return AnimatedOpacity(
+        duration: const Duration(milliseconds: 120),
+        opacity: _pressed ? widget.pressedImageOpacity : 1.0,
+        child: Image.asset(widget.assetImage!, width: 34.w, height: 24.h),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 }

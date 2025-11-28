@@ -15,6 +15,38 @@ class AppLocalizationsPl extends AppLocalizations {
   String get loginTitle => 'Zaloguj się';
 
   @override
+  String get loginPhoneRequired => 'Podaj numer telefonu';
+
+  @override
+  String get loginPhoneInvalid => 'Nieprawidłowy numer telefonu.';
+
+  @override
+  String get loginCreateAccountPrompt => 'Nie masz konta?';
+
+  @override
+  String get loginCreateAccountCta => 'Utwórz konto';
+
+  @override
+  String loginFailed(String error) {
+    return 'Logowanie nie powiodło się: $error';
+  }
+
+  @override
+  String get loginPinTitle => 'Zaloguj się 4-cyfrowym kodem';
+
+  @override
+  String get loginPinSubtitle =>
+      'Wpisz swój 4-cyfrowy PIN, aby kontynuować w aplikacji Academy 2.0.';
+
+  @override
+  String get unlockPinTitle => 'Wprowadź swój PIN';
+
+  @override
+  String unlockPinSubtitle(String phone) {
+    return 'Potwierdź swój 4-cyfrowy PIN dla\n$phone.';
+  }
+
+  @override
   String get passwordField => 'Hasło';
 
   @override
@@ -355,4 +387,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get unverifiedPhoneNubmer => 'Niezweryfikowany numer telefonu.';
+
+  @override
+  String get useAnotherAccount => 'Użyj innego konta';
 }

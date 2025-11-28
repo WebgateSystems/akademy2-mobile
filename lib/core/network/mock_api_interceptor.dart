@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 
 import 'fake_backend.dart';
 
-/// MockApiInterceptor intercepts requests to /v1/* and returns mock JSON responses.
+/// MockApiInterceptor intercepts requests to v1/* and returns mock JSON responses.
 /// This allows local testing without a real backend.
 class MockApiInterceptor extends Interceptor {
   @override
@@ -10,45 +10,46 @@ class MockApiInterceptor extends Interceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    if (options.path.startsWith('/v1/')) {
+    final path = _normalizePath(options.path);
+
+    if (path.startsWith('v1/')) {
       Response? mock;
 
-      switch (options.path) {
-        case '/v1/auth/login':
+      switch (path) {
+        case 'v1/auth/login':
           mock = await _mockAuthLogin(options);
           break;
-        case '/v1/auth/refresh':
+        case 'v1/auth/refresh':
           mock = await _mockAuthRefresh(options);
           break;
-        case '/v1/auth/logout':
+        case 'v1/auth/logout':
           mock = await _mockAuthLogout(options);
           break;
-        case '/v1/subjects':
+        case 'v1/subjects':
           mock = await _mockGetSubjects(options);
           break;
-        case '/v1/modules':
+        case 'v1/modules':
           mock = await _mockGetModules(options);
           break;
-        case '/v1/contents':
+        case 'v1/contents':
           mock = await _mockGetContents(options);
           break;
-        case '/v1/videos':
+        case 'v1/videos':
           mock = await _mockVideos(options);
           break;
-        case '/v1/account/update':
+        case 'v1/account/update':
           mock = await _mockAccountUpdate(options);
           break;
-        case '/v1/account/delete':
+        case 'v1/account/delete':
           mock = await _mockAccountDelete(options);
           break;
-        case '/v1/classes/join':
+        case 'v1/classes/join':
           mock = await _mockJoin(options);
           break;
         default:
-          if (options.path.startsWith('/v1/classes/join/') &&
-              options.path.endsWith('/status')) {
+          if (path.startsWith('v1/classes/join/') && path.endsWith('/status')) {
             mock = await _mockJoinStatus(options);
-          } else if (options.path.startsWith('/v1/videos/') &&
+          } else if (path.startsWith('v1/videos/') &&
               options.method.toUpperCase() == 'DELETE') {
             mock = await _mockDeleteVideo(options);
           }
@@ -77,12 +78,13 @@ class MockApiInterceptor extends Interceptor {
     if (options.method.toUpperCase() != 'POST') return null;
 
     final body = options.data as Map<String, dynamic>?;
-    final email = body?['email'] as String? ?? 'test@example.com';
-    final password = body?['password'] as String? ?? 'pass';
+    final user = body?['user'] as Map<String, dynamic>?;
+    final phone = user?['phone'] as String? ?? '+48000000000';
+    final pin = user?['pin'] as String? ?? '0000';
 
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockLogin(email, password),
+      data: FakeBackend.mockLogin(phone, pin),
       statusCode: 200,
     );
   }
@@ -168,7 +170,8 @@ class MockApiInterceptor extends Interceptor {
 
   Future<Response?> _mockJoin(RequestOptions options) async {
     if (options.method.toUpperCase() != 'POST') return null;
-    final code = (options.data as Map<String, dynamic>?)?['code'] as String? ?? '';
+    final code =
+        (options.data as Map<String, dynamic>?)?['code'] as String? ?? '';
     return Response(
       requestOptions: options,
       data: FakeBackend.mockJoin(code),
@@ -178,8 +181,11 @@ class MockApiInterceptor extends Interceptor {
 
   Future<Response?> _mockJoinStatus(RequestOptions options) async {
     if (options.method.toUpperCase() != 'GET') return null;
-    final parts = options.path.split('/');
-    final id = parts.length >= 6 ? parts[4] : '';
+    final parts = _normalizePath(options.path)
+        .split('/')
+        .where((segment) => segment.isNotEmpty)
+        .toList();
+    final id = parts.length >= 4 ? parts[3] : '';
     return Response(
       requestOptions: options,
       data: FakeBackend.mockJoinStatus(id),
@@ -206,7 +212,10 @@ class MockApiInterceptor extends Interceptor {
   }
 
   Future<Response?> _mockDeleteVideo(RequestOptions options) async {
-    final parts = options.path.split('/');
+    final parts = _normalizePath(options.path)
+        .split('/')
+        .where((segment) => segment.isNotEmpty)
+        .toList();
     final id = parts.isNotEmpty ? parts.last : '';
     return Response(
       requestOptions: options,
@@ -214,4 +223,6 @@ class MockApiInterceptor extends Interceptor {
       statusCode: 200,
     );
   }
+
+  String _normalizePath(String path) => path.replaceFirst(RegExp('^/+'), '');
 }

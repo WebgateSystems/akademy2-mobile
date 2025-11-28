@@ -9,6 +9,7 @@ import '../features/auth/enable_biometric_page.dart';
 import '../features/auth/join_group_page.dart';
 import '../features/auth/login_page.dart';
 import '../features/auth/pin_pages.dart';
+import '../features/auth/unlock_page.dart';
 import '../features/auth/verify_email_page.dart';
 import '../features/auth/verify_phone_page.dart';
 import '../features/auth/wait_approval_page.dart';
@@ -45,6 +46,25 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
+        path: '/unlock',
+        builder: (context, state) => UnlockPage(
+          redirect: state.uri.queryParameters['redirect'],
+        ),
+      ),
+      GoRoute(
+        path: '/login-pin',
+        builder: (context, state) {
+          final extra = state.extra;
+          final args = extra is LoginPinArgs
+              ? extra
+              : LoginPinArgs(
+                  phone: state.uri.queryParameters['phone'] ?? '',
+                  redirect: state.uri.queryParameters['redirect'],
+                );
+          return LoginPinPage(args: args);
+        },
+      ),
+      GoRoute(
         path: '/create-account',
         builder: (context, state) => const CreateAccountPage(),
       ),
@@ -54,14 +74,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           final extra = state.extra;
           final args = extra is VerifyPhoneArgs
               ? extra
-              : const VerifyPhoneArgs(phone: '+000000000', email: 'user@example.com');
+              : const VerifyPhoneArgs(
+                  phone: '+000000000', email: 'user@example.com');
           return VerifyPhonePage(args: args);
         },
       ),
       GoRoute(
         path: '/verify-email',
         builder: (context, state) {
-          final email = state.extra is String ? state.extra as String : 'user@example.com';
+          final email = state.extra is String
+              ? state.extra as String
+              : 'user@example.com';
           return VerifyEmailPage(email: email);
         },
       ),
@@ -81,7 +104,9 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/confirm-pin',
         builder: (context, state) {
           final extra = state.extra;
-          final args = extra is ConfirmPinArgs ? extra : const ConfirmPinArgs(pin: '0000');
+          final args = extra is ConfirmPinArgs
+              ? extra
+              : const ConfirmPinArgs(pin: '0000');
           return ConfirmPinPage(args: args);
         },
       ),
@@ -144,6 +169,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       final auth = ref.read(authProvider);
       final loc = state.matchedLocation;
       final loggingIn = loc == '/login';
+      final onUnlock = loc == '/unlock';
+      final onLoginPin = loc == '/login-pin';
       final onSplash = loc == '/splash';
       final onCreateAccount = loc == '/create-account';
       final onVerifyPhone = loc == '/verify-phone';
@@ -159,6 +186,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       final onboarding = {
         onSplash,
         loggingIn,
+        onUnlock,
+        onLoginPin,
         onCreateAccount,
         onVerifyPhone,
         onVerifyEmail,
@@ -169,16 +198,28 @@ final routerProvider = Provider<GoRouter>((ref) {
         onEnableBiometric,
       }.contains(true);
 
-      if (auth.isAuthenticated && onboarding) {
+      if (!auth.isAuthenticated) {
+        if (isJoinDeepLink) return '/join-group';
+        if (onUnlock) return '/login';
+        if (!onboarding) return '/login';
+        return null;
+      }
+
+      final needsUnlock = auth.isAuthenticated && !auth.isUnlocked;
+      if (needsUnlock && !onUnlock) {
+        final redirectTo =
+            loc == '/splash' ? '/home' : state.uri.toString();
+        return Uri(
+          path: '/unlock',
+          queryParameters: {'redirect': redirectTo},
+        ).toString();
+      }
+
+      if (auth.isAuthenticated && onboarding && !onUnlock) {
         return '/home';
       }
 
       if (isJoinDeepLink && !auth.isAuthenticated) {
-        return '/join-group';
-      }
-
-      final isPublic = onboarding;
-      if (!isPublic && !auth.isAuthenticated) {
         return '/join-group';
       }
 

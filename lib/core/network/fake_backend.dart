@@ -1,12 +1,12 @@
 class FakeBackend {
-  /// Mock login response: { accessToken, refreshToken, user: { id, email } }
-  static Map<String, dynamic> mockLogin(String email, String password) {
+  /// Mock login response: { accessToken, refreshToken, user: { id, phone } }
+  static Map<String, dynamic> mockLogin(String phone, String pin) {
     return {
       'accessToken': 'access_token_${DateTime.now().millisecondsSinceEpoch}',
       'refreshToken': 'refresh_token_${DateTime.now().millisecondsSinceEpoch}',
       'user': {
         'id': 'user-${DateTime.now().millisecondsSinceEpoch}',
-        'email': email,
+        'phone': phone,
       },
     };
   }

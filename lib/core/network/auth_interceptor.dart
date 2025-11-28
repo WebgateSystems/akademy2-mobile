@@ -40,7 +40,8 @@ class AuthInterceptor extends Interceptor {
           final clone = req
             ..headers['Authorization'] = 'Bearer $newToken'
             ..extra = {...req.extra, 'retry': true}
-            ..baseUrl = req.baseUrl.isEmpty ? Api.baseUrl : req.baseUrl;
+            ..baseUrl =
+                req.baseUrl.isEmpty ? Api.normalizedBaseUrl : req.baseUrl;
           try {
             final response = await DioClient().dio.fetch(clone);
             return handler.resolve(response);

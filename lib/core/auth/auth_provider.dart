@@ -8,22 +8,26 @@ import '../network/dio_provider.dart';
 class AuthState {
   final bool isAuthenticated;
   final bool isLoading;
+  final bool isUnlocked;
   final String? userId;
 
   const AuthState({
     required this.isAuthenticated,
     this.isLoading = false,
+    this.isUnlocked = false,
     this.userId,
   });
 
   AuthState copyWith({
     bool? isAuthenticated,
     bool? isLoading,
+    bool? isUnlocked,
     String? userId,
   }) {
     return AuthState(
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       isLoading: isLoading ?? this.isLoading,
+      isUnlocked: isUnlocked ?? this.isUnlocked,
       userId: userId ?? this.userId,
     );
   }
@@ -43,17 +47,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = AuthState(
       isAuthenticated: token != null,
       isLoading: false,
+      isUnlocked: false,
       userId: token != null ? 'me' : null,
     );
   }
 
-  Future<void> login(String email, String password) async {
+  Future<void> login(String phone, String pin) async {
     state = state.copyWith(isLoading: true);
     try {
       final dio = ref.read(dioProvider);
       final resp = await dio.post(
-        '/v1/auth/login',
-        data: {'email': email, 'password': password},
+        'v1/auth/login',
+        data: {
+          'user': {
+            'phone': phone,
+            'pin': pin,
+          },
+        },
       );
 
       if (resp.statusCode == 200 && resp.data != null) {
@@ -64,9 +74,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
           if (refreshToken != null) {
             await _storage.write('refreshToken', refreshToken);
           }
+          await _storage.write('userPin', pin);
+          await _storage.write('phone', phone);
           state = AuthState(
             isAuthenticated: true,
-            userId: email,
+            isUnlocked: true,
+            userId: phone,
             isLoading: false,
           );
           return;
@@ -79,23 +92,49 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-
-  Future<void> setTokens(String accessToken, {String? refreshToken, String? userId}) async {
+  Future<void> setTokens(String accessToken,
+      {String? refreshToken, String? userId}) async {
     await _storage.write('accessToken', accessToken);
     if (refreshToken != null) {
       await _storage.write('refreshToken', refreshToken);
     }
-    state = AuthState(isAuthenticated: true, isLoading: false, userId: userId ?? 'me');
+    state = AuthState(
+      isAuthenticated: true,
+      isUnlocked: true,
+      isLoading: false,
+      userId: userId ?? 'me',
+    );
   }
 
   void markAuthenticated({String? userId}) {
-    state = AuthState(isAuthenticated: true, isLoading: false, userId: userId);
+    state = AuthState(
+      isAuthenticated: true,
+      isUnlocked: true,
+      isLoading: false,
+      userId: userId,
+    );
+  }
+
+  void markUnlocked() {
+    if (state.isAuthenticated) {
+      state = state.copyWith(isUnlocked: true, isLoading: false);
+    }
+  }
+
+  void requireUnlock() {
+    if (state.isAuthenticated && state.isUnlocked) {
+      state = state.copyWith(isUnlocked: false);
+    }
   }
 
   Future<void> logout() async {
     await _storage.delete('accessToken');
     await _storage.delete('refreshToken');
-    state = const AuthState(isAuthenticated: false, isLoading: false);
+    state = const AuthState(
+      isAuthenticated: false,
+      isLoading: false,
+      isUnlocked: false,
+    );
   }
 
   /// Refreshes access token using refresh token.
@@ -116,7 +155,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
       final dio = ref.read(dioProvider);
       final resp = await dio.post(
-        '/v1/auth/refresh',
+        'v1/auth/refresh',
         data: {'refreshToken': refreshToken},
       );
       if (resp.statusCode == 200 && resp.data != null) {

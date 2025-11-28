@@ -15,6 +15,38 @@ class AppLocalizationsUk extends AppLocalizations {
   String get loginTitle => 'Увійти';
 
   @override
+  String get loginPhoneRequired => 'Введіть свій номер телефону';
+
+  @override
+  String get loginPhoneInvalid => 'Некоректний номер телефону.';
+
+  @override
+  String get loginCreateAccountPrompt => 'Немає облікового запису?';
+
+  @override
+  String get loginCreateAccountCta => 'Створити акаунт';
+
+  @override
+  String loginFailed(String error) {
+    return 'Не вдалося увійти: $error';
+  }
+
+  @override
+  String get loginPinTitle => 'Увійдіть за 4-значним кодом';
+
+  @override
+  String get loginPinSubtitle =>
+      'Введіть свій 4-значний PIN, щоб продовжити в застосунку Academy 2.0.';
+
+  @override
+  String get unlockPinTitle => 'Введіть свій PIN';
+
+  @override
+  String unlockPinSubtitle(String phone) {
+    return 'Підтвердіть свій 4-значний PIN для\n$phone.';
+  }
+
+  @override
   String get passwordField => 'Пароль';
 
   @override
@@ -353,4 +385,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get unverifiedPhoneNubmer => 'Неперевірений номер телефону.';
+
+  @override
+  String get useAnotherAccount => 'Використати інший акаунт';
 }

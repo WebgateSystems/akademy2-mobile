@@ -8,7 +8,7 @@ class VideoService {
   final Dio _dio;
 
   Future<List<SchoolVideo>> fetchVideos({String? subjectId, String? query}) async {
-    final resp = await _dio.get('/v1/videos', queryParameters: {
+    final resp = await _dio.get('v1/videos', queryParameters: {
       if (subjectId != null && subjectId.isNotEmpty) 'subjectId': subjectId,
       if (query != null && query.isNotEmpty) 'q': query,
     });
@@ -25,7 +25,7 @@ class VideoService {
     required String filePath,
   }) async {
     final resp = await _dio.post(
-      '/v1/videos',
+      'v1/videos',
       data: {
         'title': title,
         'description': description,
@@ -37,6 +37,6 @@ class VideoService {
   }
 
   Future<void> deleteVideo(String id) async {
-    await _dio.delete('/v1/videos/$id');
+    await _dio.delete('v1/videos/$id');
   }
 }

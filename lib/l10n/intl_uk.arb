@@ -2,6 +2,29 @@
   "@@locale": "uk",
   "appTitle": "Академія 2.0",
   "loginTitle": "Увійти",
+  "loginPhoneRequired": "Введіть свій номер телефону",
+  "loginPhoneInvalid": "Некоректний номер телефону.",
+  "loginCreateAccountPrompt": "Немає облікового запису?",
+  "loginCreateAccountCta": "Створити акаунт",
+  "loginFailed": "Не вдалося увійти: {error}",
+  "@loginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loginPinTitle": "Увійдіть за 4-значним кодом",
+  "loginPinSubtitle": "Введіть свій 4-значний PIN, щоб продовжити в застосунку Academy 2.0.",
+  "unlockPinTitle": "Введіть свій PIN",
+  "unlockPinSubtitle": "Підтвердіть свій 4-значний PIN для\n{phone}.",
+  "@unlockPinSubtitle": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "passwordField": "Пароль",
   "subjectsTitle": "Предмети",
   "joinTitle": "Приєднання до класу",
@@ -161,5 +184,6 @@
     }
   },
   "unverifiedEmailAddress": "Неперевірена адреса електронної пошти.",
-  "unverifiedPhoneNubmer": "Неперевірений номер телефону."
+  "unverifiedPhoneNubmer": "Неперевірений номер телефону.",
+  "useAnotherAccount": "Використати інший акаунт"
 }

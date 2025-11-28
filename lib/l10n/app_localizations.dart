@@ -109,8 +109,62 @@ abstract class AppLocalizations {
   /// No description provided for @loginTitle.
   ///
   /// In en, this message translates to:
-  /// **'Sign in'**
+  /// **'Log in'**
   String get loginTitle;
+
+  /// No description provided for @loginPhoneRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your phone number'**
+  String get loginPhoneRequired;
+
+  /// No description provided for @loginPhoneInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid phone number.'**
+  String get loginPhoneInvalid;
+
+  /// No description provided for @loginCreateAccountPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get loginCreateAccountPrompt;
+
+  /// No description provided for @loginCreateAccountCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get loginCreateAccountCta;
+
+  /// No description provided for @loginFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failed: {error}'**
+  String loginFailed(String error);
+
+  /// No description provided for @loginPinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in with your 4-digit code'**
+  String get loginPinTitle;
+
+  /// No description provided for @loginPinSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your 4-digit PIN to continue to the Academy 2.0 application.'**
+  String get loginPinSubtitle;
+
+  /// No description provided for @unlockPinTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your PIN'**
+  String get unlockPinTitle;
+
+  /// No description provided for @unlockPinSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your 4-digit PIN for\n{phone}.'**
+  String unlockPinSubtitle(String phone);
 
   /// No description provided for @passwordField.
   ///
@@ -729,6 +783,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unverified phone nubmer.'**
   String get unverifiedPhoneNubmer;
+
+  /// No description provided for @useAnotherAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Use another account'**
+  String get useAnotherAccount;
 }
 
 class _AppLocalizationsDelegate

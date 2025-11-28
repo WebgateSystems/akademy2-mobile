@@ -2,6 +2,29 @@
   "@@locale": "pl",
   "appTitle": "Akademia 2.0",
   "loginTitle": "Zaloguj się",
+  "loginPhoneRequired": "Podaj numer telefonu",
+  "loginPhoneInvalid": "Nieprawidłowy numer telefonu.",
+  "loginCreateAccountPrompt": "Nie masz konta?",
+  "loginCreateAccountCta": "Utwórz konto",
+  "loginFailed": "Logowanie nie powiodło się: {error}",
+  "@loginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loginPinTitle": "Zaloguj się 4-cyfrowym kodem",
+  "loginPinSubtitle": "Wpisz swój 4-cyfrowy PIN, aby kontynuować w aplikacji Academy 2.0.",
+  "unlockPinTitle": "Wprowadź swój PIN",
+  "unlockPinSubtitle": "Potwierdź swój 4-cyfrowy PIN dla\n{phone}.",
+  "@unlockPinSubtitle": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
   "passwordField": "Hasło",
   "subjectsTitle": "Przedmioty",
   "joinTitle": "Dołącz do klasy",
@@ -161,5 +184,6 @@
     }
   },
   "unverifiedEmailAddress": "Niezweryfikowany adres e-mail.",
-  "unverifiedPhoneNubmer": "Niezweryfikowany numer telefonu."
+  "unverifiedPhoneNubmer": "Niezweryfikowany numer telefonu.",
+  "useAnotherAccount": "Użyj innego konta"
 }

@@ -12,7 +12,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'Academy 2.0';
 
   @override
-  String get loginTitle => 'Sign in';
+  String get loginTitle => 'Log in';
+
+  @override
+  String get loginPhoneRequired => 'Please enter your phone number';
+
+  @override
+  String get loginPhoneInvalid => 'Invalid phone number.';
+
+  @override
+  String get loginCreateAccountPrompt => 'Don\'t have an account?';
+
+  @override
+  String get loginCreateAccountCta => 'Create account';
+
+  @override
+  String loginFailed(String error) {
+    return 'Login failed: $error';
+  }
+
+  @override
+  String get loginPinTitle => 'Log in with your 4-digit code';
+
+  @override
+  String get loginPinSubtitle =>
+      'Please enter your 4-digit PIN to continue to the Academy 2.0 application.';
+
+  @override
+  String get unlockPinTitle => 'Enter your PIN';
+
+  @override
+  String unlockPinSubtitle(String phone) {
+    return 'Confirm your 4-digit PIN for\n$phone.';
+  }
 
   @override
   String get passwordField => 'Password';
@@ -352,4 +384,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unverifiedPhoneNubmer => 'Unverified phone nubmer.';
+
+  @override
+  String get useAnotherAccount => 'Use another account';
 }

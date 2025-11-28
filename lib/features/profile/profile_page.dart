@@ -96,7 +96,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     setState(() => _loading = true);
     final dio = ref.read(dioProvider);
     try {
-      await dio.post('/v1/account/update', data: {
+      await dio.post('v1/account/update', data: {
         'firstName': _firstNameCtrl.text.trim(),
         'lastName': _lastNameCtrl.text.trim(),
         'dob': _dobCtrl.text.trim(),
@@ -164,7 +164,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     setState(() => _deleting = true);
     final dio = ref.read(dioProvider);
     try {
-      await dio.delete('/v1/account/delete');
+      await dio.delete('v1/account/delete');
       await ref.read(authProvider.notifier).logout();
       if (mounted) context.go('/join-group');
     } catch (e) {

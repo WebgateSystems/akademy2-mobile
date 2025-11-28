@@ -10,7 +10,7 @@ class JoinRepository {
   final Dio _dio;
 
   Future<String> joinWithCode(String code) async {
-    final resp = await _dio.post('/v1/classes/join', data: {'code': code});
+    final resp = await _dio.post('v1/classes/join', data: {'code': code});
     final data = resp.data as Map<String, dynamic>;
     final id = data['requestId'] as String?;
     if (id == null) throw Exception('Invalid response');
@@ -18,7 +18,7 @@ class JoinRepository {
   }
 
   Future<JoinStatus> checkStatus(String requestId) async {
-    final resp = await _dio.get('/v1/classes/join/$requestId/status');
+    final resp = await _dio.get('v1/classes/join/$requestId/status');
     final data = resp.data as Map<String, dynamic>;
     final status = data['status'] as String? ?? 'pending';
     final token = data['accessToken'] as String?;

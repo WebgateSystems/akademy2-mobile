@@ -2,20 +2,22 @@ import 'dart:async';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../core/auth/auth_provider.dart';
 import '../../core/constants/urls.dart';
 
-class SplashPage extends StatefulWidget {
+class SplashPage extends ConsumerStatefulWidget {
   const SplashPage({super.key});
 
   @override
-  State<SplashPage> createState() => _SplashPageState();
+  ConsumerState<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPageState extends ConsumerState<SplashPage> {
   Timer? _timer;
   bool _logoTapped = false;
   bool _navigated = false;
@@ -36,7 +38,16 @@ class _SplashPageState extends State<SplashPage> {
     if (_navigated) return;
     _navigated = true;
     if (!mounted) return;
-    context.go('/create-account');
+    final auth = ref.read(authProvider);
+    if (auth.isAuthenticated) {
+      if (!auth.isUnlocked) {
+        context.go('/unlock');
+        return;
+      }
+      context.go('/home');
+    } else {
+      context.go('/login');
+    }
   }
 
   Future<void> _onLogoTap() async {

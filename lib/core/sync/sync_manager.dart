@@ -22,7 +22,7 @@ class SyncManager {
       final dio = ref.read(dioProvider);
 
       // Fetch subjects from API (intercepted by MockApiInterceptor)
-      final subjectsResp = await dio.get('/v1/subjects');
+      final subjectsResp = await dio.get('v1/subjects');
       final subjectsData =
           (subjectsResp.data['subjects'] as List?)?.cast<Map<String, dynamic>>() ??
           [];
@@ -37,7 +37,7 @@ class SyncManager {
       // Fetch and save modules for each subject
       for (final subject in subjects) {
         final modulesResp = await dio.get(
-          '/v1/modules',
+          'v1/modules',
           queryParameters: {'subjectId': subject.id},
         );
         final modulesData =
@@ -58,7 +58,7 @@ class SyncManager {
         // Fetch and save contents for each module
         for (final module in modules) {
           final contentsResp = await dio.get(
-            '/v1/contents',
+            'v1/contents',
             queryParameters: {'moduleId': module.id},
           );
           final contentsData =
