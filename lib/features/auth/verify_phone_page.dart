@@ -161,7 +161,7 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: List.generate(_controllers.length, (index) {
               return SizedBox(
-                height: 80.w,
+                height: 82.w,
                 width: 70.w,
                 child: EditTextWidget(
                   controller: _controllers[index],

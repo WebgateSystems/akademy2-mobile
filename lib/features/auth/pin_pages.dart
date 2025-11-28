@@ -302,8 +302,8 @@ class RoundButton extends StatefulWidget {
     required VoidCallback onTap,
     required String text,
     double size = 72,
-    Color textColor = Colors.black,
-    Color pressedTextColor = Colors.red,
+    Color? textColor,
+    Color? pressedTextColor,
     Color backgroundColor = Colors.white,
     Color splashColor = Colors.black26,
     Color? borderColor,
@@ -318,8 +318,8 @@ class RoundButton extends StatefulWidget {
       borderColor: borderColor,
       borderWidth: borderWidth,
       text: text,
-      textColor: textColor,
-      pressedTextColor: pressedTextColor,
+      textColor: textColor ?? Colors.black,
+      pressedTextColor: pressedTextColor ?? Colors.white,
     );
   }
 

@@ -30,7 +30,7 @@ class ActionButtonWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.r),
         ),
         child: TextButton(
-          onPressed: onPressed,
+          onPressed: loading ? null : onPressed,
           style: TextButton.styleFrom(
             minimumSize: Size(double.infinity, double.infinity), // важливо!
             padding: EdgeInsets.zero, // прибирає внутрішній відступ
@@ -46,10 +46,8 @@ class ActionButtonWidget extends StatelessWidget {
                   child: CircularProgressIndicator(
                       strokeWidth: 1.w,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                          onPressed != null || loading
-                              ? AppColors.button(context)
-                              : AppColors.buttonDisabled(context)
-                                  .withValues(alpha: 0.6))),
+                        AppColors.contentButtonPrimary(context),
+                      )),
                 )
               : Text(
                   text.toUpperCase(),

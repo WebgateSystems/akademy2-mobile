@@ -59,10 +59,18 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
     }
   }
 
-  Future<void> _skipBiometric() async {
+  Future<void> _skipBiometric(AppLocalizations l10n) async {
     if (_saving) return;
     setState(() => _saving = true);
-    await _saveAndClose(enable: false);
+    try {
+      // Явно вимикаємо обидва прапори, щоб не зберігати сміття.
+      _fingerprint = false;
+      _face = false;
+      await _saveAndClose(enable: false);
+    } catch (e) {
+      _showMessage(l10n.enableBiometricFailed('$e'));
+      if (mounted) setState(() => _saving = false);
+    }
   }
 
   Future<void> _saveAndClose({required bool enable}) async {
@@ -119,7 +127,7 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
               ),
               SizedBox(height: 12.h),
               ActionTextButtonWidget(
-                onPressed: _saving ? null : _skipBiometric,
+                onPressed: _saving ? null : () => _skipBiometric(l10n),
                 text: l10n.enableBiometricNotNow,
               ),
             ],
