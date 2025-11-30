@@ -3,22 +3,24 @@ import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/checkbox_widget.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
+import 'package:academy_2_app/core/network/dio_provider.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import 'auth_flow_models.dart';
 
-class CreateAccountPage extends StatefulWidget {
+class CreateAccountPage extends ConsumerStatefulWidget {
   const CreateAccountPage({super.key});
 
   @override
-  State<CreateAccountPage> createState() => _CreateAccountPageState();
+  ConsumerState<CreateAccountPage> createState() => _CreateAccountPageState();
 }
 
-class _CreateAccountPageState extends State<CreateAccountPage> {
+class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   final _firstNameCtrl = TextEditingController();
   final _lastNameCtrl = TextEditingController();
   final _dobCtrl = TextEditingController();
@@ -189,13 +191,44 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   Future<void> _submit() async {
     if (!_isFormValid) return;
     setState(() => _loading = true);
-    await Future<void>.delayed(const Duration(milliseconds: 800));
-    if (!mounted) return;
-    final args = VerifyPhoneArgs(
-      phone: _phoneCtrl.text.trim(),
-      email: _emailCtrl.text.trim(),
-    );
-    context.push('/verify-phone', extra: args);
+    try {
+      final dio = ref.read(dioProvider);
+
+      final flowResp = await dio.get('v1/register/flow');
+      final flowId = (flowResp.data['data']?['id'] as String?) ?? '';
+      if (flowId.isEmpty) {
+        throw Exception('Flow id missing');
+      }
+
+      await dio.post(
+        'v1/register/profile',
+        data: {
+          'flow_id': flowId,
+          'profile': {
+            'first_name': _firstNameCtrl.text.trim(),
+            'last_name': _lastNameCtrl.text.trim(),
+            'email': _emailCtrl.text.trim(),
+            'birthdate': _dobCtrl.text.trim(),
+            'phone': _phoneCtrl.text.trim(),
+          },
+        },
+      );
+
+      if (!mounted) return;
+      final args = VerifyPhoneArgs(
+        phone: _phoneCtrl.text.trim(),
+        email: _emailCtrl.text.trim(),
+        flowId: flowId,
+      );
+      context.push('/verify-phone', extra: args);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Registration failed: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
   }
 
   @override

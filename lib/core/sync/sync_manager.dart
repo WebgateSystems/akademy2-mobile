@@ -6,6 +6,7 @@ import '../db/entities/module_entity.dart';
 import '../db/entities/subject_entity.dart';
 import '../db/isar_service.dart';
 import '../network/dio_provider.dart';
+import '../auth/auth_provider.dart';
 
 /// Manages metadata synchronization between API and local Isar database
 class SyncManager {
@@ -18,65 +19,43 @@ class SyncManager {
     try {
       debugPrint('SyncManager: Starting bootstrap sync...');
 
+      final auth = ref.read(authProvider);
+      if (!auth.isAuthenticated) {
+        debugPrint('SyncManager: Skip bootstrap, user not authenticated');
+        return;
+      }
+
       final isarService = IsarService();
       final dio = ref.read(dioProvider);
 
-      // Fetch subjects from API (intercepted by MockApiInterceptor)
-      final subjectsResp = await dio.get('v1/subjects');
-      final subjectsData =
-          (subjectsResp.data['subjects'] as List?)?.cast<Map<String, dynamic>>() ??
-          [];
-      final subjects =
-          subjectsData.map((json) => SubjectEntity.fromJson(json)).toList();
+      final resp = await dio.get('v1/subjects/with_contents');
+      final list =
+          (resp.data['data'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+      final parsed = _parseSubjectsWithContents(list);
 
-      debugPrint('SyncManager: Fetched ${subjects.length} subjects');
+      debugPrint('SyncManager: Fetched ${parsed.subjects.length} subjects');
 
-      // Save subjects to Isar
-      await isarService.saveSubjects(subjects);
+      await isarService.saveSubjects(parsed.subjects);
+      await isarService.saveModules(parsed.modules);
+      await isarService.saveContents(parsed.contents);
 
-      // Fetch and save modules for each subject
-      for (final subject in subjects) {
-        final modulesResp = await dio.get(
-          'v1/modules',
-          queryParameters: {'subjectId': subject.id},
-        );
-        final modulesData =
-            (modulesResp.data['modules'] as List?)?.cast<Map<String, dynamic>>() ??
-            [];
-        final modules =
-            modulesData.map((json) => ModuleEntity.fromJson(json)).toList();
-
-        debugPrint(
-          'SyncManager: Fetched ${modules.length} modules for ${subject.title}',
-        );
-        await isarService.saveModules(modules);
+      for (final subject in parsed.subjects) {
         await isarService.updateSubjectModules(
           subject.id,
-          modules.map((m) => m.id).toList(),
+          parsed.modules
+              .where((m) => m.subjectId == subject.id)
+              .map((m) => m.id)
+              .toList(),
         );
-
-        // Fetch and save contents for each module
-        for (final module in modules) {
-          final contentsResp = await dio.get(
-            'v1/contents',
-            queryParameters: {'moduleId': module.id},
-          );
-          final contentsData =
-              (contentsResp.data['contents'] as List?)?.cast<Map<String, dynamic>>() ??
-              [];
-          final contents = contentsData
-              .map((json) => ContentEntity.fromJson(json))
-              .toList();
-
-          debugPrint(
-            'SyncManager: Fetched ${contents.length} contents for ${module.title}',
-          );
-          await isarService.saveContents(contents);
-          await isarService.updateModuleContents(
-            module.id,
-            contents.map((c) => c.id).toList(),
-          );
-        }
+      }
+      for (final module in parsed.modules) {
+        await isarService.updateModuleContents(
+          module.id,
+          parsed.contents
+              .where((c) => c.moduleId == module.id)
+              .map((c) => c.id)
+              .toList(),
+        );
       }
 
       debugPrint('SyncManager: Bootstrap sync completed successfully');
@@ -100,3 +79,74 @@ class SyncManager {
 }
 
 final syncManagerProvider = Provider((ref) => SyncManager(ref));
+
+class _ParsedData {
+  _ParsedData({
+    required this.subjects,
+    required this.modules,
+    required this.contents,
+  });
+
+  final List<SubjectEntity> subjects;
+  final List<ModuleEntity> modules;
+  final List<ContentEntity> contents;
+}
+
+_ParsedData _parseSubjectsWithContents(List<Map<String, dynamic>> data) {
+  final subjects = <SubjectEntity>[];
+  final modules = <ModuleEntity>[];
+  final contents = <ContentEntity>[];
+
+  for (final item in data) {
+    final attr = item['attributes'] as Map<String, dynamic>? ?? {};
+    final subjectId = attr['id'] as String? ?? item['id'] as String? ?? '';
+    final unit = attr['unit'] as Map<String, dynamic>?;
+    final learningModule = unit?['learning_module'] as Map<String, dynamic>?;
+    final learningModuleId =
+        learningModule?['id'] as String? ?? '${subjectId}_module';
+
+    final subject = SubjectEntity()
+      ..id = subjectId
+      ..title = attr['title'] as String? ?? ''
+      ..description = ''
+      ..order = attr['order_index'] as int? ?? 0
+      ..moduleCount = learningModule == null ? 0 : 1
+      ..updatedAt = DateTime.now()
+      ..moduleIds = learningModule == null ? [] : [learningModuleId];
+    subjects.add(subject);
+
+    if (learningModule != null) {
+      final module = ModuleEntity()
+        ..id = learningModuleId
+        ..subjectId = subjectId
+        ..title = learningModule['title'] as String? ?? ''
+        ..description = ''
+        ..order = learningModule['order_index'] as int? ?? 0
+        ..singleFlow = learningModule['single_flow'] as bool? ?? false
+        ..updatedAt = DateTime.now()
+        ..contentIds = [];
+      modules.add(module);
+
+      final contentList =
+          (learningModule['contents'] as List?)?.cast<Map<String, dynamic>>() ??
+              [];
+      for (final c in contentList) {
+        final content = ContentEntity()
+          ..id = c['id'] as String? ?? ''
+          ..moduleId = module.id
+          ..type = (c['content_type'] as String? ?? '').toLowerCase()
+          ..title = c['title'] as String? ?? ''
+          ..description = ''
+          ..durationSec = c['duration_sec'] as int? ?? 0
+          ..order = c['order_index'] as int? ?? 0
+          ..updatedAt = DateTime.now()
+          ..downloaded = false
+          ..downloadPath = '';
+        contents.add(content);
+        module.contentIds.add(content.id);
+      }
+    }
+  }
+
+  return _ParsedData(subjects: subjects, modules: modules, contents: contents);
+}

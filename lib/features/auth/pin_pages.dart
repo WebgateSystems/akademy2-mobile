@@ -2,23 +2,29 @@ import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/network/dio_provider.dart';
+import '../../core/auth/auth_provider.dart';
 import '../../core/storage/secure_storage.dart';
 import 'auth_flow_models.dart';
 
-class CreatePinPage extends StatefulWidget {
-  const CreatePinPage({super.key});
+class CreatePinPage extends ConsumerStatefulWidget {
+  const CreatePinPage({super.key, required this.flowId});
+
+  final String flowId;
 
   @override
-  State<CreatePinPage> createState() => _CreatePinPageState();
+  ConsumerState<CreatePinPage> createState() => _CreatePinPageState();
 }
 
-class _CreatePinPageState extends State<CreatePinPage> {
+class _CreatePinPageState extends ConsumerState<CreatePinPage> {
   String _current = '';
+  bool _saving = false;
 
-  void _handleKey(String value) {
+  void _handleKey(String value) async {
     if (value == 'back') {
       if (_current.isNotEmpty) {
         setState(() => _current = _current.substring(0, _current.length - 1));
@@ -29,7 +35,37 @@ class _CreatePinPageState extends State<CreatePinPage> {
     if (_current.length >= 4) return;
     setState(() => _current += value);
     if (_current.length == 4) {
-      context.push('/confirm-pin', extra: ConfirmPinArgs(pin: _current));
+      await _submitPin();
+    }
+  }
+
+  Future<void> _submitPin() async {
+    if (_saving) return;
+    setState(() => _saving = true);
+    try {
+      final dio = ref.read(dioProvider);
+      await dio.post(
+        'v1/register/set_pin',
+        data: {
+          'flow_id': widget.flowId,
+          'pin': _current,
+        },
+      );
+      if (!mounted) return;
+      context.push(
+        '/confirm-pin',
+        extra: ConfirmPinArgs(pin: _current, flowId: widget.flowId),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _current = '';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to set PIN')),
+      );
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 
@@ -41,20 +77,21 @@ class _CreatePinPageState extends State<CreatePinPage> {
       subtitle: l10n.pinCreateSubtitle,
       pin: _current,
       onKey: _handleKey,
+      showProgress: _saving,
     );
   }
 }
 
-class ConfirmPinPage extends StatefulWidget {
+class ConfirmPinPage extends ConsumerStatefulWidget {
   const ConfirmPinPage({super.key, required this.args});
 
   final ConfirmPinArgs args;
 
   @override
-  State<ConfirmPinPage> createState() => _ConfirmPinPageState();
+  ConsumerState<ConfirmPinPage> createState() => _ConfirmPinPageState();
 }
 
-class _ConfirmPinPageState extends State<ConfirmPinPage> {
+class _ConfirmPinPageState extends ConsumerState<ConfirmPinPage> {
   String _current = '';
   bool _mismatch = false;
   bool _saving = false;
@@ -81,9 +118,47 @@ class _ConfirmPinPageState extends State<ConfirmPinPage> {
         _mismatch = false;
         _saving = true;
       });
-      await SecureStorage().write('userPin', _current);
+      await _confirmPin();
+    }
+  }
+
+  Future<void> _confirmPin() async {
+    try {
+      final dio = ref.read(dioProvider);
+      final resp = await dio.post(
+        'v1/register/confirm_pin',
+        data: {
+          'flow_id': widget.args.flowId,
+          'pin': _current,
+        },
+      );
+
+      final accessToken = resp.data['access_token'] as String?;
+      final data = resp.data['data'] as Map<String, dynamic>?;
+      final attributes = data?['attributes'] as Map<String, dynamic>?;
+      final userId =
+          attributes?['id'] as String? ?? data?['id'] as String? ?? 'me';
+
+      if (accessToken != null) {
+        await SecureStorage().write('userPin', _current);
+        await ref
+            .read(authProvider.notifier)
+            .setTokens(accessToken, userId: userId);
+        if (!mounted) return;
+        context.go('/join-group');
+        return;
+      }
+      throw Exception('No access token');
+    } catch (e) {
       if (!mounted) return;
-      context.push('/enable-biometric');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to confirm PIN: $e')),
+      );
+      setState(() {
+        _current = '';
+      });
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 

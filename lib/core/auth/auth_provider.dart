@@ -57,29 +57,35 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       final dio = ref.read(dioProvider);
       final resp = await dio.post(
-        'v1/auth/login',
+        'v1/session',
         data: {
           'user': {
-            'phone': phone,
-            'pin': pin,
+            // API очікує email/password, але для учня використовуємо phone/pin
+            'email': phone,
+            'password': pin,
           },
         },
       );
 
       if (resp.statusCode == 200 && resp.data != null) {
-        final accessToken = resp.data['accessToken'] as String?;
+        final accessToken = resp.data['access_token'] as String?;
+        final data = resp.data['data'] as Map<String, dynamic>?;
+        final attributes = data?['attributes'] as Map<String, dynamic>?;
+        final userId = attributes?['id'] as String? ?? data?['id'] as String?;
         final refreshToken = resp.data['refreshToken'] as String?;
         if (accessToken != null) {
           await _storage.write('accessToken', accessToken);
           if (refreshToken != null) {
             await _storage.write('refreshToken', refreshToken);
           }
-          await _storage.write('userPin', pin);
-          await _storage.write('phone', phone);
+          await saveUserProfile(attributes,
+              email: attributes?['email'] as String?,
+              phone: attributes?['phone'] as String? ?? phone,
+              pin: pin);
           state = AuthState(
             isAuthenticated: true,
             isUnlocked: true,
-            userId: phone,
+            userId: userId ?? phone,
             isLoading: false,
           );
           return;
@@ -140,53 +146,35 @@ class AuthNotifier extends StateNotifier<AuthState> {
   /// Refreshes access token using refresh token.
   /// Ensures only one refresh runs concurrently; other callers await the same future.
   Future<bool> refreshAccessToken() async {
-    if (_refreshCompleter != null) {
-      return _refreshCompleter!.future;
-    }
-    _refreshCompleter = Completer<bool>();
-
-    try {
-      final refreshToken = await _storage.read('refreshToken');
-      if (refreshToken == null) {
-        await logout();
-        _refreshCompleter!.complete(false);
-        return false;
-      }
-
-      final dio = ref.read(dioProvider);
-      final resp = await dio.post(
-        'v1/auth/refresh',
-        data: {'refreshToken': refreshToken},
-      );
-      if (resp.statusCode == 200 && resp.data != null) {
-        final newAccess = resp.data['accessToken'] as String?;
-        final newRefresh = resp.data['refreshToken'] as String?;
-        if (newAccess != null) {
-          await _storage.write('accessToken', newAccess);
-          if (newRefresh != null) {
-            await _storage.write('refreshToken', newRefresh);
-          }
-          state = state.copyWith(isAuthenticated: true, isLoading: false);
-          _refreshCompleter!.complete(true);
-          return true;
-        }
-      }
-
-      await logout();
-      _refreshCompleter!.complete(false);
-      return false;
-    } catch (e) {
-      // On error, consider refresh failed
-      await logout();
-      _refreshCompleter!.complete(false);
-      return false;
-    } finally {
-      _refreshCompleter = null;
-    }
+    await logout();
+    return false;
   }
 
   Future<String?> getAccessToken() async {
     return await _storage.read('accessToken');
+  }
+
+  Future<void> saveUserProfile(
+    Map<String, dynamic>? attrs, {
+    String? email,
+    String? phone,
+    String? pin,
+  }) async {
+    final storage = _storage;
+    final firstName = attrs?['first_name'] as String?;
+    final lastName = attrs?['last_name'] as String?;
+    final birthdate = attrs?['birthdate'] as String?;
+    final metaPin = attrs?['metadata'] is Map<String, dynamic>
+        ? (attrs?['metadata'] as Map<String, dynamic>)['pin'] as String?
+        : null;
+
+    if (firstName != null) await storage.write('firstName', firstName);
+    if (lastName != null) await storage.write('lastName', lastName);
+    if (birthdate != null) await storage.write('dob', birthdate);
+    if (email != null) await storage.write('email', email);
+    if (phone != null) await storage.write('phone', phone);
+    if (pin != null) await storage.write('userPin', pin);
+    if (metaPin != null) await storage.write('userPin', metaPin);
   }
 }
 

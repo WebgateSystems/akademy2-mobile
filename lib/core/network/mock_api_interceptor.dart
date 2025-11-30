@@ -16,8 +16,8 @@ class MockApiInterceptor extends Interceptor {
       Response? mock;
 
       switch (path) {
-        case 'v1/auth/login':
-          mock = await _mockAuthLogin(options);
+        case 'v1/session':
+          mock = await _mockSessionLogin(options);
           break;
         case 'v1/auth/refresh':
           mock = await _mockAuthRefresh(options);
@@ -74,13 +74,13 @@ class MockApiInterceptor extends Interceptor {
     handler.next(response);
   }
 
-  Future<Response?> _mockAuthLogin(RequestOptions options) async {
+  Future<Response?> _mockSessionLogin(RequestOptions options) async {
     if (options.method.toUpperCase() != 'POST') return null;
 
     final body = options.data as Map<String, dynamic>?;
     final user = body?['user'] as Map<String, dynamic>?;
-    final phone = user?['phone'] as String? ?? '+48000000000';
-    final pin = user?['pin'] as String? ?? '0000';
+    final phone = user?['email'] as String? ?? '+48000000000';
+    final pin = user?['password'] as String? ?? '0000';
 
     return Response(
       requestOptions: options,

@@ -6,21 +6,23 @@ import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/network/dio_provider.dart';
 import 'auth_flow_models.dart';
 
-class VerifyPhonePage extends StatefulWidget {
+class VerifyPhonePage extends ConsumerStatefulWidget {
   const VerifyPhonePage({super.key, required this.args});
 
   final VerifyPhoneArgs args;
 
   @override
-  State<VerifyPhonePage> createState() => _VerifyPhonePageState();
+  ConsumerState<VerifyPhonePage> createState() => _VerifyPhonePageState();
 }
 
-class _VerifyPhonePageState extends State<VerifyPhonePage> {
+class _VerifyPhonePageState extends ConsumerState<VerifyPhonePage> {
   final _controllers = List.generate(4, (_) => TextEditingController());
   final _focusNodes = List.generate(4, (_) => FocusNode());
   bool _invalid = false;
@@ -80,21 +82,24 @@ class _VerifyPhonePageState extends State<VerifyPhonePage> {
       _loading = true;
     });
 
-    // TODO: замінити це на реальний виклик бекенду / Firebase
-    await Future<void>.delayed(const Duration(milliseconds: 800));
-    if (!mounted) return;
-
-    final isValid = true;
-
-    if (!isValid) {
+    try {
+      final dio = ref.read(dioProvider);
+      await dio.post(
+        'v1/register/verify_phone',
+        data: {
+          'flow_id': widget.args.flowId,
+          'code': _code,
+        },
+      );
+      if (!mounted) return;
+      context.push('/create-pin', extra: widget.args.flowId);
+    } catch (_) {
+      if (!mounted) return;
       setState(() {
         _loading = false;
         _invalid = true;
       });
-      return;
     }
-
-    context.push('/verify-email', extra: widget.args.email);
   }
 
   void _resend() {

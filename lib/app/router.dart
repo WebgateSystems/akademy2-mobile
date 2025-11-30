@@ -10,6 +10,7 @@ import '../features/auth/join_group_page.dart';
 import '../features/auth/login_page.dart';
 import '../features/auth/pin_pages.dart';
 import '../features/auth/unlock_page.dart';
+import '../features/auth/tech_login_page.dart';
 import '../features/auth/verify_email_page.dart';
 import '../features/auth/verify_phone_page.dart';
 import '../features/auth/wait_approval_page.dart';
@@ -46,10 +47,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/unlock',
-        builder: (context, state) => UnlockPage(
-          redirect: state.uri.queryParameters['redirect'],
-        ),
+        path: '/tech-login',
+        builder: (context, state) => const TechLoginPage(),
+      ),
+      GoRoute(
+        path: '/tech-login',
+        builder: (context, state) => const TechLoginPage(),
       ),
       GoRoute(
         path: '/login-pin',
@@ -65,6 +68,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
+        path: '/unlock',
+        builder: (context, state) => UnlockPage(
+          redirect: state.uri.queryParameters['redirect'],
+        ),
+      ),
+      GoRoute(
         path: '/create-account',
         builder: (context, state) => const CreateAccountPage(),
       ),
@@ -75,7 +84,10 @@ final routerProvider = Provider<GoRouter>((ref) {
           final args = extra is VerifyPhoneArgs
               ? extra
               : const VerifyPhoneArgs(
-                  phone: '+000000000', email: 'user@example.com');
+                  phone: '+000000000',
+                  email: 'user@example.com',
+                  flowId: '',
+                );
           return VerifyPhonePage(args: args);
         },
       ),
@@ -98,7 +110,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/create-pin',
-        builder: (context, state) => const CreatePinPage(),
+        builder: (context, state) {
+          final flowId = state.extra is String ? state.extra as String : '';
+          return CreatePinPage(flowId: flowId);
+        },
       ),
       GoRoute(
         path: '/confirm-pin',
@@ -106,7 +121,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           final extra = state.extra;
           final args = extra is ConfirmPinArgs
               ? extra
-              : const ConfirmPinArgs(pin: '0000');
+              : const ConfirmPinArgs(pin: '0000', flowId: '');
           return ConfirmPinPage(args: args);
         },
       ),
@@ -169,8 +184,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       final auth = ref.read(authProvider);
       final loc = state.matchedLocation;
       final loggingIn = loc == '/login';
-      final onUnlock = loc == '/unlock';
       final onLoginPin = loc == '/login-pin';
+      final onUnlock = loc == '/unlock';
+      final onTechLogin = loc == '/tech-login';
       final onSplash = loc == '/splash';
       final onCreateAccount = loc == '/create-account';
       final onVerifyPhone = loc == '/verify-phone';
@@ -186,8 +202,9 @@ final routerProvider = Provider<GoRouter>((ref) {
       final onboarding = {
         onSplash,
         loggingIn,
-        onUnlock,
         onLoginPin,
+        onUnlock,
+        onTechLogin,
         onCreateAccount,
         onVerifyPhone,
         onVerifyEmail,
@@ -207,8 +224,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       final needsUnlock = auth.isAuthenticated && !auth.isUnlocked;
       if (needsUnlock && !onUnlock) {
-        final redirectTo =
-            loc == '/splash' ? '/home' : state.uri.toString();
+        final redirectTo = loc == '/splash' ? '/home' : state.uri.toString();
         return Uri(
           path: '/unlock',
           queryParameters: {'redirect': redirectTo},

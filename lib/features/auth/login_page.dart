@@ -32,20 +32,26 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _phoneCtl.addListener(_onPhoneChanged);
+  }
+
   void _goToPin() {
     FocusScope.of(context).unfocus();
+    final l10n = AppLocalizations.of(context)!;
     final phone = _phoneCtl.text.trim();
+
     if (phone.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(AppLocalizations.of(context)!.loginPhoneRequired)),
+        SnackBar(content: Text(l10n.loginPhoneRequired)),
       );
       return;
     }
     if (_phoneError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text(AppLocalizations.of(context)!.loginPhoneInvalid)),
+        SnackBar(content: Text(l10n.loginPhoneInvalid)),
       );
       return;
     }
@@ -54,12 +60,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       '/login-pin',
       extra: LoginPinArgs(phone: phone, redirect: widget.redirect),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _phoneCtl.addListener(_onPhoneChanged);
   }
 
   void _onPhoneChanged() {
@@ -156,6 +156,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ),
             ],
           ),
+          const SizedBox(height: 12),
+          TextButton(
+            onPressed: () => context.go('/tech-login'),
+            child: const Text('Tech login (email/password)'),
+          ),
         ],
       ),
     );
@@ -193,21 +198,13 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
 
   Future<void> _submitPin() async {
     setState(() => _submitting = true);
+    final l10n = AppLocalizations.of(context)!;
     try {
       final phone = widget.args.phone.trim();
       if (phone.isEmpty) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.loginPhoneRequired),
-            ),
-          );
-        }
-        return;
+        throw Exception('Missing phone number');
       }
-
       await ref.read(authProvider.notifier).login(phone, _current);
-
       if (!mounted) return;
       final target = (widget.args.redirect?.isNotEmpty ?? false)
           ? widget.args.redirect!
@@ -215,18 +212,12 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
       context.go(target);
     } catch (e) {
       if (!mounted) return;
-      setState(() {
-        _current = '';
-      });
+      setState(() => _current = '');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.loginFailed('$e')),
-        ),
+        SnackBar(content: Text(l10n.loginFailed('$e'))),
       );
     } finally {
-      if (mounted) {
-        setState(() => _submitting = false);
-      }
+      if (mounted) setState(() => _submitting = false);
     }
   }
 

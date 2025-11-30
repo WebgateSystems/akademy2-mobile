@@ -48,7 +48,10 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
     });
 
     if ((storedPin == null || storedPin.isEmpty) && mounted) {
-      context.go('/login');
+      ref.read(authProvider.notifier).markUnlocked();
+      final target =
+          (widget.redirect?.isNotEmpty ?? false) ? widget.redirect! : '/home';
+      context.go(target);
       return;
     }
 

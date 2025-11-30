@@ -10,9 +10,11 @@ final dioProvider = Provider<Dio>((ref) {
   final client = DioClient().dio;
   final hasAuth = client.interceptors.any((i) => i is AuthInterceptor);
   final hasMock = client.interceptors.any((i) => i is MockApiInterceptor);
+  const useMockApi =
+      bool.fromEnvironment('USE_MOCK_API', defaultValue: false);
 
-  // Add MockApiInterceptor first (should run before auth)
-  if (!hasMock) {
+  // Optionally add MockApiInterceptor first (should run before auth)
+  if (useMockApi && !hasMock) {
     client.interceptors.add(MockApiInterceptor());
   }
 
