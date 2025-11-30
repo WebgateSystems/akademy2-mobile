@@ -42,7 +42,7 @@ class IsarService {
 
   /// Get all subjects from Isar
   Future<List<SubjectEntity>> getSubjects() async {
-    return _isar.subjectEntitys.where().sortByOrder().findAll();
+    return _isar.subjectEntitys.where().sortByOrderIndex().findAll();
   }
 
   Future<SubjectEntity?> getSubject(String id) async {

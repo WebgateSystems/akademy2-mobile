@@ -37,23 +37,28 @@ const ModuleEntitySchema = CollectionSchema(
       name: r'order',
       type: IsarType.long,
     ),
-    r'singleFlow': PropertySchema(
+    r'published': PropertySchema(
       id: 4,
+      name: r'published',
+      type: IsarType.bool,
+    ),
+    r'singleFlow': PropertySchema(
+      id: 5,
       name: r'singleFlow',
       type: IsarType.bool,
     ),
     r'subjectId': PropertySchema(
-      id: 5,
+      id: 6,
       name: r'subjectId',
       type: IsarType.string,
     ),
     r'title': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'title',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -173,10 +178,11 @@ void _moduleEntitySerialize(
   writer.writeString(offsets[1], object.description);
   writer.writeString(offsets[2], object.id);
   writer.writeLong(offsets[3], object.order);
-  writer.writeBool(offsets[4], object.singleFlow);
-  writer.writeString(offsets[5], object.subjectId);
-  writer.writeString(offsets[6], object.title);
-  writer.writeDateTime(offsets[7], object.updatedAt);
+  writer.writeBool(offsets[4], object.published);
+  writer.writeBool(offsets[5], object.singleFlow);
+  writer.writeString(offsets[6], object.subjectId);
+  writer.writeString(offsets[7], object.title);
+  writer.writeDateTime(offsets[8], object.updatedAt);
 }
 
 ModuleEntity _moduleEntityDeserialize(
@@ -191,10 +197,11 @@ ModuleEntity _moduleEntityDeserialize(
   object.id = reader.readString(offsets[2]);
   object.isarId = id;
   object.order = reader.readLong(offsets[3]);
-  object.singleFlow = reader.readBool(offsets[4]);
-  object.subjectId = reader.readString(offsets[5]);
-  object.title = reader.readString(offsets[6]);
-  object.updatedAt = reader.readDateTime(offsets[7]);
+  object.published = reader.readBool(offsets[4]);
+  object.singleFlow = reader.readBool(offsets[5]);
+  object.subjectId = reader.readString(offsets[6]);
+  object.title = reader.readString(offsets[7]);
+  object.updatedAt = reader.readDateTime(offsets[8]);
   return object;
 }
 
@@ -216,10 +223,12 @@ P _moduleEntityDeserializeProp<P>(
     case 4:
       return (reader.readBool(offset)) as P;
     case 5:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 6:
       return (reader.readString(offset)) as P;
     case 7:
+      return (reader.readString(offset)) as P;
+    case 8:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1328,6 +1337,16 @@ extension ModuleEntityQueryFilter
   }
 
   QueryBuilder<ModuleEntity, ModuleEntity, QAfterFilterCondition>
+      publishedEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'published',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ModuleEntity, ModuleEntity, QAfterFilterCondition>
       singleFlowEqualTo(bool value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -1709,6 +1728,18 @@ extension ModuleEntityQuerySortBy
     });
   }
 
+  QueryBuilder<ModuleEntity, ModuleEntity, QAfterSortBy> sortByPublished() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'published', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModuleEntity, ModuleEntity, QAfterSortBy> sortByPublishedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'published', Sort.desc);
+    });
+  }
+
   QueryBuilder<ModuleEntity, ModuleEntity, QAfterSortBy> sortBySingleFlow() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'singleFlow', Sort.asc);
@@ -1810,6 +1841,18 @@ extension ModuleEntityQuerySortThenBy
     });
   }
 
+  QueryBuilder<ModuleEntity, ModuleEntity, QAfterSortBy> thenByPublished() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'published', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ModuleEntity, ModuleEntity, QAfterSortBy> thenByPublishedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'published', Sort.desc);
+    });
+  }
+
   QueryBuilder<ModuleEntity, ModuleEntity, QAfterSortBy> thenBySingleFlow() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'singleFlow', Sort.asc);
@@ -1888,6 +1931,12 @@ extension ModuleEntityQueryWhereDistinct
     });
   }
 
+  QueryBuilder<ModuleEntity, ModuleEntity, QDistinct> distinctByPublished() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'published');
+    });
+  }
+
   QueryBuilder<ModuleEntity, ModuleEntity, QDistinct> distinctBySingleFlow() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'singleFlow');
@@ -1945,6 +1994,12 @@ extension ModuleEntityQueryProperty
   QueryBuilder<ModuleEntity, int, QQueryOperations> orderProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'order');
+    });
+  }
+
+  QueryBuilder<ModuleEntity, bool, QQueryOperations> publishedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'published');
     });
   }
 

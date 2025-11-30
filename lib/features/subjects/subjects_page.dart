@@ -111,10 +111,7 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
                     (context, index) {
                       final subject = data[index];
                       return SubjectTile(
-                        id: subject.id,
-                        title: subject.title,
-                        moduleCount: subject.moduleCount,
-                        color: AppColors.cardColor(context, index),
+                        subject: subject,
                         onTap: () => _handleSubjectTap(subject),
                       );
                     },

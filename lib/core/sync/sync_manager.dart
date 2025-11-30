@@ -107,11 +107,26 @@ _ParsedData _parseSubjectsWithContents(List<Map<String, dynamic>> data) {
 
     final subject = SubjectEntity()
       ..id = subjectId
+      ..type = item['type'] as String?
       ..title = attr['title'] as String? ?? ''
-      ..description = ''
-      ..order = attr['order_index'] as int? ?? 0
+      ..slug = attr['slug'] as String? ?? ''
+      ..orderIndex = attr['order_index'] as int? ?? 0
+      ..iconUrl = attr['icon_url'] as String?
+      ..colorLight = attr['color_light'] as String?
+      ..colorDark = attr['color_dark'] as String?
+      ..unitId = unit?['id'] as String?
+      ..unitTitle = unit?['title'] as String?
+      ..unitOrderIndex = unit?['order_index'] as int? ?? 0
+      ..learningModuleId = learningModuleId
+      ..learningModuleTitle = learningModule?['title'] as String? ?? ''
+      ..learningModuleOrderIndex = learningModule?['order_index'] as int? ?? 0
+      ..learningModulePublished = learningModule?['published'] as bool? ?? false
+      ..learningModuleSingleFlow =
+          learningModule?['single_flow'] as bool? ?? false
       ..moduleCount = learningModule == null ? 0 : 1
-      ..updatedAt = DateTime.now()
+      ..updatedAt = _parseDate(attr['updated_at']) ??
+          _parseDate(attr['updatedAt']) ??
+          DateTime.now()
       ..moduleIds = learningModule == null ? [] : [learningModuleId];
     subjects.add(subject);
 
@@ -123,6 +138,7 @@ _ParsedData _parseSubjectsWithContents(List<Map<String, dynamic>> data) {
         ..description = ''
         ..order = learningModule['order_index'] as int? ?? 0
         ..singleFlow = learningModule['single_flow'] as bool? ?? false
+        ..published = learningModule['published'] as bool? ?? false
         ..updatedAt = DateTime.now()
         ..contentIds = [];
       modules.add(module);
@@ -149,4 +165,15 @@ _ParsedData _parseSubjectsWithContents(List<Map<String, dynamic>> data) {
   }
 
   return _ParsedData(subjects: subjects, modules: modules, contents: contents);
+}
+
+DateTime? _parseDate(dynamic value) {
+  if (value is String) {
+    try {
+      return DateTime.parse(value);
+    } catch (_) {
+      return null;
+    }
+  }
+  return null;
 }

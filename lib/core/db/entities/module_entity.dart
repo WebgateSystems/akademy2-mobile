@@ -23,6 +23,7 @@ class ModuleEntity {
   late int order;
 
   late bool singleFlow;
+  bool published = false;
 
   @Index()
   late DateTime updatedAt;
@@ -37,6 +38,7 @@ class ModuleEntity {
       ..description = json['description'] as String?
       ..order = json['order'] as int? ?? 0
       ..singleFlow = json['singleFlow'] as bool? ?? false
+      ..published = json['published'] as bool? ?? false
       ..updatedAt = json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'] as String)
           : DateTime.now()
@@ -50,6 +52,7 @@ class ModuleEntity {
         'description': description,
         'order': order,
         'singleFlow': singleFlow,
+        'published': published,
         'updatedAt': updatedAt.toIso8601String(),
         'contentIds': contentIds,
       };

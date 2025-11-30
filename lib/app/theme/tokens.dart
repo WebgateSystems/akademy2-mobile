@@ -1,3 +1,4 @@
+import 'package:academy_2_app/core/db/entities/subject_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -119,27 +120,21 @@ class AppColors {
   static Color buttonDisabled(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? grey60 : grey60;
 
-  static Color cardColor(BuildContext context, int index) {
+  static Color subjectCardColor(BuildContext context, SubjectEntity subject) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final pos = index % 6;
-
-    switch (pos) {
-      case 0:
-        return isDark ? blue60 : blue50;
-      case 1:
-        return isDark ? green60 : green50;
-      case 2:
-        return isDark ? yellow70 : yellow50;
-      case 3:
-        return isDark ? pink70 : pink50;
-      case 4:
-        return isDark ? green60 : green50;
-      case 5:
-        return isDark ? orange70 : orange50;
-      default:
-        return isDark ? blue60 : blue50;
-    }
+    final raw = isDark
+        ? (subject.colorDark ?? '#666666')
+        : (subject.colorLight ?? '#666666');
+    return _parseHexColor(raw, fallback: const Color(0xFF666666));
   }
+}
+
+Color _parseHexColor(String value, {required Color fallback}) {
+  final hex = value.replaceAll('#', '').toUpperCase();
+  if (hex.length == 6) {
+    return Color(int.parse('FF$hex', radix: 16));
+  }
+  return fallback;
 }
 
 class AppSpacing {
