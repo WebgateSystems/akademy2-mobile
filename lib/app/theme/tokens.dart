@@ -161,6 +161,14 @@ class AppTextStyles {
         height: 1.3,
       );
 
+  static TextStyle h5(BuildContext context) => TextStyle(
+        fontSize: 14.sp,
+        fontFamily: 'Rubik',
+        fontWeight: FontWeight.w500,
+        color: AppColors.contentPrimary(context),
+        height: 1.3,
+      );
+
   static TextStyle h3(BuildContext context) => TextStyle(
         fontSize: 18.sp,
         fontFamily: 'Rubik',

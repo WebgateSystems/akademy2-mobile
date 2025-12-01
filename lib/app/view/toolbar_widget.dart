@@ -2,9 +2,9 @@ import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:flutter/material.dart';
 
 class ToolbarWidget extends StatelessWidget {
-  Widget? leftIcon;
-  Widget? rightIcon;
-  String title;
+  final Widget? leftIcon;
+  final Widget? rightIcon;
+  final String title;
 
   ToolbarWidget({
     super.key,
@@ -17,17 +17,26 @@ class ToolbarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        if (leftIcon != null) leftIcon!,
-        if (leftIcon != null) Spacer(),
-        Text(
-          title,
-          style: AppTextStyles.h1(context).copyWith(
-            color: theme.textTheme.bodyMedium?.color,
+        if (leftIcon != null) ...[
+          leftIcon!,
+          const SizedBox(width: 12),
+        ],
+        Expanded(
+          child: Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.h1(context).copyWith(
+              color: theme.textTheme.bodyMedium?.color,
+            ),
           ),
         ),
-        if (rightIcon != null) Spacer(),
-        if (rightIcon != null) rightIcon!,
+        if (rightIcon != null) ...[
+          const SizedBox(width: 12),
+          rightIcon!,
+        ],
       ],
     );
   }

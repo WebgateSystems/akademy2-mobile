@@ -18,6 +18,8 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
+  bool _wasBackgrounded = false;
+
   @override
   void initState() {
     super.initState();
@@ -32,12 +34,19 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached ||
+        state == AppLifecycleState.hidden) {
+      _wasBackgrounded = true;
+    }
+
     if (state == AppLifecycleState.resumed) {
       final auth = ref.read(authProvider);
-      if (auth.isAuthenticated) {
+      if (auth.isAuthenticated && _wasBackgrounded) {
         ref.read(authProvider.notifier).requireUnlock();
         ref.read(routerProvider).go('/splash');
       }
+      _wasBackgrounded = false;
     }
     super.didChangeAppLifecycleState(state);
   }

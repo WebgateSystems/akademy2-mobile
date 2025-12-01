@@ -1,3 +1,4 @@
+import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:flutter/material.dart';
@@ -96,14 +97,11 @@ class ModulePage extends ConsumerWidget {
                   separatorBuilder: (_, __) => SizedBox(height: 8.h),
                   itemBuilder: (context, index) {
                     final content = nonQuiz[index];
-                    return Card(
-                      child: ListTile(
-                        leading: _contentIcon(content.type),
-                        title: Text(content.title),
-                        subtitle: Text(_contentLabel(l10n, content.type)),
-                        onTap: () => context
-                            .push('/module/${module.id}/${content.type}'),
-                      ),
+                    return _buildContentCard(
+                      context: context,
+                      l10n: l10n,
+                      moduleId: module.id,
+                      content: content,
                     );
                   },
                 ),
@@ -116,29 +114,31 @@ class ModulePage extends ConsumerWidget {
     );
   }
 
-  Icon _contentIcon(String type) {
-    switch (type) {
+  Widget _buildContentCard({
+    required BuildContext context,
+    required AppLocalizations l10n,
+    required String moduleId,
+    required ContentEntity content,
+  }) {
+    switch (content.type) {
       case 'video':
-        return const Icon(Icons.play_circle_fill);
+        return _VideoContentCard(
+          content: content,
+          moduleId: moduleId,
+          l10n: l10n,
+        );
       case 'infographic':
-        return const Icon(Icons.image);
-      case 'quiz':
-        return const Icon(Icons.quiz);
+        return _InfographicContentCard(
+          content: content,
+          moduleId: moduleId,
+          l10n: l10n,
+        );
       default:
-        return const Icon(Icons.article);
-    }
-  }
-
-  String _contentLabel(AppLocalizations l10n, String type) {
-    switch (type) {
-      case 'video':
-        return l10n.videoTitle;
-      case 'infographic':
-        return l10n.infographicTitle;
-      case 'quiz':
-        return l10n.quizTitle;
-      default:
-        return type;
+        return _DefaultContentCard(
+          content: content,
+          moduleId: moduleId,
+          l10n: l10n,
+        );
     }
   }
 
@@ -159,6 +159,108 @@ class ModulePage extends ConsumerWidget {
     return ActionButtonWidget(
       text: l10n.quizTitle,
       onPressed: () => context.push('/module/$moduleId/quiz'),
+    );
+  }
+}
+
+class _VideoContentCard extends StatelessWidget {
+  const _VideoContentCard({
+    required this.content,
+    required this.moduleId,
+    required this.l10n,
+  });
+
+  final ContentEntity content;
+  final String moduleId;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return _DescriptionCard(
+      icon: const Icon(Icons.play_circle_fill),
+      title: content.title,
+      subtitle: l10n.videoTitle,
+      onTap: () => context.push('/module/$moduleId/${content.type}'),
+    );
+  }
+}
+
+class _InfographicContentCard extends StatelessWidget {
+  const _InfographicContentCard({
+    required this.content,
+    required this.moduleId,
+    required this.l10n,
+  });
+
+  final ContentEntity content;
+  final String moduleId;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    return _DescriptionCard(
+      icon: const Icon(Icons.image),
+      title: content.title,
+      subtitle: l10n.infographicTitle,
+      onTap: () => context.push('/module/$moduleId/${content.type}'),
+    );
+  }
+}
+
+class _DefaultContentCard extends StatelessWidget {
+  const _DefaultContentCard({
+    required this.content,
+    required this.moduleId,
+    required this.l10n,
+  });
+
+  final ContentEntity content;
+  final String moduleId;
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final subtitle = content.type == 'quiz' ? l10n.quizTitle : content.type;
+    return _DescriptionCard(
+      icon: const Icon(Icons.article),
+      title: content.title,
+      subtitle: subtitle,
+      onTap: () => context.push('/module/$moduleId/${content.type}'),
+    );
+  }
+}
+
+class _DescriptionCard extends StatelessWidget {
+  const _DescriptionCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  final Icon icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 0,
+      color: Colors.transparent,
+      child: ListTile(
+        title: Text(
+          title,
+          style: AppTextStyles.h5(context),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: AppTextStyles.b3(context).copyWith(
+            color: AppColors.contentSecondary(context),
+          ),
+        ),
+        onTap: onTap,
+      ),
     );
   }
 }

@@ -241,7 +241,7 @@ abstract class AppLocalizations {
   /// No description provided for @quizTitle.
   ///
   /// In en, this message translates to:
-  /// **'Quiz'**
+  /// **'Start Quiz'**
   String get quizTitle;
 
   /// No description provided for @resultTitle.

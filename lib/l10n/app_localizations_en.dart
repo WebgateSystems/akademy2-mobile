@@ -83,7 +83,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get infographicTitle => 'Infographic';
 
   @override
-  String get quizTitle => 'Quiz';
+  String get quizTitle => 'Start Quiz';
 
   @override
   String get resultTitle => 'Result';

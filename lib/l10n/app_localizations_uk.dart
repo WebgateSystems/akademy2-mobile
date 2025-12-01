@@ -83,7 +83,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get infographicTitle => 'Інфографіка';
 
   @override
-  String get quizTitle => 'Тест';
+  String get quizTitle => 'Розпочати тест';
 
   @override
   String get resultTitle => 'Результат';

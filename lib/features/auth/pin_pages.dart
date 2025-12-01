@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
@@ -6,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/network/dio_provider.dart';
 import '../../core/auth/auth_provider.dart';
+import '../../core/network/dio_provider.dart';
 import '../../core/storage/secure_storage.dart';
 import 'auth_flow_models.dart';
 
@@ -429,6 +431,30 @@ class RoundButton extends StatefulWidget {
 
 class _RoundButtonState extends State<RoundButton> {
   bool _pressed = false;
+  Timer? _pressResetTimer;
+
+  @override
+  void dispose() {
+    _pressResetTimer?.cancel();
+    super.dispose();
+  }
+
+  void _setPressed(bool value) {
+    if (value) {
+      _pressResetTimer?.cancel();
+      _pressResetTimer = null;
+      if (!_pressed) {
+        setState(() => _pressed = true);
+      }
+      return;
+    }
+
+    _pressResetTimer?.cancel();
+    _pressResetTimer = Timer(const Duration(milliseconds: 120), () {
+      if (!mounted) return;
+      setState(() => _pressed = false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -449,9 +475,7 @@ class _RoundButtonState extends State<RoundButton> {
           customBorder: const CircleBorder(),
           splashColor: widget.splashColor,
           onTap: widget.onTap,
-          onHighlightChanged: (isPressed) {
-            setState(() => _pressed = isPressed);
-          },
+          onHighlightChanged: _setPressed,
           child: Center(
             child: _buildChild(),
           ),
