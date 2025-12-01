@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_plus/isar_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'entities/content_entity.dart';
@@ -23,8 +23,8 @@ class IsarService {
 
     try {
       final dir = await getApplicationDocumentsDirectory();
-      _isar = await Isar.open(
-        [
+      _isar = await Isar.openAsync(
+        schemas: [
           SubjectEntitySchema,
           ModuleEntitySchema,
           ContentEntitySchema,
@@ -40,53 +40,85 @@ class IsarService {
     }
   }
 
+  Future<void> _ensureInit() async {
+    if (!_initialized) {
+      await init();
+    }
+  }
+
   /// Get all subjects from Isar
   Future<List<SubjectEntity>> getSubjects() async {
-    return _isar.subjectEntitys.where().sortByOrderIndex().findAll();
+    await _ensureInit();
+    final subjects =
+        _isar.subjectEntitys.where().sortByOrderIndex().build().findAll();
+    debugPrint(
+        'IsarService: getSubjects() returned ${subjects.length} subjects');
+    return subjects;
   }
 
   Future<SubjectEntity?> getSubject(String id) async {
-    return _isar.subjectEntitys.filter().idEqualTo(id).findFirst();
+    await _ensureInit();
+    return _isar.subjectEntitys.where().idEqualTo(id).build().findFirst();
   }
 
   /// Save subjects to Isar
   Future<void> saveSubjects(List<SubjectEntity> subjects) async {
-    await _isar.writeTxn(() async {
-      await _isar.subjectEntitys.putAll(subjects);
+    await _ensureInit();
+    debugPrint('IsarService: Saving ${subjects.length} subjects...');
+    await _isar.writeAsync((isar) {
+      for (final subject in subjects) {
+        subject.isarId = isar.subjectEntitys.autoIncrement();
+        isar.subjectEntitys.put(subject);
+      }
     });
+    final saved = _isar.subjectEntitys.where().build().count();
+    debugPrint('IsarService: After save, total subjects in DB: $saved');
   }
 
   Future<void> updateSubjectModules(
     String subjectId,
     List<String> moduleIds,
   ) async {
-    await _isar.writeTxn(() async {
-      final subject =
-          await _isar.subjectEntitys.filter().idEqualTo(subjectId).findFirst();
-      if (subject != null) {
-        subject.moduleIds = moduleIds;
-        await _isar.subjectEntitys.put(subject);
-      }
-    });
+    await _ensureInit();
+    // Read outside transaction
+    final subject =
+        _isar.subjectEntitys.where().idEqualTo(subjectId).build().findFirst();
+    if (subject != null) {
+      subject.moduleIds = moduleIds;
+      // Write inside transaction
+      await _isar.writeAsync((isar) {
+        isar.subjectEntitys.put(subject);
+      });
+    }
   }
 
   /// Get modules for a subject
   Future<List<ModuleEntity>> getModulesBySubjectId(String subjectId) async {
-    return _isar.moduleEntitys
-        .filter()
+    await _ensureInit();
+    final modules = _isar.moduleEntitys
+        .where()
         .subjectIdEqualTo(subjectId)
         .sortByOrder()
+        .build()
         .findAll();
+    debugPrint(
+        'IsarService: modules for subject=$subjectId => ${modules.length}');
+    return modules;
   }
 
   Future<ModuleEntity?> getModuleById(String moduleId) async {
-    return _isar.moduleEntitys.filter().idEqualTo(moduleId).findFirst();
+    await _ensureInit();
+    return _isar.moduleEntitys.where().idEqualTo(moduleId).build().findFirst();
   }
 
   /// Save modules to Isar
   Future<void> saveModules(List<ModuleEntity> modules) async {
-    await _isar.writeTxn(() async {
-      await _isar.moduleEntitys.putAll(modules);
+    await _ensureInit();
+    await _isar.writeAsync((isar) {
+      for (final module in modules) {
+        module.isarId = isar.moduleEntitys.autoIncrement();
+        isar.moduleEntitys.put(module);
+      }
     });
   }
 
@@ -94,47 +126,80 @@ class IsarService {
     String moduleId,
     List<String> contentIds,
   ) async {
-    await _isar.writeTxn(() async {
-      final module =
-          await _isar.moduleEntitys.filter().idEqualTo(moduleId).findFirst();
-      if (module != null) {
-        module.contentIds = contentIds;
-        await _isar.moduleEntitys.put(module);
-      }
-    });
+    await _ensureInit();
+    // Read outside transaction
+    final module =
+        _isar.moduleEntitys.where().idEqualTo(moduleId).build().findFirst();
+    if (module != null) {
+      module.contentIds = contentIds;
+      // Write inside transaction
+      await _isar.writeAsync((isar) {
+        isar.moduleEntitys.put(module);
+      });
+    }
   }
 
   /// Get contents for a module
   Future<List<ContentEntity>> getContentsByModuleId(String moduleId) async {
-    return _isar.contentEntitys
-        .filter()
+    await _ensureInit();
+    final contents = _isar.contentEntitys
+        .where()
         .moduleIdEqualTo(moduleId)
         .sortByOrder()
+        .build()
         .findAll();
+    debugPrint(
+        'IsarService: contents for module=$moduleId => ${contents.length}');
+    return contents;
+  }
+
+  Future<int> countSubjects() async {
+    await _ensureInit();
+    return _isar.subjectEntitys.where().build().count();
+  }
+
+  Future<int> countModules() async {
+    await _ensureInit();
+    return _isar.moduleEntitys.where().build().count();
+  }
+
+  Future<int> countContents() async {
+    await _ensureInit();
+    return _isar.contentEntitys.where().build().count();
   }
 
   Future<ContentEntity?> getContentById(String contentId) async {
-    return _isar.contentEntitys.filter().idEqualTo(contentId).findFirst();
+    await _ensureInit();
+    return _isar.contentEntitys
+        .where()
+        .idEqualTo(contentId)
+        .build()
+        .findFirst();
   }
 
   /// Save contents to Isar
   Future<void> saveContents(List<ContentEntity> contents) async {
-    await _isar.writeTxn(() async {
-      await _isar.contentEntitys.putAll(contents);
+    await _ensureInit();
+    await _isar.writeAsync((isar) {
+      for (final content in contents) {
+        content.isarId = isar.contentEntitys.autoIncrement();
+        isar.contentEntitys.put(content);
+      }
     });
   }
 
   /// Clear all data
   Future<void> clearAll() async {
-    await _isar.writeTxn(() async {
-      await _isar.clear();
+    await _ensureInit();
+    await _isar.writeAsync((isar) {
+      isar.clear();
     });
   }
 
   /// Close database
   Future<void> close() async {
     if (_initialized) {
-      await _isar.close();
+      _isar.close();
     }
   }
 }

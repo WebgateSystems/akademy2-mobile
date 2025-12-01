@@ -187,5 +187,6 @@
   "unverifiedPhoneNubmer": "Неперевірений номер телефону.",
   "useAnotherAccount": "Використати інший акаунт",
   "addBirthdate": "Додати дату народження",
-  "addButton": "Додати"
+  "addButton": "Додати",
+  "noContent": "Немає контенту"
 }

@@ -187,5 +187,6 @@
   "unverifiedPhoneNubmer": "Unverified phone nubmer.",
   "useAnotherAccount": "Use another account",
   "addBirthdate": "Add birth date",
-  "addButton": "Add"
+  "addButton": "Add",
+  "noContent": "No content"
 }

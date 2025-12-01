@@ -1,23 +1,24 @@
-import 'package:isar/isar.dart';
+import 'package:isar_plus/isar_plus.dart';
 
 part 'subject_entity.g.dart';
 
-@collection
+@Collection()
 class SubjectEntity {
   SubjectEntity();
 
-  Id isarId = Isar.autoIncrement;
+  @Id()
+  var isarId = 0;
 
   /// UUID from backend
-  @Index(unique: true, replace: true)
+  @Index(unique: true)
   late String id;
 
   String? type;
 
-  @Index(caseSensitive: false)
+  @Index()
   late String title;
 
-  @Index(caseSensitive: false)
+  @Index()
   String slug = '';
 
   @Index()

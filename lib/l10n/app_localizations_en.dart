@@ -393,4 +393,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get addButton => 'Add';
+
+  @override
+  String get noContent => 'No content';
 }

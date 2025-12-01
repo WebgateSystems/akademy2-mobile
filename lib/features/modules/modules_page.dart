@@ -10,6 +10,7 @@ import '../../l10n/app_localizations.dart';
 final modulesProvider =
     FutureProvider.family<List<ModuleEntity>, String>((ref, subjectId) async {
   final service = IsarService();
+  await service.init(); // ensure DB is ready
   var modules = await service.getModulesBySubjectId(subjectId);
 
   if (modules.isEmpty) {
@@ -30,18 +31,8 @@ class ModulesPage extends ConsumerStatefulWidget {
 }
 
 class _ModulesPageState extends ConsumerState<ModulesPage> {
-  bool _redirected = false;
-
-  void _maybeRedirectToSingleModule(List<ModuleEntity> modules) {
-    if (_redirected || modules.length != 1) return;
-    _redirected = true;
-    final moduleId = modules.first.id;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        context.go('/module/$moduleId/video');
-      }
-    });
-  }
+  // ModulesPage тепер показує список лише при multi-module предметах.
+  // Single-module предмети перенаправляються ще на рівні SubjectsPage.
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +43,8 @@ class _ModulesPageState extends ConsumerState<ModulesPage> {
       appBar: AppBar(title: Text(l10n.modulesTitle)),
       body: modulesAsync.when(
         data: (modules) {
-          _maybeRedirectToSingleModule(modules);
           if (modules.isEmpty) {
+            // Тимчасово показуємо loading або варто додати локалізований ключ типу noModules
             return Center(child: Text(l10n.loading));
           }
 
@@ -70,7 +61,12 @@ class _ModulesPageState extends ConsumerState<ModulesPage> {
                       : l10n.moduleMultiStep,
                 ),
                 trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.go('/module/${module.id}'),
+                // НОВА НАВІГАЦІЯ: завжди переходимо спершу на ModulePage (список контенту),
+                // навіть якщо singleFlow. Авторедіректи забрані для прозорості UX.
+                onTap: () {
+                  final base = '/module/${module.id}';
+                  context.push(base);
+                },
               );
             },
             separatorBuilder: (_, __) => const Divider(height: 1),

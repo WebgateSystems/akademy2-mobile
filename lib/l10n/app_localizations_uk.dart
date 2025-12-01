@@ -394,4 +394,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get addButton => 'Додати';
+
+  @override
+  String get noContent => 'Немає контенту';
 }

@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/db/entities/module_entity.dart';
 import '../../core/db/entities/subject_entity.dart';
 import '../../core/db/isar_service.dart';
 import '../../core/sync/sync_manager.dart';
@@ -14,6 +13,7 @@ import 'widgets/subject_tile.dart';
 
 final subjectsProvider = FutureProvider<List<SubjectEntity>>((ref) async {
   final service = IsarService();
+  await service.init(); // ensure DB open before queries
   var subjects = await service.getSubjects();
 
   // Ensure we have data in the local cache
@@ -39,21 +39,20 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
   }
 
   Future<void> _handleSubjectTap(SubjectEntity subject) async {
-    final isar = IsarService();
-    List<ModuleEntity> modules = await isar.getModulesBySubjectId(subject.id);
-
-    if (modules.isEmpty) {
-      await ref.read(syncManagerProvider).bootstrap();
-      modules = await isar.getModulesBySubjectId(subject.id);
-    }
-
     if (!mounted) return;
-
-    if (modules.length == 1 || subject.moduleCount == 1) {
-      final moduleId = modules.isNotEmpty ? modules.first.id : subject.id;
-      context.go('/module/$moduleId/video');
+    // Navigate according to tech spec:
+    // If subject has exactly one module → go directly to its video flow.
+    // Otherwise → go to modules list for the subject.
+    final service = IsarService();
+    await service.init();
+    final modules = await service.getModulesBySubjectId(subject.id);
+    if (modules.length == 1) {
+      final moduleId = modules.first.id;
+      // НОВА ЛОГІКА: навіть для singleFlow модулів спочатку показуємо ModulePage (список контенту).
+      context.push('/module/$moduleId');
     } else {
-      context.go('/subject/${subject.id}');
+      // Multi-module – відкриваємо список модулів.
+      context.push('/subject/${subject.id}');
     }
   }
 

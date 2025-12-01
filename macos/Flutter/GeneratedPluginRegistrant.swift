@@ -7,7 +7,7 @@ import Foundation
 
 import file_picker
 import flutter_secure_storage_macos
-import isar_flutter_libs
+import isar_plus_flutter_libs
 import local_auth_darwin
 import mobile_scanner
 import package_info_plus
@@ -18,7 +18,7 @@ import wakelock_plus
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FilePickerPlugin.register(with: registry.registrar(forPlugin: "FilePickerPlugin"))
   FlutterSecureStoragePlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStoragePlugin"))
-  IsarFlutterLibsPlugin.register(with: registry.registrar(forPlugin: "IsarFlutterLibsPlugin"))
+  IsarPlusFlutterLibsPlugin.register(with: registry.registrar(forPlugin: "IsarPlusFlutterLibsPlugin"))
   LocalAuthPlugin.register(with: registry.registrar(forPlugin: "LocalAuthPlugin"))
   MobileScannerPlugin.register(with: registry.registrar(forPlugin: "MobileScannerPlugin"))
   FPPPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FPPPackageInfoPlusPlugin"))

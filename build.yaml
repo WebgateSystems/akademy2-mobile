@@ -1,0 +1,5 @@
+targets:
+  $default:
+    builders:
+      isar_plus_generator:
+        enabled: true

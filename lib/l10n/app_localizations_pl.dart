@@ -396,4 +396,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get addButton => 'Dodaj';
+
+  @override
+  String get noContent => 'Brak treści';
 }

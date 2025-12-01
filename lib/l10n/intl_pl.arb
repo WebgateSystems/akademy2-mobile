@@ -187,5 +187,6 @@
   "unverifiedPhoneNubmer": "Niezweryfikowany numer telefonu.",
   "useAnotherAccount": "Użyj innego konta",
   "addBirthdate": "Dodaj datę urodzenia",
-  "addButton": "Dodaj"
+  "addButton": "Dodaj",
+  "noContent": "Brak treści"
 }

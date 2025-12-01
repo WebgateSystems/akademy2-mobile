@@ -9,7 +9,7 @@ class BasePageWithToolbar extends StatelessWidget {
   final String subtitle;
   final List<Widget>? children;
   final bool showBackButton;
-
+  final bool isOneToolbarRow;
   final bool stickChildrenToBottom;
 
   const BasePageWithToolbar({
@@ -17,6 +17,7 @@ class BasePageWithToolbar extends StatelessWidget {
     this.title = "",
     this.subtitle = "",
     this.showBackButton = true,
+    this.isOneToolbarRow = false,
     this.children = const <Widget>[],
     this.stickChildrenToBottom = false,
   });
@@ -32,7 +33,7 @@ class BasePageWithToolbar extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(height: 44.h),
-                if (showBackButton)
+                if (showBackButton && !isOneToolbarRow)
                   Padding(
                     padding: EdgeInsets.only(top: 16.h),
                     child: ToolbarWidget(
@@ -54,6 +55,15 @@ class BasePageWithToolbar extends StatelessWidget {
                         if (title.isNotEmpty) SizedBox(height: 16.h),
                         if (title.isNotEmpty)
                           ToolbarWidget(
+                            leftIcon: (showBackButton && isOneToolbarRow)
+                                ? IconButton(
+                                    icon: Image.asset(
+                                      'assets/images/ic_chevron_left.png',
+                                      color: AppColors.contentPrimary(context),
+                                    ),
+                                    onPressed: () => context.pop(),
+                                  )
+                                : null,
                             title: title,
                           ),
                         if (subtitle.isNotEmpty) SizedBox(height: 16.h),

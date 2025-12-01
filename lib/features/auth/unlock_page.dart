@@ -69,7 +69,6 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
       if (!supported || !canCheck) return;
       final success = await _localAuth.authenticate(
         localizedReason: 'Unlock with biometrics',
-        options: const AuthenticationOptions(biometricOnly: true),
       );
       if (success && mounted) {
         await _finishUnlock();

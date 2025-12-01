@@ -9,19 +9,19 @@ import '../features/auth/enable_biometric_page.dart';
 import '../features/auth/join_group_page.dart';
 import '../features/auth/login_page.dart';
 import '../features/auth/pin_pages.dart';
-import '../features/auth/unlock_page.dart';
 import '../features/auth/tech_login_page.dart';
+import '../features/auth/unlock_page.dart';
 import '../features/auth/verify_email_page.dart';
 import '../features/auth/verify_phone_page.dart';
 import '../features/auth/wait_approval_page.dart';
 import '../features/downloads/downloads_page.dart';
+import '../features/home/home_shell.dart';
 import '../features/join/join_page.dart';
 import '../features/modules/content_pages.dart';
 import '../features/modules/module_page.dart';
 import '../features/modules/modules_page.dart';
 import '../features/profile/profile_page.dart';
 import '../features/splash/splash_page.dart';
-import '../features/home/home_shell.dart';
 import '../features/videos/add_video_page.dart';
 
 class _AuthChangeNotifier extends ChangeNotifier {

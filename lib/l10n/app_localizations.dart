@@ -801,6 +801,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add'**
   String get addButton;
+
+  /// No description provided for @noContent.
+  ///
+  /// In en, this message translates to:
+  /// **'No content'**
+  String get noContent;
 }
 
 class _AppLocalizationsDelegate

@@ -1,12 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../auth/auth_provider.dart';
 import '../db/entities/content_entity.dart';
 import '../db/entities/module_entity.dart';
 import '../db/entities/subject_entity.dart';
 import '../db/isar_service.dart';
 import '../network/dio_provider.dart';
-import '../auth/auth_provider.dart';
 
 /// Manages metadata synchronization between API and local Isar database
 class SyncManager {
@@ -33,7 +33,20 @@ class SyncManager {
           (resp.data['data'] as List?)?.cast<Map<String, dynamic>>() ?? [];
       final parsed = _parseSubjectsWithContents(list);
 
-      debugPrint('SyncManager: Fetched ${parsed.subjects.length} subjects');
+      debugPrint(
+          'SyncManager: Parsed subjects=${parsed.subjects.length}, modules=${parsed.modules.length}, contents=${parsed.contents.length}');
+
+      // Per-subject/module debug
+      for (final module in parsed.modules) {
+        final moduleContentCount =
+            parsed.contents.where((c) => c.moduleId == module.id).length;
+        debugPrint(
+            'SyncManager: Module id=${module.id} subjectId=${module.subjectId} contentCount=$moduleContentCount singleFlow=${module.singleFlow}');
+      }
+
+      // Clear existing data before saving new data
+      await isarService.clearAll();
+      debugPrint('SyncManager: Cleared all existing data');
 
       await isarService.saveSubjects(parsed.subjects);
       await isarService.saveModules(parsed.modules);
@@ -56,6 +69,21 @@ class SyncManager {
               .map((c) => c.id)
               .toList(),
         );
+      }
+
+      // Verify persisted counts
+      final subjectsCountPersisted = await isarService.countSubjects();
+      final modulesCountPersisted = await isarService.countModules();
+      final contentsCountPersisted = await isarService.countContents();
+      debugPrint(
+          'SyncManager: Persisted subjects=$subjectsCountPersisted modules=$modulesCountPersisted contents=$contentsCountPersisted');
+
+      // Sample first 3 contents (ordered by module grouping) to verify fields
+      if (parsed.contents.isNotEmpty) {
+        for (final c in parsed.contents.take(3)) {
+          debugPrint(
+              'SyncManager: SampleContent id=${c.id} moduleId=${c.moduleId} type=${c.type} order=${c.order} title="${c.title}"');
+        }
       }
 
       debugPrint('SyncManager: Bootstrap sync completed successfully');

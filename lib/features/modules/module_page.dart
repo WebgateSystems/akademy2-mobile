@@ -1,5 +1,8 @@
+import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/db/entities/content_entity.dart';
@@ -8,30 +11,40 @@ import '../../core/db/isar_service.dart';
 import '../../core/sync/sync_manager.dart';
 import '../../l10n/app_localizations.dart';
 
-final moduleProvider =
-    FutureProvider.family<ModuleEntity?, String>((ref, moduleId) async {
-  final service = IsarService();
-  var module = await service.getModuleById(moduleId);
+class _ModuleData {
+  const _ModuleData({required this.module, required this.contents});
 
+  final ModuleEntity module;
+  final List<ContentEntity> contents;
+}
+
+final moduleDataProvider =
+    FutureProvider.family<_ModuleData, String>((ref, moduleId) async {
+  final service = IsarService();
+  final syncManager = ref.read(syncManagerProvider);
+  var bootstrapped = false;
+
+  Future<void> ensureBootstrap() async {
+    if (bootstrapped) return;
+    bootstrapped = true;
+    await syncManager.bootstrap();
+  }
+
+  var module = await service.getModuleById(moduleId);
   if (module == null) {
-    await ref.read(syncManagerProvider).bootstrap();
+    await ensureBootstrap();
     module = await service.getModuleById(moduleId);
   }
 
-  return module;
-});
+  if (module == null) throw Exception('Module $moduleId not found');
 
-final moduleContentsProvider =
-    FutureProvider.family<List<ContentEntity>, String>((ref, moduleId) async {
-  final service = IsarService();
   var contents = await service.getContentsByModuleId(moduleId);
-
   if (contents.isEmpty) {
-    await ref.read(syncManagerProvider).bootstrap();
+    await ensureBootstrap();
     contents = await service.getContentsByModuleId(moduleId);
   }
 
-  return contents;
+  return _ModuleData(module: module, contents: contents);
 });
 
 class ModulePage extends ConsumerWidget {
@@ -42,48 +55,64 @@ class ModulePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context)!;
-    final moduleAsync = ref.watch(moduleProvider(moduleId));
-    final contentsAsync = ref.watch(moduleContentsProvider(moduleId));
+    final moduleAsync = ref.watch(moduleDataProvider(moduleId));
 
-    return Scaffold(
-      appBar: AppBar(title: Text(l10n.moduleScreenTitle)),
-      body: moduleAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(child: Text('${l10n.retry}: $error')),
-        data: (module) {
-          if (module == null) {
-            return Center(child: Text(l10n.loading));
-          }
-
-          return contentsAsync.when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => Center(child: Text('${l10n.retry}: $error')),
-            data: (contents) {
-              if (contents.isEmpty) {
-                return Center(child: Text(l10n.loading));
-              }
-
-              return ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: contents.length,
-                itemBuilder: (context, index) {
-                  final content = contents[index];
-                  return Card(
-                    child: ListTile(
-                      leading: _contentIcon(content.type),
-                      title: Text(content.title),
-                      subtitle: Text(_contentLabel(l10n, content.type)),
-                      onTap: () => context.go(
-                        '/module/${module.id}/${content.type}',
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          );
-        },
+    return moduleAsync.when(
+      loading: () => _buildScaffold(
+        context,
+        const Center(child: CircularProgressIndicator()),
       ),
+      error: (error, _) => _buildScaffold(
+        context,
+        Center(child: Text('${l10n.retry}: $error')),
+      ),
+      data: (data) {
+        final module = data.module;
+        final contents = data.contents;
+        final title =
+            module.title.isEmpty ? l10n.moduleScreenTitle : module.title;
+
+        if (contents.isEmpty) {
+          return _buildScaffold(
+            context,
+            Center(child: Text(l10n.noContent)),
+          );
+        }
+
+        final quiz = contents.where((c) => c.type == 'quiz').toList();
+        final nonQuiz = contents.where((c) => c.type != 'quiz').toList();
+
+        return _buildScaffold(
+          context,
+          BasePageWithToolbar(
+            title: title,
+            stickChildrenToBottom: true,
+            isOneToolbarRow: true,
+            children: [
+              SizedBox(height: 16.h),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: nonQuiz.length,
+                  separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                  itemBuilder: (context, index) {
+                    final content = nonQuiz[index];
+                    return Card(
+                      child: ListTile(
+                        leading: _contentIcon(content.type),
+                        title: Text(content.title),
+                        subtitle: Text(_contentLabel(l10n, content.type)),
+                        onTap: () => context
+                            .push('/module/${module.id}/${content.type}'),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              if (quiz.isNotEmpty) _quizButton(context, l10n, module.id),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -111,5 +140,25 @@ class ModulePage extends ConsumerWidget {
       default:
         return type;
     }
+  }
+
+  Widget _buildScaffold(
+    BuildContext context,
+    Widget body,
+  ) {
+    return Scaffold(
+      body: body,
+    );
+  }
+
+  Widget _quizButton(
+    BuildContext context,
+    AppLocalizations l10n,
+    String moduleId,
+  ) {
+    return ActionButtonWidget(
+      text: l10n.quizTitle,
+      onPressed: () => context.push('/module/$moduleId/quiz'),
+    );
   }
 }

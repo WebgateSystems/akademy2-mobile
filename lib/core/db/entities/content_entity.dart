@@ -1,14 +1,15 @@
-import 'package:isar/isar.dart';
+import 'package:isar_plus/isar_plus.dart';
 
 part 'content_entity.g.dart';
 
-@collection
+@Collection()
 class ContentEntity {
   ContentEntity();
 
-  Id isarId = Isar.autoIncrement;
+  @Id()
+  var isarId = 0;
 
-  @Index(unique: true, replace: true)
+  @Index(unique: true)
   late String id;
 
   @Index()
@@ -16,7 +17,7 @@ class ContentEntity {
 
   late String type; // video, infographic, quiz, pdf
 
-  @Index(caseSensitive: false)
+  @Index()
   late String title;
 
   String? description;

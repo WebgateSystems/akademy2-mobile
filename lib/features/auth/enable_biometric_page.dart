@@ -46,7 +46,6 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
       }
       final didAuthenticate = await _auth.authenticate(
         localizedReason: l10n.enableBiometricTitle,
-        options: const AuthenticationOptions(biometricOnly: true),
       );
       if (!didAuthenticate) {
         if (mounted) setState(() => _saving = false);

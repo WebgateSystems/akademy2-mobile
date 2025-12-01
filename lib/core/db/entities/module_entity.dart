@@ -1,20 +1,21 @@
-import 'package:isar/isar.dart';
+import 'package:isar_plus/isar_plus.dart';
 
 part 'module_entity.g.dart';
 
-@collection
+@Collection()
 class ModuleEntity {
   ModuleEntity();
 
-  Id isarId = Isar.autoIncrement;
+  @Id()
+  var isarId = 0;
 
-  @Index(unique: true, replace: true)
+  @Index(unique: true)
   late String id;
 
   @Index()
   late String subjectId;
 
-  @Index(caseSensitive: false)
+  @Index()
   late String title;
 
   String? description;
