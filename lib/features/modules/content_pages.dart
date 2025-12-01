@@ -55,33 +55,3 @@ class InfographicPage extends StatelessWidget {
     );
   }
 }
-
-class QuizPage extends StatelessWidget {
-  const QuizPage({super.key, required this.moduleId});
-
-  final String moduleId;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return ContentPlaceholderPage(
-      title: l10n.quizTitle,
-      body: 'Module $moduleId: ${l10n.loading}',
-    );
-  }
-}
-
-class ResultPage extends StatelessWidget {
-  const ResultPage({super.key, required this.resultId});
-
-  final String resultId;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    return ContentPlaceholderPage(
-      title: l10n.resultTitle,
-      body: 'Result placeholder for $resultId',
-    );
-  }
-}
