@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,6 +8,7 @@ import '../db/entities/content_entity.dart';
 import '../db/entities/module_entity.dart';
 import '../db/entities/subject_entity.dart';
 import '../db/isar_service.dart';
+import '../network/api.dart';
 import '../network/dio_provider.dart';
 
 /// Manages metadata synchronization between API and local Isar database
@@ -78,11 +81,20 @@ class SyncManager {
       debugPrint(
           'SyncManager: Persisted subjects=$subjectsCountPersisted modules=$modulesCountPersisted contents=$contentsCountPersisted');
 
-      // Sample first 3 contents (ordered by module grouping) to verify fields
+      // Sample first 3 contents (ordered by module grouping) to verify fields (in-memory)
       if (parsed.contents.isNotEmpty) {
         for (final c in parsed.contents.take(3)) {
           debugPrint(
-              'SyncManager: SampleContent id=${c.id} moduleId=${c.moduleId} type=${c.type} order=${c.order} title="${c.title}"');
+              'SyncManager: SampleContent id=${c.id} moduleId=${c.moduleId} type=${c.type} order=${c.order} title="${c.title}" youtube=${c.youtubeUrl} file=${c.fileUrl} poster=${c.posterUrl}');
+        }
+      }
+
+      // Sample read-back from DB to ensure fields persisted
+      if (parsed.contents.isNotEmpty) {
+        for (final c in parsed.contents.take(3)) {
+          final stored = await isarService.getContentById(c.id);
+          debugPrint(
+              'SyncManager: StoredContent id=${c.id} youtube=${stored?.youtubeUrl} file=${stored?.fileUrl} poster=${stored?.posterUrl}');
         }
       }
 
@@ -175,6 +187,9 @@ _ParsedData _parseSubjectsWithContents(List<Map<String, dynamic>> data) {
           (learningModule['contents'] as List?)?.cast<Map<String, dynamic>>() ??
               [];
       for (final c in contentList) {
+        final fileUrl = _resolveUrl(c['file_url'] as String?);
+        final posterUrl = _resolveUrl(c['poster_url'] as String?);
+        final subtitlesUrl = _resolveUrl(c['subtitles_url'] as String?);
         final content = ContentEntity()
           ..id = c['id'] as String? ?? ''
           ..moduleId = module.id
@@ -183,6 +198,15 @@ _ParsedData _parseSubjectsWithContents(List<Map<String, dynamic>> data) {
           ..description = ''
           ..durationSec = c['duration_sec'] as int? ?? 0
           ..order = c['order_index'] as int? ?? 0
+          ..youtubeUrl = c['youtube_url'] as String?
+          ..fileUrl = fileUrl
+          ..fileHash = c['file_hash'] as String?
+          ..fileFormat = c['file_format'] as String?
+          ..posterUrl = posterUrl
+          ..subtitlesUrl = subtitlesUrl
+          ..payloadJson = _encodePayload(c['payload'])
+          ..learningModuleId = learningModuleId
+          ..learningModuleTitle = learningModule?['title'] as String?
           ..updatedAt = DateTime.now()
           ..downloaded = false
           ..downloadPath = '';
@@ -204,4 +228,22 @@ DateTime? _parseDate(dynamic value) {
     }
   }
   return null;
+}
+
+String? _resolveUrl(String? path) {
+  if (path == null || path.isEmpty) return null;
+  if (path.startsWith('http')) return path;
+  final base = Api.baseUploadUrl.endsWith('/')
+      ? Api.baseUploadUrl.substring(0, Api.baseUploadUrl.length - 1)
+      : Api.baseUploadUrl;
+  return path.startsWith('/') ? '$base$path' : '$base/$path';
+}
+
+String? _encodePayload(dynamic payload) {
+  if (payload == null) return null;
+  try {
+    return jsonEncode(payload);
+  } catch (_) {
+    return null;
+  }
 }

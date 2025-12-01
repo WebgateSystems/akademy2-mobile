@@ -98,60 +98,18 @@ class _AddVideoPageState extends State<AddVideoPage> {
         showBackButton: true,
         stickChildrenToBottom: true,
         children: [
-          GestureDetector(
-            onTap: _pickFile,
-            child: Container(
-              height: 200.h,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.r),
-                image: DecorationImage(
-                  image: AssetImage('assets/images/placeholder.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: _controller != null && _controller!.value.isInitialized
-                  ? Stack(
-                      children: [
-                        Center(
-                          child: AspectRatio(
-                            aspectRatio: _controller!.value.aspectRatio,
-                            child: VideoPlayer(_controller!),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 8,
-                          right: 8,
-                          child: IconButton(
-                            icon: Icon(_controller!.value.isPlaying
-                                ? Icons.pause
-                                : Icons.play_arrow),
-                            onPressed: () {
-                              setState(() {
-                                if (_controller!.value.isPlaying) {
-                                  _controller!.pause();
-                                } else {
-                                  _controller!.play();
-                                }
-                              });
-                            },
-                          ),
-                        ),
-                      ],
-                    )
-                  : Center(
-                      child: CircleAvatar(
-                        radius: 48.w / 2,
-                        backgroundColor: AppColors.surfaceIcon(context),
-                        child: Image.asset(
-                          'assets/images/ic_upload.png',
-                          width: 24.w,
-                          height: 24.w,
-                          color: AppColors.contentPrimary(context),
-                        ),
-                      ),
-                    ),
-            ),
+          _PreviewPicker(
+            controller: _controller,
+            onPick: _pickFile,
+            onTogglePlayback: () {
+              setState(() {
+                if (_controller?.value.isPlaying ?? false) {
+                  _controller?.pause();
+                } else {
+                  _controller?.play();
+                }
+              });
+            },
           ),
           SizedBox(height: 16.h),
           _dropdown<String>(
@@ -262,6 +220,121 @@ class _AddVideoPageState extends State<AddVideoPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _PreviewPicker extends StatelessWidget {
+  const _PreviewPicker({
+    required this.controller,
+    required this.onPick,
+    required this.onTogglePlayback,
+  });
+
+  final VideoPlayerController? controller;
+  final VoidCallback onPick;
+  final VoidCallback onTogglePlayback;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasVideo = controller != null && controller!.value.isInitialized;
+    return GestureDetector(
+      onTap: onPick,
+      child: Container(
+        height: 200.h,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16.r),
+          image: const DecorationImage(
+            image: AssetImage('assets/images/placeholder.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Stack(
+          children: [
+            if (hasVideo)
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16.r),
+                  child: GestureDetector(
+                    onTap: onTogglePlayback,
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        width: controller!.value.size.width,
+                        height: controller!.value.size.height,
+                        child: VideoPlayer(controller!),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            else
+              Center(
+                child: CircleAvatar(
+                  radius: 48.w / 2,
+                  backgroundColor: AppColors.surfaceIcon(context),
+                  child: Image.asset(
+                    'assets/images/ic_upload.png',
+                    width: 24.w,
+                    height: 24.w,
+                    color: AppColors.contentPrimary(context),
+                  ),
+                ),
+              ),
+            if (hasVideo)
+              Positioned.fill(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    splashColor: Colors.black26,
+                    borderRadius: BorderRadius.circular(16.r),
+                    onTap: onTogglePlayback,
+                  ),
+                ),
+              ),
+            if (hasVideo)
+              Positioned(
+                bottom: 12,
+                right: 12,
+                child: _PlayPauseButton(
+                  isPlaying: controller!.value.isPlaying,
+                  onPressed: onTogglePlayback,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PlayPauseButton extends StatelessWidget {
+  const _PlayPauseButton({
+    required this.isPlaying,
+    required this.onPressed,
+  });
+
+  final bool isPlaying;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black54,
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onPressed,
+        child: Padding(
+          padding: EdgeInsets.all(8.w),
+          child: Icon(
+            isPlaying ? Icons.pause : Icons.play_arrow,
+            color: Colors.white,
+            size: 20.w,
+          ),
+        ),
       ),
     );
   }

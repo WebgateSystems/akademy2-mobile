@@ -49,6 +49,42 @@ final ContentEntitySchema = IsarGeneratedSchema(
         type: IsarType.long,
       ),
       IsarPropertySchema(
+        name: 'youtubeUrl',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
+        name: 'fileUrl',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
+        name: 'fileHash',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
+        name: 'fileFormat',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
+        name: 'posterUrl',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
+        name: 'subtitlesUrl',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
+        name: 'payloadJson',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
+        name: 'learningModuleId',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
+        name: 'learningModuleTitle',
+        type: IsarType.string,
+      ),
+      IsarPropertySchema(
         name: 'updatedAt',
         type: IsarType.dateTime,
       ),
@@ -120,10 +156,82 @@ int serializeContentEntity(IsarWriter writer, ContentEntity object) {
   }
   IsarCore.writeLong(writer, 6, object.durationSec);
   IsarCore.writeLong(writer, 7, object.order);
+  {
+    final value = object.youtubeUrl;
+    if (value == null) {
+      IsarCore.writeNull(writer, 8);
+    } else {
+      IsarCore.writeString(writer, 8, value);
+    }
+  }
+  {
+    final value = object.fileUrl;
+    if (value == null) {
+      IsarCore.writeNull(writer, 9);
+    } else {
+      IsarCore.writeString(writer, 9, value);
+    }
+  }
+  {
+    final value = object.fileHash;
+    if (value == null) {
+      IsarCore.writeNull(writer, 10);
+    } else {
+      IsarCore.writeString(writer, 10, value);
+    }
+  }
+  {
+    final value = object.fileFormat;
+    if (value == null) {
+      IsarCore.writeNull(writer, 11);
+    } else {
+      IsarCore.writeString(writer, 11, value);
+    }
+  }
+  {
+    final value = object.posterUrl;
+    if (value == null) {
+      IsarCore.writeNull(writer, 12);
+    } else {
+      IsarCore.writeString(writer, 12, value);
+    }
+  }
+  {
+    final value = object.subtitlesUrl;
+    if (value == null) {
+      IsarCore.writeNull(writer, 13);
+    } else {
+      IsarCore.writeString(writer, 13, value);
+    }
+  }
+  {
+    final value = object.payloadJson;
+    if (value == null) {
+      IsarCore.writeNull(writer, 14);
+    } else {
+      IsarCore.writeString(writer, 14, value);
+    }
+  }
+  {
+    final value = object.learningModuleId;
+    if (value == null) {
+      IsarCore.writeNull(writer, 15);
+    } else {
+      IsarCore.writeString(writer, 15, value);
+    }
+  }
+  {
+    final value = object.learningModuleTitle;
+    if (value == null) {
+      IsarCore.writeNull(writer, 16);
+    } else {
+      IsarCore.writeString(writer, 16, value);
+    }
+  }
   IsarCore.writeLong(
-      writer, 8, object.updatedAt.toUtc().microsecondsSinceEpoch);
-  IsarCore.writeBool(writer, 9, value: object.downloaded);
-  IsarCore.writeString(writer, 10, object.downloadPath);
+      writer, 17, object.updatedAt.toUtc().microsecondsSinceEpoch);
+  IsarCore.writeBool(writer, 18, value: object.downloaded);
+  IsarCore.writeString(writer, 19, object.downloadPath);
   return object.isarId;
 }
 
@@ -138,8 +246,17 @@ ContentEntity deserializeContentEntity(IsarReader reader) {
   object.description = IsarCore.readString(reader, 5);
   object.durationSec = IsarCore.readLong(reader, 6);
   object.order = IsarCore.readLong(reader, 7);
+  object.youtubeUrl = IsarCore.readString(reader, 8);
+  object.fileUrl = IsarCore.readString(reader, 9);
+  object.fileHash = IsarCore.readString(reader, 10);
+  object.fileFormat = IsarCore.readString(reader, 11);
+  object.posterUrl = IsarCore.readString(reader, 12);
+  object.subtitlesUrl = IsarCore.readString(reader, 13);
+  object.payloadJson = IsarCore.readString(reader, 14);
+  object.learningModuleId = IsarCore.readString(reader, 15);
+  object.learningModuleTitle = IsarCore.readString(reader, 16);
   {
-    final value = IsarCore.readLong(reader, 8);
+    final value = IsarCore.readLong(reader, 17);
     if (value == -9223372036854775808) {
       object.updatedAt =
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
@@ -148,8 +265,8 @@ ContentEntity deserializeContentEntity(IsarReader reader) {
           DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true).toLocal();
     }
   }
-  object.downloaded = IsarCore.readBool(reader, 9);
-  object.downloadPath = IsarCore.readString(reader, 10) ?? '';
+  object.downloaded = IsarCore.readBool(reader, 18);
+  object.downloadPath = IsarCore.readString(reader, 19) ?? '';
   return object;
 }
 
@@ -173,8 +290,26 @@ dynamic deserializeContentEntityProp(IsarReader reader, int property) {
     case 7:
       return IsarCore.readLong(reader, 7);
     case 8:
+      return IsarCore.readString(reader, 8);
+    case 9:
+      return IsarCore.readString(reader, 9);
+    case 10:
+      return IsarCore.readString(reader, 10);
+    case 11:
+      return IsarCore.readString(reader, 11);
+    case 12:
+      return IsarCore.readString(reader, 12);
+    case 13:
+      return IsarCore.readString(reader, 13);
+    case 14:
+      return IsarCore.readString(reader, 14);
+    case 15:
+      return IsarCore.readString(reader, 15);
+    case 16:
+      return IsarCore.readString(reader, 16);
+    case 17:
       {
-        final value = IsarCore.readLong(reader, 8);
+        final value = IsarCore.readLong(reader, 17);
         if (value == -9223372036854775808) {
           return DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
         } else {
@@ -182,10 +317,10 @@ dynamic deserializeContentEntityProp(IsarReader reader, int property) {
               .toLocal();
         }
       }
-    case 9:
-      return IsarCore.readBool(reader, 9);
-    case 10:
-      return IsarCore.readString(reader, 10) ?? '';
+    case 18:
+      return IsarCore.readBool(reader, 18);
+    case 19:
+      return IsarCore.readString(reader, 19) ?? '';
     default:
       throw ArgumentError('Unknown property: $property');
   }
@@ -201,6 +336,15 @@ sealed class _ContentEntityUpdate {
     String? description,
     int? durationSec,
     int? order,
+    String? youtubeUrl,
+    String? fileUrl,
+    String? fileHash,
+    String? fileFormat,
+    String? posterUrl,
+    String? subtitlesUrl,
+    String? payloadJson,
+    String? learningModuleId,
+    String? learningModuleTitle,
     DateTime? updatedAt,
     bool? downloaded,
     String? downloadPath,
@@ -222,6 +366,15 @@ class _ContentEntityUpdateImpl implements _ContentEntityUpdate {
     Object? description = ignore,
     Object? durationSec = ignore,
     Object? order = ignore,
+    Object? youtubeUrl = ignore,
+    Object? fileUrl = ignore,
+    Object? fileHash = ignore,
+    Object? fileFormat = ignore,
+    Object? posterUrl = ignore,
+    Object? subtitlesUrl = ignore,
+    Object? payloadJson = ignore,
+    Object? learningModuleId = ignore,
+    Object? learningModuleTitle = ignore,
     Object? updatedAt = ignore,
     Object? downloaded = ignore,
     Object? downloadPath = ignore,
@@ -236,9 +389,18 @@ class _ContentEntityUpdateImpl implements _ContentEntityUpdate {
           if (description != ignore) 5: description as String?,
           if (durationSec != ignore) 6: durationSec as int?,
           if (order != ignore) 7: order as int?,
-          if (updatedAt != ignore) 8: updatedAt as DateTime?,
-          if (downloaded != ignore) 9: downloaded as bool?,
-          if (downloadPath != ignore) 10: downloadPath as String?,
+          if (youtubeUrl != ignore) 8: youtubeUrl as String?,
+          if (fileUrl != ignore) 9: fileUrl as String?,
+          if (fileHash != ignore) 10: fileHash as String?,
+          if (fileFormat != ignore) 11: fileFormat as String?,
+          if (posterUrl != ignore) 12: posterUrl as String?,
+          if (subtitlesUrl != ignore) 13: subtitlesUrl as String?,
+          if (payloadJson != ignore) 14: payloadJson as String?,
+          if (learningModuleId != ignore) 15: learningModuleId as String?,
+          if (learningModuleTitle != ignore) 16: learningModuleTitle as String?,
+          if (updatedAt != ignore) 17: updatedAt as DateTime?,
+          if (downloaded != ignore) 18: downloaded as bool?,
+          if (downloadPath != ignore) 19: downloadPath as String?,
         }) >
         0;
   }
@@ -254,6 +416,15 @@ sealed class _ContentEntityUpdateAll {
     String? description,
     int? durationSec,
     int? order,
+    String? youtubeUrl,
+    String? fileUrl,
+    String? fileHash,
+    String? fileFormat,
+    String? posterUrl,
+    String? subtitlesUrl,
+    String? payloadJson,
+    String? learningModuleId,
+    String? learningModuleTitle,
     DateTime? updatedAt,
     bool? downloaded,
     String? downloadPath,
@@ -275,6 +446,15 @@ class _ContentEntityUpdateAllImpl implements _ContentEntityUpdateAll {
     Object? description = ignore,
     Object? durationSec = ignore,
     Object? order = ignore,
+    Object? youtubeUrl = ignore,
+    Object? fileUrl = ignore,
+    Object? fileHash = ignore,
+    Object? fileFormat = ignore,
+    Object? posterUrl = ignore,
+    Object? subtitlesUrl = ignore,
+    Object? payloadJson = ignore,
+    Object? learningModuleId = ignore,
+    Object? learningModuleTitle = ignore,
     Object? updatedAt = ignore,
     Object? downloaded = ignore,
     Object? downloadPath = ignore,
@@ -287,9 +467,18 @@ class _ContentEntityUpdateAllImpl implements _ContentEntityUpdateAll {
       if (description != ignore) 5: description as String?,
       if (durationSec != ignore) 6: durationSec as int?,
       if (order != ignore) 7: order as int?,
-      if (updatedAt != ignore) 8: updatedAt as DateTime?,
-      if (downloaded != ignore) 9: downloaded as bool?,
-      if (downloadPath != ignore) 10: downloadPath as String?,
+      if (youtubeUrl != ignore) 8: youtubeUrl as String?,
+      if (fileUrl != ignore) 9: fileUrl as String?,
+      if (fileHash != ignore) 10: fileHash as String?,
+      if (fileFormat != ignore) 11: fileFormat as String?,
+      if (posterUrl != ignore) 12: posterUrl as String?,
+      if (subtitlesUrl != ignore) 13: subtitlesUrl as String?,
+      if (payloadJson != ignore) 14: payloadJson as String?,
+      if (learningModuleId != ignore) 15: learningModuleId as String?,
+      if (learningModuleTitle != ignore) 16: learningModuleTitle as String?,
+      if (updatedAt != ignore) 17: updatedAt as DateTime?,
+      if (downloaded != ignore) 18: downloaded as bool?,
+      if (downloadPath != ignore) 19: downloadPath as String?,
     });
   }
 }
@@ -309,6 +498,15 @@ sealed class _ContentEntityQueryUpdate {
     String? description,
     int? durationSec,
     int? order,
+    String? youtubeUrl,
+    String? fileUrl,
+    String? fileHash,
+    String? fileFormat,
+    String? posterUrl,
+    String? subtitlesUrl,
+    String? payloadJson,
+    String? learningModuleId,
+    String? learningModuleTitle,
     DateTime? updatedAt,
     bool? downloaded,
     String? downloadPath,
@@ -330,6 +528,15 @@ class _ContentEntityQueryUpdateImpl implements _ContentEntityQueryUpdate {
     Object? description = ignore,
     Object? durationSec = ignore,
     Object? order = ignore,
+    Object? youtubeUrl = ignore,
+    Object? fileUrl = ignore,
+    Object? fileHash = ignore,
+    Object? fileFormat = ignore,
+    Object? posterUrl = ignore,
+    Object? subtitlesUrl = ignore,
+    Object? payloadJson = ignore,
+    Object? learningModuleId = ignore,
+    Object? learningModuleTitle = ignore,
     Object? updatedAt = ignore,
     Object? downloaded = ignore,
     Object? downloadPath = ignore,
@@ -342,9 +549,18 @@ class _ContentEntityQueryUpdateImpl implements _ContentEntityQueryUpdate {
       if (description != ignore) 5: description as String?,
       if (durationSec != ignore) 6: durationSec as int?,
       if (order != ignore) 7: order as int?,
-      if (updatedAt != ignore) 8: updatedAt as DateTime?,
-      if (downloaded != ignore) 9: downloaded as bool?,
-      if (downloadPath != ignore) 10: downloadPath as String?,
+      if (youtubeUrl != ignore) 8: youtubeUrl as String?,
+      if (fileUrl != ignore) 9: fileUrl as String?,
+      if (fileHash != ignore) 10: fileHash as String?,
+      if (fileFormat != ignore) 11: fileFormat as String?,
+      if (posterUrl != ignore) 12: posterUrl as String?,
+      if (subtitlesUrl != ignore) 13: subtitlesUrl as String?,
+      if (payloadJson != ignore) 14: payloadJson as String?,
+      if (learningModuleId != ignore) 15: learningModuleId as String?,
+      if (learningModuleTitle != ignore) 16: learningModuleTitle as String?,
+      if (updatedAt != ignore) 17: updatedAt as DateTime?,
+      if (downloaded != ignore) 18: downloaded as bool?,
+      if (downloadPath != ignore) 19: downloadPath as String?,
     });
   }
 }
@@ -373,6 +589,15 @@ class _ContentEntityQueryBuilderUpdateImpl
     Object? description = ignore,
     Object? durationSec = ignore,
     Object? order = ignore,
+    Object? youtubeUrl = ignore,
+    Object? fileUrl = ignore,
+    Object? fileHash = ignore,
+    Object? fileFormat = ignore,
+    Object? posterUrl = ignore,
+    Object? subtitlesUrl = ignore,
+    Object? payloadJson = ignore,
+    Object? learningModuleId = ignore,
+    Object? learningModuleTitle = ignore,
     Object? updatedAt = ignore,
     Object? downloaded = ignore,
     Object? downloadPath = ignore,
@@ -387,9 +612,18 @@ class _ContentEntityQueryBuilderUpdateImpl
         if (description != ignore) 5: description as String?,
         if (durationSec != ignore) 6: durationSec as int?,
         if (order != ignore) 7: order as int?,
-        if (updatedAt != ignore) 8: updatedAt as DateTime?,
-        if (downloaded != ignore) 9: downloaded as bool?,
-        if (downloadPath != ignore) 10: downloadPath as String?,
+        if (youtubeUrl != ignore) 8: youtubeUrl as String?,
+        if (fileUrl != ignore) 9: fileUrl as String?,
+        if (fileHash != ignore) 10: fileHash as String?,
+        if (fileFormat != ignore) 11: fileFormat as String?,
+        if (posterUrl != ignore) 12: posterUrl as String?,
+        if (subtitlesUrl != ignore) 13: subtitlesUrl as String?,
+        if (payloadJson != ignore) 14: payloadJson as String?,
+        if (learningModuleId != ignore) 15: learningModuleId as String?,
+        if (learningModuleTitle != ignore) 16: learningModuleTitle as String?,
+        if (updatedAt != ignore) 17: updatedAt as DateTime?,
+        if (downloaded != ignore) 18: downloaded as bool?,
+        if (downloadPath != ignore) 19: downloadPath as String?,
       });
     } finally {
       q.close();
@@ -1578,13 +1812,1759 @@ extension ContentEntityQueryFilter
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 8));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 8));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlGreaterThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlLessThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlLessThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 8,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 8,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 8,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 8,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      youtubeUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 8,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 9));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 9));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 9,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 9,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlGreaterThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 9,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlLessThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 9,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlLessThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 9,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 9,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 9,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 9,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 9,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 9,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 9,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 9,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 10));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 10));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashGreaterThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashLessThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashLessThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 10,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 10,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 10,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 10,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileHashIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 10,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 11));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 11));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 11,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 11,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatGreaterThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 11,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatLessThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 11,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatLessThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 11,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 11,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 11,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 11,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 11,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 11,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 11,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      fileFormatIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 11,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 12));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 12));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 12,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 12,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlGreaterThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 12,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlLessThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 12,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlLessThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 12,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 12,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 12,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 12,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 12,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 12,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 12,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      posterUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 12,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 13));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 13));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 13,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 13,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlGreaterThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 13,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlLessThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 13,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlLessThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 13,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 13,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 13,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 13,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 13,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 13,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 13,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      subtitlesUrlIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 13,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 14));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 14));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 14,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 14,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonGreaterThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 14,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonLessThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 14,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonLessThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 14,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 14,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 14,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 14,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 14,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 14,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 14,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      payloadJsonIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 14,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 15));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 15));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 15,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 15,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdGreaterThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 15,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdLessThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 15,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdLessThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 15,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 15,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 15,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 15,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 15,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 15,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 15,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 15,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 16));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleIsNotNull() {
+    return QueryBuilder.apply(not(), (query) {
+      return query.addFilterCondition(const IsNullCondition(property: 16));
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 16,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleGreaterThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 16,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleGreaterThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 16,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleLessThan(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 16,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleLessThanOrEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 16,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleBetween(
+    String? lower,
+    String? upper, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 16,
+          lower: lower,
+          upper: upper,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        StartsWithCondition(
+          property: 16,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EndsWithCondition(
+          property: 16,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        ContainsCondition(
+          property: 16,
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        MatchesCondition(
+          property: 16,
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const EqualCondition(
+          property: 16,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      learningModuleTitleIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const GreaterCondition(
+          property: 16,
+          value: '',
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
       updatedAtEqualTo(
     DateTime value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 8,
+          property: 17,
           value: value,
         ),
       );
@@ -1598,7 +3578,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 8,
+          property: 17,
           value: value,
         ),
       );
@@ -1612,7 +3592,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 8,
+          property: 17,
           value: value,
         ),
       );
@@ -1626,7 +3606,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 8,
+          property: 17,
           value: value,
         ),
       );
@@ -1640,7 +3620,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 8,
+          property: 17,
           value: value,
         ),
       );
@@ -1655,7 +3635,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 8,
+          property: 17,
           lower: lower,
           upper: upper,
         ),
@@ -1670,7 +3650,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 9,
+          property: 18,
           value: value,
         ),
       );
@@ -1685,7 +3665,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 10,
+          property: 19,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1701,7 +3681,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 10,
+          property: 19,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1717,7 +3697,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 10,
+          property: 19,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1733,7 +3713,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 10,
+          property: 19,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1749,7 +3729,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 10,
+          property: 19,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1766,7 +3746,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 10,
+          property: 19,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -1783,7 +3763,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 10,
+          property: 19,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1799,7 +3779,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 10,
+          property: 19,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1812,7 +3792,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 10,
+          property: 19,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -1825,7 +3805,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 10,
+          property: 19,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -1838,7 +3818,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 10,
+          property: 19,
           value: '',
         ),
       );
@@ -1850,7 +3830,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 10,
+          property: 19,
           value: '',
         ),
       );
@@ -2005,33 +3985,49 @@ extension ContentEntityQuerySortBy
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByUpdatedAt() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByYoutubeUrl(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8);
+      return query.addSortBy(
+        8,
+        caseSensitive: caseSensitive,
+      );
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
-      sortByUpdatedAtDesc() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByYoutubeUrlDesc(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8, sort: Sort.desc);
+      return query.addSortBy(
+        8,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByDownloaded() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByFileUrl(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(9);
+      return query.addSortBy(
+        9,
+        caseSensitive: caseSensitive,
+      );
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
-      sortByDownloadedDesc() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByFileUrlDesc(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(9, sort: Sort.desc);
+      return query.addSortBy(
+        9,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByDownloadPath(
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByFileHash(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
@@ -2041,11 +4037,184 @@ extension ContentEntityQuerySortBy
     });
   }
 
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByFileHashDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        10,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByFileFormat(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        11,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByFileFormatDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        11,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByPosterUrl(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        12,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByPosterUrlDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        12,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortBySubtitlesUrl(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        13,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      sortBySubtitlesUrlDesc({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        13,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByPayloadJson(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        14,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      sortByPayloadJsonDesc({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        14,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      sortByLearningModuleId({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        15,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      sortByLearningModuleIdDesc({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        15,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      sortByLearningModuleTitle({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        16,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      sortByLearningModuleTitleDesc({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        16,
+        sort: Sort.desc,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(17);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(17, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByDownloaded() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(18);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      sortByDownloadedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(18, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByDownloadPath(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(
+        19,
+        caseSensitive: caseSensitive,
+      );
+    });
+  }
+
   QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
       sortByDownloadPathDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        10,
+        19,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -2162,43 +4331,169 @@ extension ContentEntityQuerySortThenBy
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByUpdatedAt() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByYoutubeUrl(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8);
+      return query.addSortBy(8, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
-      thenByUpdatedAtDesc() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByYoutubeUrlDesc(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(8, sort: Sort.desc);
+      return query.addSortBy(8, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByDownloaded() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByFileUrl(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(9);
+      return query.addSortBy(9, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
-      thenByDownloadedDesc() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByFileUrlDesc(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(9, sort: Sort.desc);
+      return query.addSortBy(9, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByDownloadPath(
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByFileHash(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(10, caseSensitive: caseSensitive);
     });
   }
 
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByFileHashDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(10, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByFileFormat(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(11, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByFileFormatDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(11, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByPosterUrl(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(12, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByPosterUrlDesc(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(12, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenBySubtitlesUrl(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(13, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      thenBySubtitlesUrlDesc({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(13, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByPayloadJson(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(14, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      thenByPayloadJsonDesc({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(14, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      thenByLearningModuleId({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(15, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      thenByLearningModuleIdDesc({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(15, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      thenByLearningModuleTitle({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(16, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      thenByLearningModuleTitleDesc({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(16, sort: Sort.desc, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(17);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(17, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByDownloaded() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(18);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      thenByDownloadedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(18, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByDownloadPath(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(19, caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
       thenByDownloadPathDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(10, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(19, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 }
@@ -2254,23 +4549,86 @@ extension ContentEntityQueryWhereDistinct
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
+      distinctByYoutubeUrl({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(8, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct> distinctByFileUrl(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(9, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct> distinctByFileHash(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(10, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
+      distinctByFileFormat({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(11, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
+      distinctByPosterUrl({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(12, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
+      distinctBySubtitlesUrl({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(13, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
+      distinctByPayloadJson({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(14, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
+      distinctByLearningModuleId({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(15, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
+      distinctByLearningModuleTitle({bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(16, caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
       distinctByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(8);
+      return query.addDistinctBy(17);
     });
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
       distinctByDownloaded() {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(9);
+      return query.addDistinctBy(18);
     });
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
       distinctByDownloadPath({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(10, caseSensitive: caseSensitive);
+      return query.addDistinctBy(19, caseSensitive: caseSensitive);
     });
   }
 }
@@ -2325,21 +4683,77 @@ extension ContentEntityQueryProperty1
     });
   }
 
-  QueryBuilder<ContentEntity, DateTime, QAfterProperty> updatedAtProperty() {
+  QueryBuilder<ContentEntity, String?, QAfterProperty> youtubeUrlProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(8);
     });
   }
 
-  QueryBuilder<ContentEntity, bool, QAfterProperty> downloadedProperty() {
+  QueryBuilder<ContentEntity, String?, QAfterProperty> fileUrlProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(9);
     });
   }
 
-  QueryBuilder<ContentEntity, String, QAfterProperty> downloadPathProperty() {
+  QueryBuilder<ContentEntity, String?, QAfterProperty> fileHashProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(10);
+    });
+  }
+
+  QueryBuilder<ContentEntity, String?, QAfterProperty> fileFormatProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(11);
+    });
+  }
+
+  QueryBuilder<ContentEntity, String?, QAfterProperty> posterUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(12);
+    });
+  }
+
+  QueryBuilder<ContentEntity, String?, QAfterProperty> subtitlesUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(13);
+    });
+  }
+
+  QueryBuilder<ContentEntity, String?, QAfterProperty> payloadJsonProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(14);
+    });
+  }
+
+  QueryBuilder<ContentEntity, String?, QAfterProperty>
+      learningModuleIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(15);
+    });
+  }
+
+  QueryBuilder<ContentEntity, String?, QAfterProperty>
+      learningModuleTitleProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(16);
+    });
+  }
+
+  QueryBuilder<ContentEntity, DateTime, QAfterProperty> updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(17);
+    });
+  }
+
+  QueryBuilder<ContentEntity, bool, QAfterProperty> downloadedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(18);
+    });
+  }
+
+  QueryBuilder<ContentEntity, String, QAfterProperty> downloadPathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(19);
     });
   }
 }
@@ -2395,23 +4809,84 @@ extension ContentEntityQueryProperty2<R>
     });
   }
 
-  QueryBuilder<ContentEntity, (R, DateTime), QAfterProperty>
-      updatedAtProperty() {
+  QueryBuilder<ContentEntity, (R, String?), QAfterProperty>
+      youtubeUrlProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(8);
     });
   }
 
-  QueryBuilder<ContentEntity, (R, bool), QAfterProperty> downloadedProperty() {
+  QueryBuilder<ContentEntity, (R, String?), QAfterProperty> fileUrlProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(9);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R, String?), QAfterProperty> fileHashProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(10);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R, String?), QAfterProperty>
+      fileFormatProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(11);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R, String?), QAfterProperty>
+      posterUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(12);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R, String?), QAfterProperty>
+      subtitlesUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(13);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R, String?), QAfterProperty>
+      payloadJsonProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(14);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R, String?), QAfterProperty>
+      learningModuleIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(15);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R, String?), QAfterProperty>
+      learningModuleTitleProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(16);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R, DateTime), QAfterProperty>
+      updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(17);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R, bool), QAfterProperty> downloadedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(18);
     });
   }
 
   QueryBuilder<ContentEntity, (R, String), QAfterProperty>
       downloadPathProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(10);
+      return query.addProperty(19);
     });
   }
 }
@@ -2469,24 +4944,87 @@ extension ContentEntityQueryProperty3<R1, R2>
     });
   }
 
+  QueryBuilder<ContentEntity, (R1, R2, String?), QOperations>
+      youtubeUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(8);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R1, R2, String?), QOperations>
+      fileUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(9);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R1, R2, String?), QOperations>
+      fileHashProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(10);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R1, R2, String?), QOperations>
+      fileFormatProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(11);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R1, R2, String?), QOperations>
+      posterUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(12);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R1, R2, String?), QOperations>
+      subtitlesUrlProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(13);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R1, R2, String?), QOperations>
+      payloadJsonProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(14);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R1, R2, String?), QOperations>
+      learningModuleIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(15);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R1, R2, String?), QOperations>
+      learningModuleTitleProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(16);
+    });
+  }
+
   QueryBuilder<ContentEntity, (R1, R2, DateTime), QOperations>
       updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(8);
+      return query.addProperty(17);
     });
   }
 
   QueryBuilder<ContentEntity, (R1, R2, bool), QOperations>
       downloadedProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(9);
+      return query.addProperty(18);
     });
   }
 
   QueryBuilder<ContentEntity, (R1, R2, String), QOperations>
       downloadPathProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(10);
+      return query.addProperty(19);
     });
   }
 }

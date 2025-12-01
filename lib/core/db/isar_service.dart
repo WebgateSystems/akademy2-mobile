@@ -30,7 +30,8 @@ class IsarService {
           ContentEntitySchema,
         ],
         directory: dir.path,
-        name: 'academy',
+        // Bump name to force a fresh schema when fields change (no migrations in isar_plus)
+        name: 'academy_v2',
       );
       _initialized = true;
       debugPrint('IsarService initialized at: ${dir.path}');
@@ -150,6 +151,11 @@ class IsarService {
         .findAll();
     debugPrint(
         'IsarService: contents for module=$moduleId => ${contents.length}');
+    if (contents.isNotEmpty) {
+      final sample = contents.first;
+      debugPrint(
+          'IsarService: sample content id=${sample.id} type=${sample.type} youtube=${sample.youtubeUrl} poster=${sample.posterUrl} file=${sample.fileUrl}');
+    }
     return contents;
   }
 
