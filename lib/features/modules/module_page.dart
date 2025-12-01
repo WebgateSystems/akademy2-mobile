@@ -122,6 +122,8 @@ class ModulePage extends ConsumerWidget {
                       moduleId: module.id,
                       content: content,
                       onVideoPreview: () => _showVideoPreview(context, content),
+                      onInfographicPreview: () =>
+                          _showInfographicPreview(context, content),
                     );
                   },
                 ),
@@ -139,6 +141,7 @@ class ModulePage extends ConsumerWidget {
     required String moduleId,
     required ContentEntity content,
     VoidCallback? onVideoPreview,
+    VoidCallback? onInfographicPreview,
   }) {
     final previewUrl = _previewUrl(content);
     switch (content.type) {
@@ -156,6 +159,7 @@ class ModulePage extends ConsumerWidget {
           moduleId: moduleId,
           l10n: l10n,
           previewUrl: previewUrl,
+          onPreviewTap: onInfographicPreview ?? () {},
         );
       case 'quiz':
         return _quizButton(context, l10n, moduleId);
@@ -272,6 +276,36 @@ class ModulePage extends ConsumerWidget {
       );
     }
   }
+
+  Future<void> _showInfographicPreview(
+    BuildContext context,
+    ContentEntity content,
+  ) async {
+    final url = _absUrl(content.posterUrl) ?? _absUrl(content.fileUrl);
+    final heroTag = 'content-${content.id}';
+    await showDialog<void>(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.9),
+      builder: (_) => GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: Hero(
+              tag: heroTag,
+              child: InteractiveViewer(
+                child: _PreviewImageBody(
+                  imagePath: 'assets/images/placeholder.png',
+                  networkUrl: url,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _VideoContentCard extends StatelessWidget {
@@ -300,7 +334,7 @@ class _VideoContentCard extends StatelessWidget {
       ),
       title: content.title,
       subtitle: l10n.videoTitle,
-      onTap: () => context.push('/module/$moduleId/${content.type}'),
+      onTap: onPreviewTap,
     );
   }
 }
@@ -311,12 +345,14 @@ class _InfographicContentCard extends StatelessWidget {
     required this.moduleId,
     required this.l10n,
     required this.previewUrl,
+    required this.onPreviewTap,
   });
 
   final ContentEntity content;
   final String moduleId;
   final AppLocalizations l10n;
   final String? previewUrl;
+  final VoidCallback onPreviewTap;
 
   @override
   Widget build(BuildContext context) {
@@ -325,10 +361,11 @@ class _InfographicContentCard extends StatelessWidget {
         imagePath: 'assets/images/placeholder.png',
         networkUrl: previewUrl,
         heroTag: 'content-${content.id}',
+        onTapOverride: onPreviewTap,
       ),
       title: content.title,
       subtitle: l10n.infographicTitle,
-      onTap: () => context.push('/module/$moduleId/${content.type}'),
+      onTap: onPreviewTap,
     );
   }
 }
