@@ -849,6 +849,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download'**
   String get quizResultDownload;
+
+  /// No description provided for @quizScoreLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{score} pts'**
+  String quizScoreLabel(Object score);
 }
 
 class _AppLocalizationsDelegate

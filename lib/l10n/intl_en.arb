@@ -195,5 +195,6 @@
   "quizResultTryTitle": "🎈 Nice try!",
   "quizResultTryBody": "No worries — you can try again! Review the materials, revisit the questions, and show what you’ve got. Fingers crossed for your next score! 💪📚",
   "quizResultSkip": "Skip",
-  "quizResultDownload": "Download"
+  "quizResultDownload": "Download",
+  "quizScoreLabel": "{score} pts"
 }

@@ -85,6 +85,10 @@ final ContentEntitySchema = IsarGeneratedSchema(
         type: IsarType.string,
       ),
       IsarPropertySchema(
+        name: 'bestScore',
+        type: IsarType.long,
+      ),
+      IsarPropertySchema(
         name: 'updatedAt',
         type: IsarType.dateTime,
       ),
@@ -228,10 +232,11 @@ int serializeContentEntity(IsarWriter writer, ContentEntity object) {
       IsarCore.writeString(writer, 16, value);
     }
   }
+  IsarCore.writeLong(writer, 17, object.bestScore);
   IsarCore.writeLong(
-      writer, 17, object.updatedAt.toUtc().microsecondsSinceEpoch);
-  IsarCore.writeBool(writer, 18, value: object.downloaded);
-  IsarCore.writeString(writer, 19, object.downloadPath);
+      writer, 18, object.updatedAt.toUtc().microsecondsSinceEpoch);
+  IsarCore.writeBool(writer, 19, value: object.downloaded);
+  IsarCore.writeString(writer, 20, object.downloadPath);
   return object.isarId;
 }
 
@@ -255,8 +260,9 @@ ContentEntity deserializeContentEntity(IsarReader reader) {
   object.payloadJson = IsarCore.readString(reader, 14);
   object.learningModuleId = IsarCore.readString(reader, 15);
   object.learningModuleTitle = IsarCore.readString(reader, 16);
+  object.bestScore = IsarCore.readLong(reader, 17);
   {
-    final value = IsarCore.readLong(reader, 17);
+    final value = IsarCore.readLong(reader, 18);
     if (value == -9223372036854775808) {
       object.updatedAt =
           DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
@@ -265,8 +271,8 @@ ContentEntity deserializeContentEntity(IsarReader reader) {
           DateTime.fromMicrosecondsSinceEpoch(value, isUtc: true).toLocal();
     }
   }
-  object.downloaded = IsarCore.readBool(reader, 18);
-  object.downloadPath = IsarCore.readString(reader, 19) ?? '';
+  object.downloaded = IsarCore.readBool(reader, 19);
+  object.downloadPath = IsarCore.readString(reader, 20) ?? '';
   return object;
 }
 
@@ -308,8 +314,10 @@ dynamic deserializeContentEntityProp(IsarReader reader, int property) {
     case 16:
       return IsarCore.readString(reader, 16);
     case 17:
+      return IsarCore.readLong(reader, 17);
+    case 18:
       {
-        final value = IsarCore.readLong(reader, 17);
+        final value = IsarCore.readLong(reader, 18);
         if (value == -9223372036854775808) {
           return DateTime.fromMillisecondsSinceEpoch(0, isUtc: true).toLocal();
         } else {
@@ -317,10 +325,10 @@ dynamic deserializeContentEntityProp(IsarReader reader, int property) {
               .toLocal();
         }
       }
-    case 18:
-      return IsarCore.readBool(reader, 18);
     case 19:
-      return IsarCore.readString(reader, 19) ?? '';
+      return IsarCore.readBool(reader, 19);
+    case 20:
+      return IsarCore.readString(reader, 20) ?? '';
     default:
       throw ArgumentError('Unknown property: $property');
   }
@@ -345,6 +353,7 @@ sealed class _ContentEntityUpdate {
     String? payloadJson,
     String? learningModuleId,
     String? learningModuleTitle,
+    int? bestScore,
     DateTime? updatedAt,
     bool? downloaded,
     String? downloadPath,
@@ -375,6 +384,7 @@ class _ContentEntityUpdateImpl implements _ContentEntityUpdate {
     Object? payloadJson = ignore,
     Object? learningModuleId = ignore,
     Object? learningModuleTitle = ignore,
+    Object? bestScore = ignore,
     Object? updatedAt = ignore,
     Object? downloaded = ignore,
     Object? downloadPath = ignore,
@@ -398,9 +408,10 @@ class _ContentEntityUpdateImpl implements _ContentEntityUpdate {
           if (payloadJson != ignore) 14: payloadJson as String?,
           if (learningModuleId != ignore) 15: learningModuleId as String?,
           if (learningModuleTitle != ignore) 16: learningModuleTitle as String?,
-          if (updatedAt != ignore) 17: updatedAt as DateTime?,
-          if (downloaded != ignore) 18: downloaded as bool?,
-          if (downloadPath != ignore) 19: downloadPath as String?,
+          if (bestScore != ignore) 17: bestScore as int?,
+          if (updatedAt != ignore) 18: updatedAt as DateTime?,
+          if (downloaded != ignore) 19: downloaded as bool?,
+          if (downloadPath != ignore) 20: downloadPath as String?,
         }) >
         0;
   }
@@ -425,6 +436,7 @@ sealed class _ContentEntityUpdateAll {
     String? payloadJson,
     String? learningModuleId,
     String? learningModuleTitle,
+    int? bestScore,
     DateTime? updatedAt,
     bool? downloaded,
     String? downloadPath,
@@ -455,6 +467,7 @@ class _ContentEntityUpdateAllImpl implements _ContentEntityUpdateAll {
     Object? payloadJson = ignore,
     Object? learningModuleId = ignore,
     Object? learningModuleTitle = ignore,
+    Object? bestScore = ignore,
     Object? updatedAt = ignore,
     Object? downloaded = ignore,
     Object? downloadPath = ignore,
@@ -476,9 +489,10 @@ class _ContentEntityUpdateAllImpl implements _ContentEntityUpdateAll {
       if (payloadJson != ignore) 14: payloadJson as String?,
       if (learningModuleId != ignore) 15: learningModuleId as String?,
       if (learningModuleTitle != ignore) 16: learningModuleTitle as String?,
-      if (updatedAt != ignore) 17: updatedAt as DateTime?,
-      if (downloaded != ignore) 18: downloaded as bool?,
-      if (downloadPath != ignore) 19: downloadPath as String?,
+      if (bestScore != ignore) 17: bestScore as int?,
+      if (updatedAt != ignore) 18: updatedAt as DateTime?,
+      if (downloaded != ignore) 19: downloaded as bool?,
+      if (downloadPath != ignore) 20: downloadPath as String?,
     });
   }
 }
@@ -507,6 +521,7 @@ sealed class _ContentEntityQueryUpdate {
     String? payloadJson,
     String? learningModuleId,
     String? learningModuleTitle,
+    int? bestScore,
     DateTime? updatedAt,
     bool? downloaded,
     String? downloadPath,
@@ -537,6 +552,7 @@ class _ContentEntityQueryUpdateImpl implements _ContentEntityQueryUpdate {
     Object? payloadJson = ignore,
     Object? learningModuleId = ignore,
     Object? learningModuleTitle = ignore,
+    Object? bestScore = ignore,
     Object? updatedAt = ignore,
     Object? downloaded = ignore,
     Object? downloadPath = ignore,
@@ -558,9 +574,10 @@ class _ContentEntityQueryUpdateImpl implements _ContentEntityQueryUpdate {
       if (payloadJson != ignore) 14: payloadJson as String?,
       if (learningModuleId != ignore) 15: learningModuleId as String?,
       if (learningModuleTitle != ignore) 16: learningModuleTitle as String?,
-      if (updatedAt != ignore) 17: updatedAt as DateTime?,
-      if (downloaded != ignore) 18: downloaded as bool?,
-      if (downloadPath != ignore) 19: downloadPath as String?,
+      if (bestScore != ignore) 17: bestScore as int?,
+      if (updatedAt != ignore) 18: updatedAt as DateTime?,
+      if (downloaded != ignore) 19: downloaded as bool?,
+      if (downloadPath != ignore) 20: downloadPath as String?,
     });
   }
 }
@@ -598,6 +615,7 @@ class _ContentEntityQueryBuilderUpdateImpl
     Object? payloadJson = ignore,
     Object? learningModuleId = ignore,
     Object? learningModuleTitle = ignore,
+    Object? bestScore = ignore,
     Object? updatedAt = ignore,
     Object? downloaded = ignore,
     Object? downloadPath = ignore,
@@ -621,9 +639,10 @@ class _ContentEntityQueryBuilderUpdateImpl
         if (payloadJson != ignore) 14: payloadJson as String?,
         if (learningModuleId != ignore) 15: learningModuleId as String?,
         if (learningModuleTitle != ignore) 16: learningModuleTitle as String?,
-        if (updatedAt != ignore) 17: updatedAt as DateTime?,
-        if (downloaded != ignore) 18: downloaded as bool?,
-        if (downloadPath != ignore) 19: downloadPath as String?,
+        if (bestScore != ignore) 17: bestScore as int?,
+        if (updatedAt != ignore) 18: updatedAt as DateTime?,
+        if (downloaded != ignore) 19: downloaded as bool?,
+        if (downloadPath != ignore) 20: downloadPath as String?,
       });
     } finally {
       q.close();
@@ -3558,13 +3577,99 @@ extension ContentEntityQueryFilter
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      bestScoreEqualTo(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        EqualCondition(
+          property: 17,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      bestScoreGreaterThan(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterCondition(
+          property: 17,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      bestScoreGreaterThanOrEqualTo(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        GreaterOrEqualCondition(
+          property: 17,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      bestScoreLessThan(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessCondition(
+          property: 17,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      bestScoreLessThanOrEqualTo(
+    int value,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        LessOrEqualCondition(
+          property: 17,
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
+      bestScoreBetween(
+    int lower,
+    int upper,
+  ) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        BetweenCondition(
+          property: 17,
+          lower: lower,
+          upper: upper,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterFilterCondition>
       updatedAtEqualTo(
     DateTime value,
   ) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 17,
+          property: 18,
           value: value,
         ),
       );
@@ -3578,7 +3683,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 17,
+          property: 18,
           value: value,
         ),
       );
@@ -3592,7 +3697,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 17,
+          property: 18,
           value: value,
         ),
       );
@@ -3606,7 +3711,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 17,
+          property: 18,
           value: value,
         ),
       );
@@ -3620,7 +3725,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 17,
+          property: 18,
           value: value,
         ),
       );
@@ -3635,7 +3740,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 17,
+          property: 18,
           lower: lower,
           upper: upper,
         ),
@@ -3650,7 +3755,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 18,
+          property: 19,
           value: value,
         ),
       );
@@ -3665,7 +3770,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EqualCondition(
-          property: 19,
+          property: 20,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -3681,7 +3786,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterCondition(
-          property: 19,
+          property: 20,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -3697,7 +3802,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         GreaterOrEqualCondition(
-          property: 19,
+          property: 20,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -3713,7 +3818,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessCondition(
-          property: 19,
+          property: 20,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -3729,7 +3834,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         LessOrEqualCondition(
-          property: 19,
+          property: 20,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -3746,7 +3851,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         BetweenCondition(
-          property: 19,
+          property: 20,
           lower: lower,
           upper: upper,
           caseSensitive: caseSensitive,
@@ -3763,7 +3868,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         StartsWithCondition(
-          property: 19,
+          property: 20,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -3779,7 +3884,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         EndsWithCondition(
-          property: 19,
+          property: 20,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -3792,7 +3897,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         ContainsCondition(
-          property: 19,
+          property: 20,
           value: value,
           caseSensitive: caseSensitive,
         ),
@@ -3805,7 +3910,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         MatchesCondition(
-          property: 19,
+          property: 20,
           wildcard: pattern,
           caseSensitive: caseSensitive,
         ),
@@ -3818,7 +3923,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const EqualCondition(
-          property: 19,
+          property: 20,
           value: '',
         ),
       );
@@ -3830,7 +3935,7 @@ extension ContentEntityQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(
         const GreaterCondition(
-          property: 19,
+          property: 20,
           value: '',
         ),
       );
@@ -4174,29 +4279,42 @@ extension ContentEntityQuerySortBy
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByUpdatedAt() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByBestScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(17);
     });
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
-      sortByUpdatedAtDesc() {
+      sortByBestScoreDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(17, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByDownloaded() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(18);
     });
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
-      sortByDownloadedDesc() {
+      sortByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(18, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> sortByDownloaded() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(19);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      sortByDownloadedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(19, sort: Sort.desc);
     });
   }
 
@@ -4204,7 +4322,7 @@ extension ContentEntityQuerySortBy
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        19,
+        20,
         caseSensitive: caseSensitive,
       );
     });
@@ -4214,7 +4332,7 @@ extension ContentEntityQuerySortBy
       sortByDownloadPathDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(
-        19,
+        20,
         sort: Sort.desc,
         caseSensitive: caseSensitive,
       );
@@ -4457,43 +4575,56 @@ extension ContentEntityQuerySortThenBy
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByUpdatedAt() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByBestScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(17);
     });
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
-      thenByUpdatedAtDesc() {
+      thenByBestScoreDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(17, sort: Sort.desc);
     });
   }
 
-  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByDownloaded() {
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(18);
     });
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
-      thenByDownloadedDesc() {
+      thenByUpdatedAtDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(18, sort: Sort.desc);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByDownloaded() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(19);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
+      thenByDownloadedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(19, sort: Sort.desc);
     });
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy> thenByDownloadPath(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(19, caseSensitive: caseSensitive);
+      return query.addSortBy(20, caseSensitive: caseSensitive);
     });
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterSortBy>
       thenByDownloadPathDesc({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(19, sort: Sort.desc, caseSensitive: caseSensitive);
+      return query.addSortBy(20, sort: Sort.desc, caseSensitive: caseSensitive);
     });
   }
 }
@@ -4612,23 +4743,30 @@ extension ContentEntityQueryWhereDistinct
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
-      distinctByUpdatedAt() {
+      distinctByBestScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(17);
     });
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
-      distinctByDownloaded() {
+      distinctByUpdatedAt() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(18);
     });
   }
 
   QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
+      distinctByDownloaded() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(19);
+    });
+  }
+
+  QueryBuilder<ContentEntity, ContentEntity, QAfterDistinct>
       distinctByDownloadPath({bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(19, caseSensitive: caseSensitive);
+      return query.addDistinctBy(20, caseSensitive: caseSensitive);
     });
   }
 }
@@ -4739,21 +4877,27 @@ extension ContentEntityQueryProperty1
     });
   }
 
-  QueryBuilder<ContentEntity, DateTime, QAfterProperty> updatedAtProperty() {
+  QueryBuilder<ContentEntity, int, QAfterProperty> bestScoreProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(17);
     });
   }
 
-  QueryBuilder<ContentEntity, bool, QAfterProperty> downloadedProperty() {
+  QueryBuilder<ContentEntity, DateTime, QAfterProperty> updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(18);
     });
   }
 
-  QueryBuilder<ContentEntity, String, QAfterProperty> downloadPathProperty() {
+  QueryBuilder<ContentEntity, bool, QAfterProperty> downloadedProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(19);
+    });
+  }
+
+  QueryBuilder<ContentEntity, String, QAfterProperty> downloadPathProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(20);
     });
   }
 }
@@ -4870,23 +5014,29 @@ extension ContentEntityQueryProperty2<R>
     });
   }
 
-  QueryBuilder<ContentEntity, (R, DateTime), QAfterProperty>
-      updatedAtProperty() {
+  QueryBuilder<ContentEntity, (R, int), QAfterProperty> bestScoreProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(17);
     });
   }
 
-  QueryBuilder<ContentEntity, (R, bool), QAfterProperty> downloadedProperty() {
+  QueryBuilder<ContentEntity, (R, DateTime), QAfterProperty>
+      updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addProperty(18);
+    });
+  }
+
+  QueryBuilder<ContentEntity, (R, bool), QAfterProperty> downloadedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(19);
     });
   }
 
   QueryBuilder<ContentEntity, (R, String), QAfterProperty>
       downloadPathProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(19);
+      return query.addProperty(20);
     });
   }
 }
@@ -5007,24 +5157,30 @@ extension ContentEntityQueryProperty3<R1, R2>
     });
   }
 
+  QueryBuilder<ContentEntity, (R1, R2, int), QOperations> bestScoreProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addProperty(17);
+    });
+  }
+
   QueryBuilder<ContentEntity, (R1, R2, DateTime), QOperations>
       updatedAtProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(17);
+      return query.addProperty(18);
     });
   }
 
   QueryBuilder<ContentEntity, (R1, R2, bool), QOperations>
       downloadedProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(18);
+      return query.addProperty(19);
     });
   }
 
   QueryBuilder<ContentEntity, (R1, R2, String), QOperations>
       downloadPathProperty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addProperty(19);
+      return query.addProperty(20);
     });
   }
 }

@@ -29,44 +29,46 @@ class BaseWaitApprovalPage extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.backgroundAccent(context),
         ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Spacer(),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.h1(context)
-                    .copyWith(color: AppColors.contentOnAccentPrimary(context)),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                subtitle,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.b1(context).copyWith(
-                  color: AppColors.contentOnAccentSecondary(context),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Spacer(),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.h1(context).copyWith(
+                      color: AppColors.contentOnAccentPrimary(context)),
                 ),
-              ),
-              if (body != null) ...[
-                SizedBox(height: 8.h),
-                body!,
-              ],
-              if (rejected) ...[
                 SizedBox(height: 16.h),
-                ActionButtonWidget(
-                  onPressed: retry,
-                  text: loc.waitApprovalRetryButton,
+                Text(
+                  subtitle,
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.b1(context).copyWith(
+                    color: AppColors.contentOnAccentSecondary(context),
+                  ),
                 ),
+                if (body != null) ...[
+                  SizedBox(height: 8.h),
+                  body!,
+                ],
+                const Spacer(),
+                if (footer != null) ...[
+                  footer!,
+                  SizedBox(height: 30.h),
+                ],
+                if (rejected) ...[
+                  ActionButtonWidget(
+                    onPressed: retry,
+                    text: loc.waitApprovalRetryButton,
+                  ),
+                  SizedBox(height: 30.h),
+                ],
               ],
-              const Spacer(),
-              if (footer != null) ...[
-                footer!,
-                SizedBox(height: 30.h),
-              ],
-            ],
+            ),
           ),
         ),
       ),

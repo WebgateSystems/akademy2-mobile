@@ -48,10 +48,8 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
     final modules = await service.getModulesBySubjectId(subject.id);
     if (modules.length == 1) {
       final moduleId = modules.first.id;
-      // НОВА ЛОГІКА: навіть для singleFlow модулів спочатку показуємо ModulePage (список контенту).
       context.push('/module/$moduleId');
     } else {
-      // Multi-module – відкриваємо список модулів.
       context.push('/subject/${subject.id}');
     }
   }
@@ -102,9 +100,9 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
                 sliver: SliverGrid(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    mainAxisSpacing: 10.w,
-                    crossAxisSpacing: 10.w,
-                    childAspectRatio: 1,
+                    mainAxisSpacing: 2.w,
+                    crossAxisSpacing: 12.w,
+                    childAspectRatio: 0.9, // taller cards
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {

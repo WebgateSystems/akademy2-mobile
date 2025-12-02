@@ -31,7 +31,7 @@ class IsarService {
         ],
         directory: dir.path,
         // Bump name to force a fresh schema when fields change (no migrations in isar_plus)
-        name: 'academy_v2',
+        name: 'academy_v3',
       );
       _initialized = true;
       debugPrint('IsarService initialized at: ${dir.path}');
@@ -192,6 +192,42 @@ class IsarService {
         isar.contentEntitys.put(content);
       }
     });
+  }
+
+  Future<void> updateQuizBestScore(String contentId, int score) async {
+    await _ensureInit();
+    final existing =
+        _isar.contentEntitys.where().idEqualTo(contentId).build().findFirst();
+    if (existing == null) return;
+    if (score <= existing.bestScore) return;
+    existing.bestScore = score;
+    await _isar.writeAsync((isar) {
+      isar.contentEntitys.put(existing);
+    });
+  }
+
+  Future<int> getBestQuizScoreForSubject(String subjectId) async {
+    await _ensureInit();
+    final modules = _isar.moduleEntitys
+        .where()
+        .subjectIdEqualTo(subjectId)
+        .build()
+        .findAll();
+    if (modules.isEmpty) return 0;
+    var best = 0;
+    for (final module in modules) {
+      final contents = _isar.contentEntitys
+          .where()
+          .moduleIdEqualTo(module.id)
+          .build()
+          .findAll();
+      for (final c in contents) {
+        if (c.type == 'quiz' && c.bestScore > best) {
+          best = c.bestScore;
+        }
+      }
+    }
+    return best;
   }
 
   /// Clear all data

@@ -26,6 +26,7 @@ class _QuizPageState extends State<QuizPage> {
   late List<_QuizQuestion> _questions;
   final Map<String, Set<String>> _selected = {};
   int _current = 0;
+  String? _quizContentId;
 
   @override
   void initState() {
@@ -61,6 +62,7 @@ class _QuizPageState extends State<QuizPage> {
             Center(child: Text(l10n.noContent)),
           );
         }
+        _quizContentId = content.id;
 
         _questions = _parseQuestions(content.payloadJson);
         if (_questions.isEmpty) {
@@ -86,7 +88,7 @@ class _QuizPageState extends State<QuizPage> {
             stickChildrenToBottom: true,
             isOneToolbarRow: true,
             showBackButton: true,
-            paddingBottom: 30.h,
+            paddingBottom: 57.h,
             children: [
               SizedBox(height: 16.h),
               Text(
@@ -113,7 +115,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
               SizedBox(height: 12.h),
               ActionButtonWidget(
-                onPressed: canProceed ? _next : null,
+                onPressed: canProceed ? () => _next() : null,
                 loading: canProceed && false,
                 text: _current == _questions.length - 1
                     ? l10n.quizTitle
@@ -153,7 +155,7 @@ class _QuizPageState extends State<QuizPage> {
     });
   }
 
-  void _next() {
+  Future<void> _next() async {
     if (_current < _questions.length - 1) {
       setState(() {
         _current++;
@@ -163,7 +165,7 @@ class _QuizPageState extends State<QuizPage> {
 
     final score = _calculateScore();
     final total = _questions.fold<int>(0, (sum, q) => sum + q.points);
-    _showResult(score, total);
+    await _showResult(score, total);
   }
 
   int _calculateScore() {
@@ -180,8 +182,16 @@ class _QuizPageState extends State<QuizPage> {
     return total;
   }
 
-  void _showResult(int score, int totalPoints) {
-    context.push(
+  Future<void> _showResult(int score, int totalPoints) async {
+    if (totalPoints > 0) {
+      final percent = (score / totalPoints) * 100;
+      if (percent >= 80 && _quizContentId != null) {
+        final isar = IsarService();
+        await isar.updateQuizBestScore(_quizContentId!, score);
+      }
+    }
+    if (!mounted) return;
+    context.go(
       '/quiz-result',
       extra: QuizResultArgs(score: score, totalPoints: totalPoints),
     );
@@ -368,31 +378,37 @@ class _ResultPageState extends State<ResultPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     _calculateInterest(context);
-    return BaseWaitApprovalPage(
-      title: title ?? '',
-      subtitle: subtitle ?? '',
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: Text(
-          body ?? '',
-          style: AppTextStyles.b1(context).copyWith(
-            color: AppColors.contentOnAccentSecondary(context),
+    return WillPopScope(
+      onWillPop: () async {
+        context.go('/home');
+        return false;
+      },
+      child: BaseWaitApprovalPage(
+        title: title ?? '',
+        subtitle: subtitle ?? '',
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: Text(
+            body ?? '',
+            style: AppTextStyles.b1(context).copyWith(
+              color: AppColors.contentOnAccentSecondary(context),
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
         ),
-      ),
-      footer: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ActionTextButtonWidget(
-            text: l10n.quizResultSkip,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          ActionButtonWidget(
-            text: l10n.quizResultDownload,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
+        footer: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ActionTextButtonWidget(
+              text: l10n.quizResultSkip,
+              onPressed: () => context.go('/home'),
+            ),
+            ActionButtonWidget(
+              text: l10n.quizResultDownload,
+              onPressed: () => context.go('/home'),
+            ),
+          ],
+        ),
       ),
     );
   }

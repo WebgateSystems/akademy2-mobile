@@ -34,6 +34,7 @@ class ContentEntity {
   String? payloadJson;
   String? learningModuleId;
   String? learningModuleTitle;
+  int bestScore = 0;
 
   @Index()
   late DateTime updatedAt;
@@ -86,6 +87,7 @@ class ContentEntity {
         'payload': payloadJson != null ? jsonDecode(payloadJson!) : null,
         'learningModuleId': learningModuleId,
         'learningModuleTitle': learningModuleTitle,
+        'bestScore': bestScore,
         'updatedAt': updatedAt.toIso8601String(),
         'downloaded': downloaded,
         'downloadPath': downloadPath,

@@ -120,8 +120,12 @@ class AppColors {
   static Color buttonDisabled(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? grey60 : grey60;
 
-  static Color subjectCardColor(BuildContext context, SubjectEntity subject) {
+  static Color subjectCardColor(
+      BuildContext context, SubjectEntity subject, bool completed) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (completed) {
+      return isDark ? grey40 : grey20;
+    }
     final raw = isDark
         ? (subject.colorDark ?? '#666666')
         : (subject.colorLight ?? '#666666');

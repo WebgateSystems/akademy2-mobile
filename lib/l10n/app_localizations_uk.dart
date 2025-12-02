@@ -422,4 +422,9 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get quizResultDownload => 'Завантажити';
+
+  @override
+  String quizScoreLabel(Object score) {
+    return '$score бал(ів)';
+  }
 }

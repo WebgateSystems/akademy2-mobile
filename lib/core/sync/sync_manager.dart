@@ -207,6 +207,7 @@ _ParsedData _parseSubjectsWithContents(List<Map<String, dynamic>> data) {
           ..payloadJson = _encodePayload(c['payload'])
           ..learningModuleId = learningModuleId
           ..learningModuleTitle = learningModule?['title'] as String?
+          ..bestScore = 0
           ..updatedAt = DateTime.now()
           ..downloaded = false
           ..downloadPath = '';

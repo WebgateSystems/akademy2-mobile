@@ -424,4 +424,9 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get quizResultDownload => 'Pobierz';
+
+  @override
+  String quizScoreLabel(Object score) {
+    return '$score pkt';
+  }
 }
