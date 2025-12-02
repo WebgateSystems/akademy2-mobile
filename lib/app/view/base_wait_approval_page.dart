@@ -10,11 +10,15 @@ class BaseWaitApprovalPage extends StatelessWidget {
       required this.title,
       required this.subtitle,
       this.rejected = false,
+      this.body,
+      this.footer,
       this.retry});
 
   final String title;
   final String subtitle;
   final bool rejected;
+  final Widget? body;
+  final Widget? footer;
   final VoidCallback? retry;
 
   @override
@@ -46,13 +50,22 @@ class BaseWaitApprovalPage extends StatelessWidget {
                   color: AppColors.contentOnAccentSecondary(context),
                 ),
               ),
-              if (rejected) SizedBox(height: 16.h),
-              if (rejected)
+              if (body != null) ...[
+                SizedBox(height: 8.h),
+                body!,
+              ],
+              if (rejected) ...[
+                SizedBox(height: 16.h),
                 ActionButtonWidget(
                   onPressed: retry,
                   text: loc.waitApprovalRetryButton,
                 ),
+              ],
               const Spacer(),
+              if (footer != null) ...[
+                footer!,
+                SizedBox(height: 30.h),
+              ],
             ],
           ),
         ),

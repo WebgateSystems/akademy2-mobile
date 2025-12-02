@@ -807,6 +807,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No content'**
   String get noContent;
+
+  /// No description provided for @quizResultCongratsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'🎉 Congratulations!'**
+  String get quizResultCongratsTitle;
+
+  /// No description provided for @quizResultScore.
+  ///
+  /// In en, this message translates to:
+  /// **'You scored {score} pts out of {total} in the quiz!'**
+  String quizResultScore(Object score, Object total);
+
+  /// No description provided for @quizResultCongratsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Great job — you can now download your certificate and show off your result! 🏅'**
+  String get quizResultCongratsBody;
+
+  /// No description provided for @quizResultTryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'🎈 Nice try!'**
+  String get quizResultTryTitle;
+
+  /// No description provided for @quizResultTryBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No worries — you can try again! Review the materials, revisit the questions, and show what you’ve got. Fingers crossed for your next score! 💪📚'**
+  String get quizResultTryBody;
+
+  /// No description provided for @quizResultSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get quizResultSkip;
+
+  /// No description provided for @quizResultDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get quizResultDownload;
 }
 
 class _AppLocalizationsDelegate

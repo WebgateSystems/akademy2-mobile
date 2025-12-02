@@ -188,5 +188,12 @@
   "useAnotherAccount": "Use another account",
   "addBirthdate": "Add birth date",
   "addButton": "Add",
-  "noContent": "No content"
+  "noContent": "No content",
+  "quizResultCongratsTitle": "🎉 Congratulations!",
+  "quizResultScore": "You scored {score} pts out of {total} in the quiz!",
+  "quizResultCongratsBody": "Great job — you can now download your certificate and show off your result! 🏅",
+  "quizResultTryTitle": "🎈 Nice try!",
+  "quizResultTryBody": "No worries — you can try again! Review the materials, revisit the questions, and show what you’ve got. Fingers crossed for your next score! 💪📚",
+  "quizResultSkip": "Skip",
+  "quizResultDownload": "Download"
 }

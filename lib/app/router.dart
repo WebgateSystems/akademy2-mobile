@@ -21,6 +21,7 @@ import '../features/join/join_page.dart';
 import '../features/modules/content_pages.dart';
 import '../features/modules/module_page.dart';
 import '../features/modules/modules_page.dart';
+import '../features/modules/quiz_page.dart';
 import '../features/profile/profile_page.dart';
 import '../features/splash/splash_page.dart';
 import '../features/videos/add_video_page.dart';
@@ -164,9 +165,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
       GoRoute(
-        path: '/result/:quizResultId',
-        builder: (context, state) =>
-            ResultPage(resultId: state.pathParameters['quizResultId'] ?? ''),
+        path: '/quiz-result',
+        builder: (context, state) {
+          final extra = state.extra;
+          final args = extra is QuizResultArgs
+              ? extra
+              : const QuizResultArgs(score: 0, totalPoints: 0);
+          return ResultPage(args: args);
+        },
       ),
       GoRoute(
         path: '/downloads',

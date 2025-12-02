@@ -1,12 +1,16 @@
 import 'dart:convert';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
+import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
+import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
 import 'package:academy_2_app/core/db/entities/content_entity.dart';
 import 'package:academy_2_app/core/db/isar_service.dart';
-import 'package:academy_2_app/features/modules/content_pages.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key, required this.moduleId});
@@ -45,23 +49,24 @@ class _QuizPageState extends State<QuizPage> {
       future: _quizFuture,
       builder: (context, snap) {
         if (snap.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+          return _buildScaffold(
+            context,
+            Center(child: CircularProgressIndicator()),
           );
         }
         final content = snap.data;
         if (content == null || content.id.isEmpty) {
-          return Scaffold(
-            appBar: AppBar(title: Text(l10n.quizTitle)),
-            body: Center(child: Text(l10n.noContent)),
+          return _buildScaffold(
+            context,
+            Center(child: Text(l10n.noContent)),
           );
         }
 
         _questions = _parseQuestions(content.payloadJson);
         if (_questions.isEmpty) {
-          return Scaffold(
-            appBar: AppBar(title: Text(l10n.quizTitle)),
-            body: Center(child: Text(l10n.noContent)),
+          return _buildScaffold(
+            context,
+            Center(child: Text(l10n.noContent)),
           );
         }
 
@@ -69,54 +74,64 @@ class _QuizPageState extends State<QuizPage> {
         final progress = '${_current + 1}/${_questions.length}';
         final canProceed = (_selected[question.id]?.isNotEmpty ?? false);
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('${content.title} ($progress)'),
-          ),
-          body: Padding(
-            padding: EdgeInsets.all(16.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  question.text,
-                  style: AppTextStyles.h4(context),
-                ),
-                SizedBox(height: 16.h),
-                Expanded(
-                  child: ListView.separated(
-                    itemCount: question.options.length,
-                    separatorBuilder: (_, __) => SizedBox(height: 8.h),
-                    itemBuilder: (context, index) {
-                      final opt = question.options[index];
-                      final selected =
-                          _selected[question.id]?.contains(opt.id) ?? false;
-                      return _OptionCard(
-                        option: opt,
-                        selected: selected,
-                        onTap: () => _onSelect(question, opt),
-                        multiple: question.isMultiple,
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(height: 12.h),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: canProceed ? _next : null,
-                    child: Text(
-                      _current == _questions.length - 1
-                          ? l10n.quizTitle
-                          : l10n.next,
-                    ),
-                  ),
-                ),
-              ],
+        return _buildScaffold(
+          context,
+          BasePageWithToolbar(
+            title: content.title,
+            rightIcon: Text(
+              progress,
+              style: AppTextStyles.b1(context)
+                  .copyWith(color: AppColors.contentSecondary(context)),
             ),
+            stickChildrenToBottom: true,
+            isOneToolbarRow: true,
+            showBackButton: true,
+            paddingBottom: 30.h,
+            children: [
+              SizedBox(height: 16.h),
+              Text(
+                question.text,
+                style: AppTextStyles.h2(context),
+              ),
+              SizedBox(height: 16.h),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: question.options.length,
+                  separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                  itemBuilder: (context, index) {
+                    final opt = question.options[index];
+                    final selected =
+                        _selected[question.id]?.contains(opt.id) ?? false;
+                    return _OptionCard(
+                      option: opt,
+                      selected: selected,
+                      onTap: () => _onSelect(question, opt),
+                      multiple: question.isMultiple,
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: 12.h),
+              ActionButtonWidget(
+                onPressed: canProceed ? _next : null,
+                loading: canProceed && false,
+                text: _current == _questions.length - 1
+                    ? l10n.quizTitle
+                    : l10n.next,
+              ),
+            ],
           ),
         );
       },
+    );
+  }
+
+  Widget _buildScaffold(
+    BuildContext context,
+    Widget body,
+  ) {
+    return Scaffold(
+      body: body,
     );
   }
 
@@ -147,7 +162,8 @@ class _QuizPageState extends State<QuizPage> {
     }
 
     final score = _calculateScore();
-    _showResult(score);
+    final total = _questions.fold<int>(0, (sum, q) => sum + q.points);
+    _showResult(score, total);
   }
 
   int _calculateScore() {
@@ -164,58 +180,10 @@ class _QuizPageState extends State<QuizPage> {
     return total;
   }
 
-  void _showResult(int score) {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) {
-        return Scaffold(
-          backgroundColor: Colors.black.withOpacity(0.8),
-          body: Center(
-            child: Padding(
-              padding: EdgeInsets.all(24.w),
-              child: Card(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(24.w),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text('🎉', style: TextStyle(fontSize: 48)),
-                      SizedBox(height: 12.h),
-                      Text(
-                        'Gratulacje!',
-                        style: AppTextStyles.h3(context),
-                      ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        'Zdobyłeś $score pkt w quizie!',
-                        style: AppTextStyles.h5(context),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 8.h),
-                      Text(
-                        'Świetna robota — możesz teraz pobrać swój certyfikat i pochwalić się swoim wynikiem! 🏅',
-                        style: AppTextStyles.b2(context).copyWith(
-                            color: AppColors.contentSecondary(context)),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 16.h),
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('Zamknij'),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
+  void _showResult(int score, int totalPoints) {
+    context.push(
+      '/quiz-result',
+      extra: QuizResultArgs(score: score, totalPoints: totalPoints),
     );
   }
 
@@ -294,14 +262,12 @@ class _OptionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: selected
-          ? AppColors.surfaceAccent(context)
-          : AppColors.surfacePrimary(context),
+      color: AppColors.surfacePrimary(context),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12.r),
         side: BorderSide(
           color: selected
-              ? AppColors.contentPrimary(context)
+              ? AppColors.borderFocused(context)
               : AppColors.borderPrimary(context),
         ),
       ),
@@ -312,16 +278,16 @@ class _OptionCard extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
           child: Row(
             children: [
-              _SelectionIcon(selected: selected, multiple: multiple),
-              SizedBox(width: 12.w),
               Expanded(
                 child: Text(
                   option.text,
-                  style: AppTextStyles.b1(context).copyWith(
+                  style: AppTextStyles.b2(context).copyWith(
                     color: AppColors.contentPrimary(context),
                   ),
                 ),
               ),
+              SizedBox(width: 12.w),
+              _SelectionIcon(selected: selected, multiple: multiple),
             ],
           ),
         ),
@@ -339,29 +305,95 @@ class _SelectionIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (multiple) {
-      return Icon(
-        selected ? Icons.check_box : Icons.check_box_outline_blank,
-        color: AppColors.contentPrimary(context),
+      return Image.asset(
+        selected
+            ? 'assets/images/ic_checkbox_checked.png'
+            : 'assets/images/ic_checkbox_unchecked.png',
+        width: 24.w,
+        height: 24.w,
       );
     }
-    return Icon(
-      selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
-      color: AppColors.contentPrimary(context),
+    return Image.asset(
+      selected
+          ? 'assets/images/ic_radiobutton_checked.png'
+          : 'assets/images/ic_radiobutton_unchecked.png',
+      width: 24.w,
+      height: 24.w,
     );
   }
 }
 
-class ResultPage extends StatelessWidget {
-  const ResultPage({super.key, required this.resultId});
+class QuizResultArgs {
+  const QuizResultArgs({required this.score, required this.totalPoints});
 
-  final String resultId;
+  final int score;
+  final int totalPoints;
+}
+
+class ResultPage extends StatefulWidget {
+  const ResultPage({super.key, required this.args});
+
+  final QuizResultArgs args;
+
+  @override
+  State<ResultPage> createState() => _ResultPageState();
+}
+
+class _ResultPageState extends State<ResultPage> {
+  String? title;
+
+  String? subtitle;
+
+  String? body;
+
+  void _calculateInterest(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final percentage = widget.args.totalPoints == 0
+        ? 0
+        : (widget.args.score / widget.args.totalPoints) * 100;
+    if (percentage >= 80) {
+      title = l10n.quizResultCongratsTitle;
+      subtitle =
+          l10n.quizResultScore(widget.args.score, widget.args.totalPoints);
+      body = l10n.quizResultCongratsBody;
+    } else {
+      title = l10n.quizResultTryTitle;
+      subtitle =
+          l10n.quizResultScore(widget.args.score, widget.args.totalPoints);
+      body = l10n.quizResultTryBody;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    return ContentPlaceholderPage(
-      title: l10n.resultTitle,
-      body: 'Result placeholder for $resultId',
+    _calculateInterest(context);
+    return BaseWaitApprovalPage(
+      title: title ?? '',
+      subtitle: subtitle ?? '',
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        child: Text(
+          body ?? '',
+          style: AppTextStyles.b1(context).copyWith(
+            color: AppColors.contentOnAccentSecondary(context),
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+      footer: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ActionTextButtonWidget(
+            text: l10n.quizResultSkip,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          ActionButtonWidget(
+            text: l10n.quizResultDownload,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
     );
   }
 }

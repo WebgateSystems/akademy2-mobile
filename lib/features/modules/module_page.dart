@@ -108,6 +108,7 @@ class ModulePage extends ConsumerWidget {
             title: title,
             stickChildrenToBottom: true,
             isOneToolbarRow: true,
+            paddingBottom: 20.w,
             children: [
               SizedBox(height: 16.h),
               Expanded(

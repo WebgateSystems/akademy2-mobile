@@ -396,4 +396,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noContent => 'No content';
+
+  @override
+  String get quizResultCongratsTitle => '🎉 Congratulations!';
+
+  @override
+  String quizResultScore(Object score, Object total) {
+    return 'You scored $score pts out of $total in the quiz!';
+  }
+
+  @override
+  String get quizResultCongratsBody =>
+      'Great job — you can now download your certificate and show off your result! 🏅';
+
+  @override
+  String get quizResultTryTitle => '🎈 Nice try!';
+
+  @override
+  String get quizResultTryBody =>
+      'No worries — you can try again! Review the materials, revisit the questions, and show what you’ve got. Fingers crossed for your next score! 💪📚';
+
+  @override
+  String get quizResultSkip => 'Skip';
+
+  @override
+  String get quizResultDownload => 'Download';
 }

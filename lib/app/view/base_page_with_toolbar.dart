@@ -11,6 +11,8 @@ class BasePageWithToolbar extends StatelessWidget {
   final bool showBackButton;
   final bool isOneToolbarRow;
   final bool stickChildrenToBottom;
+  final double? paddingBottom;
+  final Widget? rightIcon;
 
   const BasePageWithToolbar({
     super.key,
@@ -20,6 +22,8 @@ class BasePageWithToolbar extends StatelessWidget {
     this.isOneToolbarRow = false,
     this.children = const <Widget>[],
     this.stickChildrenToBottom = false,
+    this.paddingBottom,
+    this.rightIcon,
   });
 
   @override
@@ -46,26 +50,37 @@ class BasePageWithToolbar extends StatelessWidget {
                       ),
                     ),
                   ),
+                if (title.isNotEmpty) SizedBox(height: 16.h),
+                if (title.isNotEmpty)
+                  Padding(
+                    padding: EdgeInsets.only(
+                        right: 20.w,
+                        left: (showBackButton && isOneToolbarRow) ? 0 : 20.w),
+                    child: ToolbarWidget(
+                      leftIcon: (showBackButton && isOneToolbarRow)
+                          ? IconButton(
+                              icon: Image.asset(
+                                'assets/images/ic_chevron_left.png',
+                                color: AppColors.contentPrimary(context),
+                              ),
+                              onPressed: () => context.pop(),
+                            )
+                          : null,
+                      title: title,
+                      rightIcon: rightIcon,
+                      titleTextStyle: isOneToolbarRow
+                          ? AppTextStyles.h3(context).copyWith(
+                              color: AppColors.contentPrimary(context),
+                            )
+                          : null,
+                    ),
+                  ),
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (title.isNotEmpty) SizedBox(height: 16.h),
-                        if (title.isNotEmpty)
-                          ToolbarWidget(
-                            leftIcon: (showBackButton && isOneToolbarRow)
-                                ? IconButton(
-                                    icon: Image.asset(
-                                      'assets/images/ic_chevron_left.png',
-                                      color: AppColors.contentPrimary(context),
-                                    ),
-                                    onPressed: () => context.pop(),
-                                  )
-                                : null,
-                            title: title,
-                          ),
                         if (subtitle.isNotEmpty) SizedBox(height: 16.h),
                         if (subtitle.isNotEmpty)
                           Text(
@@ -75,7 +90,7 @@ class BasePageWithToolbar extends StatelessWidget {
                             ),
                           ),
                         ...?children,
-                        SizedBox(height: 64.h),
+                        SizedBox(height: paddingBottom ?? 64.h),
                       ],
                     ),
                   ),

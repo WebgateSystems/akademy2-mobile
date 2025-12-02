@@ -397,4 +397,29 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get noContent => 'Немає контенту';
+
+  @override
+  String get quizResultCongratsTitle => '🎉 Вітаємо!';
+
+  @override
+  String quizResultScore(Object score, Object total) {
+    return 'Ти набрав(ла) $score балів із $total можливих у квізі!';
+  }
+
+  @override
+  String get quizResultCongratsBody =>
+      'Чудова робота — можеш завантажити сертифікат і похвалитися результатом! 🏅';
+
+  @override
+  String get quizResultTryTitle => '🎈 Гарна спроба!';
+
+  @override
+  String get quizResultTryBody =>
+      'Нічого страшного — спробуй ще раз! Передивись матеріали, повернись до запитань і покажи, на що здатен(на). Тиснемо кулаки за твій наступний результат! 💪📚';
+
+  @override
+  String get quizResultSkip => 'Пропустити';
+
+  @override
+  String get quizResultDownload => 'Завантажити';
 }

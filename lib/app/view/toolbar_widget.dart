@@ -5,12 +5,14 @@ class ToolbarWidget extends StatelessWidget {
   final Widget? leftIcon;
   final Widget? rightIcon;
   final String title;
+  final TextStyle? titleTextStyle;
 
   ToolbarWidget({
     super.key,
     this.leftIcon,
     this.rightIcon,
     this.title = "",
+    this.titleTextStyle,
   });
 
   @override
@@ -28,9 +30,10 @@ class ToolbarWidget extends StatelessWidget {
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: AppTextStyles.h1(context).copyWith(
-              color: theme.textTheme.bodyMedium?.color,
-            ),
+            style: titleTextStyle ??
+                AppTextStyles.h1(context).copyWith(
+                  color: theme.textTheme.bodyMedium?.color,
+                ),
           ),
         ),
         if (rightIcon != null) ...[
