@@ -36,7 +36,6 @@ class AuthState {
 class AuthNotifier extends StateNotifier<AuthState> {
   final SecureStorage _storage = SecureStorage();
   final Ref ref;
-  Completer<bool>? _refreshCompleter;
 
   AuthNotifier(this.ref)
       : super(const AuthState(isAuthenticated: false, isLoading: true));
@@ -60,9 +59,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         'v1/session',
         data: {
           'user': {
-            // API очікує email/password, але для учня використовуємо phone/pin
-            'email': phone,
-            'password': pin,
+            'phone': phone,
+            'pin': pin,
           },
         },
       );
@@ -122,9 +120,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   void markUnlocked() {
-    if (state.isAuthenticated) {
-      state = state.copyWith(isUnlocked: true, isLoading: false);
-    }
+    state = state.copyWith(
+      isAuthenticated: true,
+      isUnlocked: true,
+      isLoading: false,
+    );
   }
 
   void requireUnlock() {

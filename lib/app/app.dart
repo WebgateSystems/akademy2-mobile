@@ -24,6 +24,15 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final auth = ref.read(authProvider);
+      if (auth.isAuthenticated && !auth.isUnlocked) {
+        final router = ref.read(routerProvider);
+        router.go(
+          Uri(path: '/unlock', queryParameters: {'redirect': '/home'}).toString(),
+        );
+      }
+    });
   }
 
   @override
@@ -34,7 +43,8 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached ||
         state == AppLifecycleState.hidden) {
       _wasBackgrounded = true;
@@ -42,9 +52,21 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
 
     if (state == AppLifecycleState.resumed) {
       final auth = ref.read(authProvider);
-      if (auth.isAuthenticated && _wasBackgrounded) {
+      final shouldUnlock = auth.isAuthenticated &&
+          (_wasBackgrounded || !auth.isUnlocked);
+      if (shouldUnlock) {
         ref.read(authProvider.notifier).requireUnlock();
-        ref.read(routerProvider).go('/splash');
+        final router = ref.read(routerProvider);
+        var redirectTo = '/home';
+        try {
+          final current = router.routerDelegate.currentConfiguration.fullPath;
+          redirectTo = current == '/unlock' || current.isEmpty ? '/home' : current;
+        } catch (_) {
+          redirectTo = router.routeInformationProvider.value.uri.toString();
+        }
+        router.go(Uri(path: '/unlock', queryParameters: {
+          'redirect': redirectTo,
+        }).toString());
       }
       _wasBackgrounded = false;
     }

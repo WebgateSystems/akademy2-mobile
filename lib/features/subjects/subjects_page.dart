@@ -1,4 +1,6 @@
 import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/circular_progress_widget.dart'
+    show CircularProgressWidget;
 import 'package:academy_2_app/app/view/toolbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -120,7 +122,7 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
           ),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: CircularProgressWidget()),
       error: (error, _) => Center(
         child: Text('${l10n.retry}: $error'),
       ),

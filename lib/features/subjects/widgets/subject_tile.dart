@@ -1,4 +1,5 @@
 import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/core/db/entities/subject_entity.dart';
 import 'package:academy_2_app/core/db/isar_service.dart';
 import 'package:academy_2_app/core/network/api.dart';
@@ -143,8 +144,7 @@ class _SubjectIcon extends StatelessWidget {
               : SvgPicture.network(
                   fullUrl,
                   fit: BoxFit.contain,
-                  placeholderBuilder: (_) =>
-                      const CircularProgressIndicator(strokeWidth: 2),
+                  placeholderBuilder: (_) => const CircularProgressWidget(),
                 ),
         ),
       ),

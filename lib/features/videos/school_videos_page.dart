@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
+import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/app/view/toolbar_widget.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
@@ -161,9 +162,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                 ),
               );
             },
-            loading: () => SizedBox(
-                height: 48.w,
-                child: Center(child: CircularProgressIndicator())),
+            loading: () => Center(child: CircularProgressWidget()),
             error: (_, __) => const SizedBox.shrink(),
           ),
           SizedBox(height: 16.h),
@@ -240,7 +239,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                         );
                       },
                       loading: () =>
-                          const Center(child: CircularProgressIndicator()),
+                          const Center(child: CircularProgressWidget()),
                       error: (e, _) =>
                           Center(child: Text(l10n.schoolVideosError('$e'))),
                     ),

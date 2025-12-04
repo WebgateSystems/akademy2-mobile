@@ -1,3 +1,4 @@
+import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -72,7 +73,7 @@ class _ModulesPageState extends ConsumerState<ModulesPage> {
             separatorBuilder: (_, __) => const Divider(height: 1),
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressWidget()),
         error: (error, _) => Center(child: Text('${l10n.retry}: $error')),
       ),
     );

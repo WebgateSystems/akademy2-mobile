@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
+import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -228,7 +229,7 @@ class PinScaffold extends StatelessWidget {
               ],
             ),
           SizedBox(height: 101.h),
-          if (showProgress) Center(child: const CircularProgressIndicator()),
+          if (showProgress) Center(child: const CircularProgressWidget()),
           if (!showProgress)
             Row(
               mainAxisSize: MainAxisSize.max,

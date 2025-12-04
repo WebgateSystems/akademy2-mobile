@@ -1,5 +1,9 @@
+import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
+import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/auth/auth_provider.dart';
@@ -73,30 +77,29 @@ class _TechLoginPageState extends ConsumerState<TechLoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Tech Login')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: _emailCtl,
-              decoration: const InputDecoration(labelText: 'Email'),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _passCtl,
-              decoration: const InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            const SizedBox(height: 24),
-            _loading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _login,
-                    child: const Text('Log in'),
-                  ),
-          ],
-        ),
+      body: BasePageWithToolbar(
+        showBackButton: false,
+        stickChildrenToBottom: true,
+        title: 'Tech Login',
+        children: [
+          SizedBox(height: 16.h),
+          EditTextWidget(
+            controller: _emailCtl,
+            label: 'Email',
+          ),
+          SizedBox(height: 16.h),
+          EditTextWidget(
+            controller: _passCtl,
+            label: 'Password',
+            obscureText: true,
+          ),
+          SizedBox(height: 16.h),
+          ActionButtonWidget(
+            onPressed: _login,
+            text: 'Log in',
+            loading: _loading,
+          ),
+        ],
       ),
     );
   }

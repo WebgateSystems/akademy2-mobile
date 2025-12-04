@@ -27,6 +27,7 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
   bool _submitting = false;
   bool _biometricEnabled = false;
   bool _biometricAttempted = false;
+  bool _ready = false;
 
   @override
   void initState() {
@@ -35,28 +36,35 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
   }
 
   Future<void> _loadPreferences() async {
-    final storage = SecureStorage();
-    final storedPin = await storage.read('userPin');
-    final phone = await storage.read('phone');
-    final biometricFlag = (await storage.read('biometricEnabled')) == 'true';
+    try {
+      final storage = SecureStorage();
+      final storedPin = (await storage.read('userPin'))?.trim();
+      final phone = await storage.read('phone');
+      final biometricFlag = (await storage.read('biometricEnabled')) == 'true';
 
-    if (!mounted) return;
-    setState(() {
-      _storedPin = storedPin;
-      _phone = phone;
-      _biometricEnabled = biometricFlag;
-    });
+      if (!mounted) return;
+      setState(() {
+        _storedPin = storedPin;
+        _phone = phone;
+        _biometricEnabled = biometricFlag;
+        _ready = true;
+      });
 
-    if ((storedPin == null || storedPin.isEmpty) && mounted) {
-      ref.read(authProvider.notifier).markUnlocked();
-      final target =
-          (widget.redirect?.isNotEmpty ?? false) ? widget.redirect! : '/home';
-      context.go(target);
-      return;
-    }
+      if ((storedPin == null || storedPin.isEmpty) && mounted) {
+        ref.read(authProvider.notifier).markUnlocked();
+        final target =
+            (widget.redirect?.isNotEmpty ?? false) ? widget.redirect! : '/home';
+        context.go(target);
+        return;
+      }
 
-    if (biometricFlag) {
-      await _tryBiometric();
+      if (biometricFlag) {
+        await _tryBiometric();
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _ready = true);
+      }
     }
   }
 
@@ -79,7 +87,7 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
   }
 
   void _handleKey(String value) async {
-    if (_submitting) return;
+    if (_submitting || !_ready) return;
     if (value == 'back') {
       if (_current.isNotEmpty) {
         setState(() => _current = _current.substring(0, _current.length - 1));
@@ -105,7 +113,7 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
       _mismatch = false;
     });
     try {
-      if (_current == _storedPin) {
+      if (_current.trim() == _storedPin!.trim()) {
         await _finishUnlock();
         return;
       }
@@ -125,8 +133,10 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
   Future<void> _finishUnlock() async {
     ref.read(authProvider.notifier).markUnlocked();
     if (!mounted) return;
-    final target =
+    final targetRaw =
         (widget.redirect?.isNotEmpty ?? false) ? widget.redirect! : '/home';
+    final target =
+        targetRaw == '/unlock' || targetRaw.isEmpty ? '/home' : targetRaw;
     context.go(target);
   }
 
@@ -140,6 +150,11 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final phoneLabel = _phone ?? '';
+    if (!_ready) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return PinScaffold(
       title: l10n.unlockPinTitle,
       subtitle: l10n.unlockPinSubtitle(phoneLabel),

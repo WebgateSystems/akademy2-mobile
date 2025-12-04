@@ -194,6 +194,26 @@ class IsarService {
     });
   }
 
+  Future<void> updateContentDownload(
+    String contentId, {
+    bool? downloaded,
+    String? downloadPath,
+  }) async {
+    await _ensureInit();
+    final existing =
+        _isar.contentEntitys.where().idEqualTo(contentId).build().findFirst();
+    if (existing == null) return;
+    if (downloaded != null) {
+      existing.downloaded = downloaded;
+    }
+    if (downloadPath != null) {
+      existing.downloadPath = downloadPath;
+    }
+    await _isar.writeAsync((isar) {
+      isar.contentEntitys.put(existing);
+    });
+  }
+
   Future<void> updateQuizBestScore(String contentId, int score) async {
     await _ensureInit();
     final existing =

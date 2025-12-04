@@ -5,6 +5,7 @@ import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
+import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/core/db/entities/content_entity.dart';
 import 'package:academy_2_app/core/db/isar_service.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
@@ -52,7 +53,9 @@ class _QuizPageState extends State<QuizPage> {
         if (snap.connectionState == ConnectionState.waiting) {
           return _buildScaffold(
             context,
-            Center(child: CircularProgressIndicator()),
+            Center(
+              child: CircularProgressWidget(),
+            ),
           );
         }
         final content = snap.data;

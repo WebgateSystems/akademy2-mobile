@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
+import 'package:academy_2_app/app/view/circular_progress_widget.dart';
+import 'package:academy_2_app/core/download/download_manager.dart';
 import 'package:academy_2_app/core/network/api.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,8 +27,8 @@ class _ModuleData {
   final List<ContentEntity> contents;
 }
 
-final moduleDataProvider =
-    FutureProvider.family<_ModuleData, String>((ref, moduleId) async {
+final moduleDataProvider = FutureProvider.autoDispose
+    .family<_ModuleData, String>((ref, moduleId) async {
   final service = IsarService();
   final syncManager = ref.read(syncManagerProvider);
   var bootstrapped = false;
@@ -50,6 +54,8 @@ final moduleDataProvider =
     module = await service.getModuleById(moduleId) ?? module;
   }
 
+  contents = await _validateDownloadedContent(contents);
+
   return _ModuleData(module: module, contents: contents);
 });
 
@@ -70,20 +76,75 @@ bool _needsPreviewRefresh(List<ContentEntity> items) {
   });
 }
 
-class ModulePage extends ConsumerWidget {
+Future<List<ContentEntity>> _validateDownloadedContent(
+  List<ContentEntity> items,
+) async {
+  if (items.isEmpty) return items;
+  final service = IsarService();
+
+  for (final content in items) {
+    if (!content.downloaded || content.downloadPath.isEmpty) continue;
+    final isFresh = await isContentDownloadFresh(content);
+    if (!isFresh) {
+      await service.updateContentDownload(
+        content.id,
+        downloaded: false,
+        downloadPath: '',
+      );
+      content
+        ..downloaded = false
+        ..downloadPath = '';
+    }
+  }
+
+  return items;
+}
+
+class ModulePage extends ConsumerStatefulWidget {
   const ModulePage({super.key, required this.moduleId});
 
   final String moduleId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ModulePage> createState() => _ModulePageState();
+}
+
+class _ModulePageState extends ConsumerState<ModulePage> {
+  late final ProviderSubscription<Map<String, ModuleDownloadState>>
+      _downloadSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _downloadSub = ref.listenManual<Map<String, ModuleDownloadState>>(
+      moduleDownloadProvider,
+      (previous, next) {
+        final prevStatus = previous?[widget.moduleId]?.status;
+        final status = next[widget.moduleId]?.status;
+        if (status == ModuleDownloadStatus.completed &&
+            prevStatus != ModuleDownloadStatus.completed) {
+          ref.invalidate(moduleDataProvider(widget.moduleId));
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _downloadSub.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final moduleAsync = ref.watch(moduleDataProvider(moduleId));
+    final downloadMap = ref.watch(moduleDownloadProvider);
+    final moduleAsync = ref.watch(moduleDataProvider(widget.moduleId));
 
     return moduleAsync.when(
       loading: () => _buildScaffold(
         context,
-        const Center(child: CircularProgressIndicator()),
+        const Center(child: CircularProgressWidget()),
       ),
       error: (error, _) => _buildScaffold(
         context,
@@ -102,10 +163,18 @@ class ModulePage extends ConsumerWidget {
           );
         }
 
+        final downloadState = downloadMap[module.id];
+
         return _buildScaffold(
           context,
           BasePageWithToolbar(
             title: title,
+            rightIcon: _buildDownloadAction(
+              context: context,
+              module: module,
+              contents: contents,
+              state: downloadState,
+            ),
             stickChildrenToBottom: true,
             isOneToolbarRow: true,
             paddingBottom: 20.w,
@@ -134,6 +203,109 @@ class ModulePage extends ConsumerWidget {
         );
       },
     );
+  }
+
+  Widget _buildDownloadAction({
+    required BuildContext context,
+    required ModuleEntity module,
+    required List<ContentEntity> contents,
+    ModuleDownloadState? state,
+  }) {
+    final hasDownloadable = contents.any(_isDownloadableContent);
+    final moduleDownloaded = _isModuleDownloaded(contents);
+
+    if (state?.status == ModuleDownloadStatus.inProgress) {
+      final percent = ((state?.progress ?? 0) * 100).clamp(0, 100).round();
+      return Padding(
+        padding: EdgeInsets.only(right: 2.w),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            CircularProgressWidget(
+              value: state!.progress,
+            ),
+            Text(
+              '$percent%',
+              style: AppTextStyles.h5(context).copyWith(
+                color: AppColors.contentAccent(context),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (!hasDownloadable) {
+      return IconButton(
+        icon: Image.asset(
+          'assets/images/ic_download.png',
+          width: 24.w,
+          height: 24.w,
+          color: AppColors.contentSecondary(context),
+        ),
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Немає файлів для офлайн. Перевірте що API повертає file_url/poster_url.',
+              ),
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        },
+      );
+    }
+
+    if (moduleDownloaded || state?.status == ModuleDownloadStatus.completed) {
+      return Image.asset(
+        'assets/images/ic_download_done.png',
+        width: 24.w,
+        height: 24.w,
+        color: AppColors.contentAccent(context),
+      );
+    }
+
+    final hasError = state?.status == ModuleDownloadStatus.error;
+
+    return IconButton(
+      icon: Image.asset(
+        'assets/images/ic_download.png',
+        width: 24.w,
+        height: 24.w,
+        color: hasError
+            ? AppColors.contentError(context)
+            : AppColors.contentSecondary(context),
+      ),
+      onPressed: () => _onDownloadTap(module.id, contents),
+    );
+  }
+
+  void _onDownloadTap(String moduleId, List<ContentEntity> contents) {
+    if (!contents.any(_isDownloadableContent)) {
+      return;
+    }
+    final state = ref.read(moduleDownloadProvider)[moduleId];
+    if (state?.status == ModuleDownloadStatus.inProgress) return;
+    ref.read(moduleDownloadProvider.notifier).startModuleDownload(
+          moduleId: moduleId,
+          contents: contents,
+        );
+  }
+
+  bool _isModuleDownloaded(List<ContentEntity> contents) {
+    final downloadable = contents.where(_isDownloadableContent).toList();
+    if (downloadable.isEmpty) return false;
+    return downloadable.every(
+      (c) => c.downloaded && c.downloadPath.isNotEmpty,
+    );
+  }
+
+  bool _isDownloadableContent(ContentEntity content) {
+    if (content.type == 'quiz') return false;
+    final hasFile = content.fileUrl?.isNotEmpty ?? false;
+    final hasPoster = content.posterUrl?.isNotEmpty ?? false;
+    final hasSubtitles = content.subtitlesUrl?.isNotEmpty ?? false;
+    return hasFile || hasPoster || hasSubtitles;
   }
 
   Widget _buildContentCard({
@@ -195,24 +367,44 @@ class ModulePage extends ConsumerWidget {
   }
 
   String? _previewUrl(ContentEntity content) {
+    final localPoster = contentLocalPath(
+      content,
+      DownloadAssetType.poster,
+      ensureExists: true,
+    );
+    final localFile = contentLocalPath(
+      content,
+      DownloadAssetType.file,
+      ensureExists: true,
+    );
+
     switch (content.type) {
       case 'video':
-        final url =
-            _youtubeThumbnail(content.youtubeUrl) ?? _absUrl(content.posterUrl);
+        final url = localPoster ??
+            _youtubeThumbnail(content.youtubeUrl) ??
+            _absUrl(content.posterUrl) ??
+            localFile ??
+            _absUrl(content.fileUrl);
         if (url == null) {
           debugPrint(
               'ModulePage: missing preview for video id=${content.id} youtube=${content.youtubeUrl} poster=${content.posterUrl} file=${content.fileUrl}');
         }
         return url;
       case 'infographic':
-        final url = _absUrl(content.posterUrl) ?? _absUrl(content.fileUrl);
+        final url = localPoster ??
+            localFile ??
+            _absUrl(content.posterUrl) ??
+            _absUrl(content.fileUrl);
         if (url == null) {
           debugPrint(
               'ModulePage: missing preview for infographic id=${content.id} poster=${content.posterUrl} file=${content.fileUrl}');
         }
         return url;
       default:
-        final url = _absUrl(content.posterUrl) ?? _absUrl(content.fileUrl);
+        final url = localPoster ??
+            localFile ??
+            _absUrl(content.posterUrl) ??
+            _absUrl(content.fileUrl);
         return url;
     }
   }
@@ -252,11 +444,15 @@ class ModulePage extends ConsumerWidget {
     BuildContext context,
     ContentEntity content,
   ) async {
-    final fileUrl = _absUrl(content.fileUrl);
+    final localFile = contentLocalPath(
+      content,
+      DownloadAssetType.file,
+      ensureExists: true,
+    );
+    final fileUrl = localFile ?? _absUrl(content.fileUrl);
     final youtubeUrl = content.youtubeUrl;
     if (fileUrl == null && (youtubeUrl == null || youtubeUrl.isEmpty)) return;
 
-    // If we have a direct file, show in-app fullscreen player.
     if (fileUrl != null) {
       await showDialog<void>(
         context: context,
@@ -266,7 +462,6 @@ class ModulePage extends ConsumerWidget {
       return;
     }
 
-    // Otherwise, try in-app YouTube player.
     if (youtubeUrl != null && youtubeUrl.isNotEmpty) {
       final videoId = _youtubeVideoId(youtubeUrl);
       if (videoId == null) return;
@@ -282,7 +477,20 @@ class ModulePage extends ConsumerWidget {
     BuildContext context,
     ContentEntity content,
   ) async {
-    final url = _absUrl(content.posterUrl) ?? _absUrl(content.fileUrl);
+    final localPoster = contentLocalPath(
+      content,
+      DownloadAssetType.poster,
+      ensureExists: true,
+    );
+    final localFile = contentLocalPath(
+      content,
+      DownloadAssetType.file,
+      ensureExists: true,
+    );
+    final url = localPoster ??
+        localFile ??
+        _absUrl(content.posterUrl) ??
+        _absUrl(content.fileUrl);
     final heroTag = 'content-${content.id}';
     await showDialog<void>(
       context: context,
@@ -516,17 +724,41 @@ class _PreviewImageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (networkUrl != null && networkUrl!.isNotEmpty) {
-      final isSvg = networkUrl!.toLowerCase().endsWith('.svg');
+      final url = networkUrl!;
+      final isLocal = url.startsWith('file://') || url.startsWith('/');
+      final isSvg = url.toLowerCase().endsWith('.svg');
+
+      if (isLocal) {
+        final file =
+            url.startsWith('file://') ? File(Uri.parse(url).path) : File(url);
+        if (!file.existsSync()) {
+          return Image.asset(imagePath, fit: fit);
+        }
+        if (isSvg) {
+          return SvgPicture.file(
+            file,
+            fit: fit,
+            placeholderBuilder: (_) =>
+                const Center(child: CircularProgressWidget()),
+          );
+        }
+        return Image.file(
+          file,
+          fit: fit,
+          errorBuilder: (_, __, ___) => Image.asset(imagePath, fit: fit),
+        );
+      }
+
       if (isSvg) {
         return SvgPicture.network(
-          networkUrl!,
+          url,
           fit: fit,
           placeholderBuilder: (_) =>
-              const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+              const Center(child: CircularProgressWidget()),
         );
       }
       return Image.network(
-        networkUrl!,
+        url,
         fit: fit,
         errorBuilder: (_, __, ___) {
           return Image.asset(imagePath, fit: fit);
@@ -535,7 +767,7 @@ class _PreviewImageBody extends StatelessWidget {
           if (progress == null) return child;
           return Container(
             color: AppColors.surfacePrimary(context),
-            child: const Center(child: CircularProgressIndicator()),
+            child: const Center(child: CircularProgressWidget()),
           );
         },
       );
@@ -568,16 +800,31 @@ class _NetworkVideoPreviewDialogState
   }
 
   Future<void> _init() async {
+    VideoPlayerController? controller;
     try {
-      final controller =
-          VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl));
+      final uri = Uri.tryParse(widget.videoUrl);
+      final isNetwork =
+          uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
+      controller = isNetwork
+          ? VideoPlayerController.networkUrl(uri)
+          : VideoPlayerController.file(
+              widget.videoUrl.startsWith('file://') && uri != null
+                  ? File.fromUri(uri)
+                  : File(widget.videoUrl),
+            );
       await controller.initialize();
       controller.play();
+      if (!mounted) {
+        controller.dispose();
+        return;
+      }
       setState(() {
         _controller = controller;
         _loading = false;
       });
     } catch (_) {
+      controller?.dispose();
+      if (!mounted) return;
       setState(() {
         _error = true;
         _loading = false;
@@ -599,7 +846,7 @@ class _NetworkVideoPreviewDialogState
         backgroundColor: Colors.black.withOpacity(0.9),
         body: Center(
           child: _loading
-              ? const CircularProgressIndicator()
+              ? const CircularProgressWidget()
               : _error || _controller == null
                   ? const Icon(Icons.error, color: Colors.white)
                   : AspectRatio(

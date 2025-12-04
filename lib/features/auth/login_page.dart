@@ -1,4 +1,5 @@
 import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/action_outlinedbutton_widget.dart';
 import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
@@ -157,9 +158,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             ],
           ),
           const SizedBox(height: 12),
-          TextButton(
+          ActionOutlinedButtonWidget(
             onPressed: () => context.go('/tech-login'),
-            child: const Text('Tech login (email/password)'),
+            text: 'Tech login (email/password)',
           ),
         ],
       ),
