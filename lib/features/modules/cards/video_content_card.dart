@@ -1,0 +1,36 @@
+import 'package:academy_2_app/core/db/entities/content_entity.dart';
+import 'package:academy_2_app/features/modules/cards/preview_card.dart';
+import 'package:academy_2_app/features/modules/cards/preview_image.dart';
+import 'package:academy_2_app/l10n/app_localizations.dart';
+import 'package:flutter/material.dart';
+
+class VideoContentCard extends StatelessWidget {
+  const VideoContentCard({
+    required this.content,
+    required this.moduleId,
+    required this.l10n,
+    required this.previewUrl,
+    required this.onPreviewTap,
+  });
+
+  final ContentEntity content;
+  final String moduleId;
+  final AppLocalizations l10n;
+  final String? previewUrl;
+  final VoidCallback onPreviewTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return PreviewCard(
+      thumbnail: PreviewImage(
+        imagePath: 'assets/images/placeholder.png',
+        networkUrl: previewUrl,
+        heroTag: 'content-${content.id}',
+        onTapOverride: onPreviewTap,
+      ),
+      title: content.title,
+      subtitle: l10n.videoTitle,
+      onTap: onPreviewTap,
+    );
+  }
+}

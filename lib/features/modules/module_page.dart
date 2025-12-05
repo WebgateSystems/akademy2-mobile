@@ -1,18 +1,20 @@
-import 'dart:io';
-
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/core/download/download_manager.dart';
 import 'package:academy_2_app/core/network/api.dart';
+import 'package:academy_2_app/features/modules/cards/default_content_card.dart';
+import 'package:academy_2_app/features/modules/cards/infographic_content_card.dart';
+import 'package:academy_2_app/features/modules/cards/preview_image_body.dart';
+import 'package:academy_2_app/features/modules/cards/video_content_card.dart';
+import 'package:academy_2_app/features/modules/dialogs/network_video_preview_dialog.dart';
+import 'package:academy_2_app/features/modules/dialogs/pdf_preview_dialog.dart';
+import 'package:academy_2_app/features/modules/dialogs/youtube_preview_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:video_player/video_player.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../core/db/entities/content_entity.dart';
 import '../../core/db/entities/module_entity.dart';
@@ -319,7 +321,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     final previewUrl = _previewUrl(content);
     switch (content.type) {
       case 'video':
-        return _VideoContentCard(
+        return VideoContentCard(
           content: content,
           moduleId: moduleId,
           l10n: l10n,
@@ -327,7 +329,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
           onPreviewTap: onVideoPreview ?? () {},
         );
       case 'infographic':
-        return _InfographicContentCard(
+        return InfographicContentCard(
           content: content,
           moduleId: moduleId,
           l10n: l10n,
@@ -337,7 +339,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
       case 'quiz':
         return _quizButton(context, l10n, moduleId);
       default:
-        return _DefaultContentCard(
+        return DefaultContentCard(
           content: content,
           moduleId: moduleId,
           l10n: l10n,
@@ -425,6 +427,11 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     return (videoId == null || videoId.isEmpty) ? null : videoId;
   }
 
+  bool _isPdf(String? url) {
+    if (url == null || url.isEmpty) return false;
+    return url.toLowerCase().endsWith('.pdf');
+  }
+
   String? _youtubeThumbnail(String? url) {
     final videoId = _youtubeVideoId(url);
     if (videoId == null) return null;
@@ -457,7 +464,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
       await showDialog<void>(
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
-        builder: (_) => _NetworkVideoPreviewDialog(videoUrl: fileUrl),
+        builder: (_) => NetworkVideoPreviewDialog(videoUrl: fileUrl),
       );
       return;
     }
@@ -468,7 +475,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
       await showDialog<void>(
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
-        builder: (_) => _YoutubePreviewDialog(videoId: videoId),
+        builder: (_) => YoutubePreviewDialog(videoId: videoId),
       );
     }
   }
@@ -491,6 +498,16 @@ class _ModulePageState extends ConsumerState<ModulePage> {
         localFile ??
         _absUrl(content.posterUrl) ??
         _absUrl(content.fileUrl);
+
+    if (url != null && _isPdf(url)) {
+      await showDialog<void>(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.9),
+        builder: (_) => PdfPreviewDialog(title: content.title, pdfUrl: url),
+      );
+      return;
+    }
+
     final heroTag = 'content-${content.id}';
     await showDialog<void>(
       context: context,
@@ -503,414 +520,13 @@ class _ModulePageState extends ConsumerState<ModulePage> {
             child: Hero(
               tag: heroTag,
               child: InteractiveViewer(
-                child: _PreviewImageBody(
+                child: PreviewImageBody(
                   imagePath: 'assets/images/placeholder.png',
                   networkUrl: url,
                   fit: BoxFit.contain,
                 ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _VideoContentCard extends StatelessWidget {
-  const _VideoContentCard({
-    required this.content,
-    required this.moduleId,
-    required this.l10n,
-    required this.previewUrl,
-    required this.onPreviewTap,
-  });
-
-  final ContentEntity content;
-  final String moduleId;
-  final AppLocalizations l10n;
-  final String? previewUrl;
-  final VoidCallback onPreviewTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return _PreviewCard(
-      thumbnail: PreviewImage(
-        imagePath: 'assets/images/placeholder.png',
-        networkUrl: previewUrl,
-        heroTag: 'content-${content.id}',
-        onTapOverride: onPreviewTap,
-      ),
-      title: content.title,
-      subtitle: l10n.videoTitle,
-      onTap: onPreviewTap,
-    );
-  }
-}
-
-class _InfographicContentCard extends StatelessWidget {
-  const _InfographicContentCard({
-    required this.content,
-    required this.moduleId,
-    required this.l10n,
-    required this.previewUrl,
-    required this.onPreviewTap,
-  });
-
-  final ContentEntity content;
-  final String moduleId;
-  final AppLocalizations l10n;
-  final String? previewUrl;
-  final VoidCallback onPreviewTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return _PreviewCard(
-      thumbnail: PreviewImage(
-        imagePath: 'assets/images/placeholder.png',
-        networkUrl: previewUrl,
-        heroTag: 'content-${content.id}',
-        onTapOverride: onPreviewTap,
-      ),
-      title: content.title,
-      subtitle: l10n.infographicTitle,
-      onTap: onPreviewTap,
-    );
-  }
-}
-
-class _DefaultContentCard extends StatelessWidget {
-  const _DefaultContentCard({
-    required this.content,
-    required this.moduleId,
-    required this.l10n,
-    required this.previewUrl,
-  });
-
-  final ContentEntity content;
-  final String moduleId;
-  final AppLocalizations l10n;
-  final String? previewUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    final subtitle = content.type == 'quiz' ? l10n.quizTitle : content.type;
-    return _PreviewCard(
-      thumbnail: PreviewImage(
-        imagePath: 'assets/images/placeholder.png',
-        networkUrl: previewUrl,
-        heroTag: 'content-${content.id}',
-      ),
-      title: content.title,
-      subtitle: subtitle,
-      onTap: () => context.push('/module/$moduleId/${content.type}'),
-    );
-  }
-}
-
-class _PreviewCard extends StatelessWidget {
-  const _PreviewCard({
-    required this.thumbnail,
-    required this.title,
-    required this.subtitle,
-    required this.onTap,
-  });
-
-  final Widget thumbnail;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      color: Colors.transparent,
-      child: Column(
-        children: [
-          SizedBox(height: 200.h, width: double.infinity, child: thumbnail),
-          SizedBox(height: 8.h),
-          ListTile(
-            title: Text(
-              title,
-              style: AppTextStyles.h5(context),
-            ),
-            subtitle: Text(
-              subtitle,
-              style: AppTextStyles.b3(context).copyWith(
-                color: AppColors.contentSecondary(context),
-              ),
-            ),
-            onTap: onTap,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PreviewImage extends StatelessWidget {
-  const PreviewImage({
-    super.key,
-    required this.imagePath,
-    this.heroTag,
-    this.networkUrl,
-    this.onTapOverride,
-  });
-
-  final String imagePath;
-  final String? heroTag;
-  final String? networkUrl;
-  final VoidCallback? onTapOverride;
-
-  @override
-  Widget build(BuildContext context) {
-    final preview = ClipRRect(
-      borderRadius: BorderRadius.circular(16.r),
-      child: _PreviewImageBody(
-        imagePath: imagePath,
-        networkUrl: networkUrl,
-      ),
-    );
-
-    return GestureDetector(
-      onTap: onTapOverride ?? () => _showFullscreen(context),
-      child: heroTag != null ? Hero(tag: heroTag!, child: preview) : preview,
-    );
-  }
-
-  Future<void> _showFullscreen(BuildContext context) async {
-    await showDialog<void>(
-      context: context,
-      barrierColor: Colors.black.withOpacity(0.85),
-      builder: (_) {
-        return GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Center(
-              child: Hero(
-                tag: heroTag ?? imagePath,
-                child: InteractiveViewer(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24.r),
-                    child: _PreviewImageBody(
-                      imagePath: imagePath,
-                      networkUrl: networkUrl,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _PreviewImageBody extends StatelessWidget {
-  const _PreviewImageBody({
-    required this.imagePath,
-    this.networkUrl,
-    this.fit = BoxFit.cover,
-  });
-
-  final String imagePath;
-  final String? networkUrl;
-  final BoxFit fit;
-
-  @override
-  Widget build(BuildContext context) {
-    if (networkUrl != null && networkUrl!.isNotEmpty) {
-      final url = networkUrl!;
-      final isLocal = url.startsWith('file://') || url.startsWith('/');
-      final isSvg = url.toLowerCase().endsWith('.svg');
-
-      if (isLocal) {
-        final file =
-            url.startsWith('file://') ? File(Uri.parse(url).path) : File(url);
-        if (!file.existsSync()) {
-          return Image.asset(imagePath, fit: fit);
-        }
-        if (isSvg) {
-          return SvgPicture.file(
-            file,
-            fit: fit,
-            placeholderBuilder: (_) =>
-                const Center(child: CircularProgressWidget()),
-          );
-        }
-        return Image.file(
-          file,
-          fit: fit,
-          errorBuilder: (_, __, ___) => Image.asset(imagePath, fit: fit),
-        );
-      }
-
-      if (isSvg) {
-        return SvgPicture.network(
-          url,
-          fit: fit,
-          placeholderBuilder: (_) =>
-              const Center(child: CircularProgressWidget()),
-        );
-      }
-      return Image.network(
-        url,
-        fit: fit,
-        errorBuilder: (_, __, ___) {
-          return Image.asset(imagePath, fit: fit);
-        },
-        loadingBuilder: (context, child, progress) {
-          if (progress == null) return child;
-          return Container(
-            color: AppColors.surfacePrimary(context),
-            child: const Center(child: CircularProgressWidget()),
-          );
-        },
-      );
-    }
-
-    return Image.asset(imagePath, fit: fit);
-  }
-}
-
-class _NetworkVideoPreviewDialog extends StatefulWidget {
-  const _NetworkVideoPreviewDialog({required this.videoUrl});
-
-  final String videoUrl;
-
-  @override
-  State<_NetworkVideoPreviewDialog> createState() =>
-      _NetworkVideoPreviewDialogState();
-}
-
-class _NetworkVideoPreviewDialogState
-    extends State<_NetworkVideoPreviewDialog> {
-  VideoPlayerController? _controller;
-  bool _loading = true;
-  bool _error = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _init();
-  }
-
-  Future<void> _init() async {
-    VideoPlayerController? controller;
-    try {
-      final uri = Uri.tryParse(widget.videoUrl);
-      final isNetwork =
-          uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
-      controller = isNetwork
-          ? VideoPlayerController.networkUrl(uri)
-          : VideoPlayerController.file(
-              widget.videoUrl.startsWith('file://') && uri != null
-                  ? File.fromUri(uri)
-                  : File(widget.videoUrl),
-            );
-      await controller.initialize();
-      controller.play();
-      if (!mounted) {
-        controller.dispose();
-        return;
-      }
-      setState(() {
-        _controller = controller;
-        _loading = false;
-      });
-    } catch (_) {
-      controller?.dispose();
-      if (!mounted) return;
-      setState(() {
-        _error = true;
-        _loading = false;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller?.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.of(context).pop(),
-      child: Scaffold(
-        backgroundColor: Colors.black.withOpacity(0.9),
-        body: Center(
-          child: _loading
-              ? const CircularProgressWidget()
-              : _error || _controller == null
-                  ? const Icon(Icons.error, color: Colors.white)
-                  : AspectRatio(
-                      aspectRatio: _controller!.value.aspectRatio,
-                      child: VideoPlayer(_controller!),
-                    ),
-        ),
-      ),
-    );
-  }
-}
-
-class _YoutubePreviewDialog extends StatefulWidget {
-  const _YoutubePreviewDialog({required this.videoId});
-
-  final String videoId;
-
-  @override
-  State<_YoutubePreviewDialog> createState() => _YoutubePreviewDialogState();
-}
-
-class _YoutubePreviewDialogState extends State<_YoutubePreviewDialog> {
-  late final YoutubePlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = YoutubePlayerController(
-      initialVideoId: widget.videoId,
-      flags: const YoutubePlayerFlags(
-        autoPlay: true,
-        mute: false,
-        forceHD: true,
-        enableCaption: true,
-        useHybridComposition: true,
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.of(context).pop(),
-      child: Scaffold(
-        backgroundColor: Colors.black.withOpacity(0.9),
-        body: Center(
-          child: YoutubePlayerBuilder(
-            player: YoutubePlayer(
-              controller: _controller,
-              showVideoProgressIndicator: true,
-              progressIndicatorColor: Colors.redAccent,
-            ),
-            builder: (context, player) {
-              return AspectRatio(
-                aspectRatio: 16 / 9,
-                child: player,
-              );
-            },
           ),
         ),
       ),

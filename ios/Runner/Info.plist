@@ -53,5 +53,7 @@
 	<string>Allow Academy 2.0 to record audio when capturing videos.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Allow Face ID to quickly unlock your Academy 2.0 account.</string>
+	<key>NSDocumentsUsageDescription</key>
+	<string>Allow Academy 2.0 to access documents for viewing PDFs and educational materials.</string>
 </dict>
 </plist>
