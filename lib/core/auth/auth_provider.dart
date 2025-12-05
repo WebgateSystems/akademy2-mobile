@@ -60,12 +60,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
         data: {
           'user': {
             'phone': phone,
-            'pin': pin,
+            'password': pin,
           },
         },
       );
 
-      if (resp.statusCode == 200 && resp.data != null) {
+      if ((resp.statusCode == 200 || resp.statusCode == 201) &&
+          resp.data != null) {
         final accessToken = resp.data['access_token'] as String?;
         final data = resp.data['data'] as Map<String, dynamic>?;
         final attributes = data?['attributes'] as Map<String, dynamic>?;
@@ -89,6 +90,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
           return;
         }
       }
+      // Якщо дійшли сюди, авторизація не вдалась
+      state = state.copyWith(isLoading: false);
+      throw Exception('Invalid response: missing access_token');
     } catch (e) {
       rethrow;
     } finally {

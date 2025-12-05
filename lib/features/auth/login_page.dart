@@ -1,5 +1,4 @@
 import 'package:academy_2_app/app/view/action_button_widget.dart';
-import 'package:academy_2_app/app/view/action_outlinedbutton_widget.dart';
 import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
@@ -157,11 +156,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          ActionOutlinedButtonWidget(
-            onPressed: () => context.go('/tech-login'),
-            text: 'Tech login (email/password)',
-          ),
+          // const SizedBox(height: 12),
+          // ActionOutlinedButtonWidget(
+          //   onPressed: () => context.go('/tech-login'),
+          //   text: 'Tech login (email/password)',
+          // ),
         ],
       ),
     );
@@ -201,7 +200,7 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
     setState(() => _submitting = true);
     final l10n = AppLocalizations.of(context)!;
     try {
-      final phone = widget.args.phone.trim();
+      final phone = widget.args.phone.trim().replaceAll(" ", "");
       if (phone.isEmpty) {
         throw Exception('Missing phone number');
       }
