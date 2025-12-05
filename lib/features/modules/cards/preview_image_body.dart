@@ -1,12 +1,16 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:http/http.dart' as http;
 
 class PreviewImageBody extends StatefulWidget {
   const PreviewImageBody({
+    super.key,
     required this.imagePath,
     this.networkUrl,
     this.fit = BoxFit.cover,
@@ -21,17 +25,105 @@ class PreviewImageBody extends StatefulWidget {
 }
 
 class _PreviewImageBodyState extends State<PreviewImageBody> {
+  Uint8List? _pdfData;
+  bool _isLoadingPdf = false;
+  bool _pdfLoadError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPdfIfNeeded();
+  }
+
+  @override
+  void didUpdateWidget(PreviewImageBody oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.networkUrl != widget.networkUrl) {
+      _loadPdfIfNeeded();
+    }
+  }
+
+  Future<void> _loadPdfIfNeeded() async {
+    final url = widget.networkUrl;
+    if (url == null || !url.toLowerCase().endsWith('.pdf')) return;
+
+    setState(() {
+      _isLoadingPdf = true;
+      _pdfLoadError = false;
+    });
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200 && mounted) {
+        setState(() {
+          _pdfData = response.bodyBytes;
+          _isLoadingPdf = false;
+        });
+      } else {
+        if (mounted) {
+          setState(() {
+            _pdfLoadError = true;
+            _isLoadingPdf = false;
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _pdfLoadError = true;
+          _isLoadingPdf = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.networkUrl != null &&
         widget.networkUrl!.toLowerCase().endsWith('.pdf')) {
-      // For PDF show a simple preview with PDF icon
-      return Container(
-        color: Colors.grey[200],
-        child: const Center(
-          child: Icon(
-            Icons.picture_as_pdf,
-            size: 96,
+      // Loading state
+      if (_isLoadingPdf) {
+        return Container(
+          color: Colors.grey[200],
+          child: const Center(child: CircularProgressWidget()),
+        );
+      }
+
+      // Error state - show PDF icon
+      if (_pdfLoadError || _pdfData == null) {
+        return Container(
+          color: Colors.grey[300],
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.picture_as_pdf, size: 48, color: Colors.red[700]),
+                const SizedBox(height: 8),
+                Text(
+                  'PDF',
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+
+      // Show PDF first page preview
+      return ClipRRect(
+        child: IgnorePointer(
+          child: PDFView(
+            pdfData: _pdfData,
+            enableSwipe: false,
+            pageFling: false,
+            autoSpacing: false,
+            fitPolicy: FitPolicy.BOTH,
+            onError: (error) {
+              debugPrint('PDF preview error: $error');
+            },
           ),
         ),
       );
