@@ -4,6 +4,7 @@ import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/checkbox_widget.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/core/network/dio_provider.dart';
+import 'package:academy_2_app/core/utils/phone_formatter.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -129,10 +130,12 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     }
   }
 
+  String _prevPhone = '';
+
   void _onPhoneChanged() {
     final raw = _phoneCtrl.text;
-
-    final formatted = _formatPlPhone(raw);
+    final formatted = PlPhoneFormatter.format(raw, previousValue: _prevPhone);
+    _prevPhone = formatted;
 
     // щоб не зациклитися – тільки якщо реально змінилось
     if (formatted != raw) {
@@ -145,47 +148,10 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
 
     setState(() {
       _phoneError = (_phoneCtrl.text.trim().isEmpty ||
-              _isValidPlPhone(_phoneCtrl.text.trim()))
+              PlPhoneFormatter.isValid(_phoneCtrl.text.trim()))
           ? null
           : 'Invalid phone number.';
     });
-  }
-
-  String _formatPlPhone(String input) {
-    // лише цифри
-    var digits = input.replaceAll(RegExp(r'\D'), '');
-
-    // якщо починається з 48 – вважаємо це country code і прибираємо
-    if (digits.startsWith('48')) {
-      digits = digits.substring(2);
-    }
-
-    // якщо немає цифр – повертаємо порожній рядок (щоб можна було повністю стерти)
-    if (digits.isEmpty) {
-      return '';
-    }
-
-    // максимум 9 цифр для польського номера
-    if (digits.length > 9) {
-      digits = digits.substring(0, 9);
-    }
-
-    final buffer = StringBuffer('+48 ');
-
-    for (var i = 0; i < digits.length; i++) {
-      buffer.write(digits[i]);
-      if (i == 2 || i == 5) {
-        buffer.write(' ');
-      }
-    }
-
-    return buffer.toString();
-  }
-
-  bool _isValidPlPhone(String text) {
-    // Валідний формат: +48 123 456 789
-    final regex = RegExp(r'^\+48 [0-9]{3} [0-9]{3} [0-9]{3}$');
-    return regex.hasMatch(text);
   }
 
   Future<void> _submit() async {

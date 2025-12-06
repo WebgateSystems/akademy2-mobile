@@ -2,6 +2,7 @@ import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
+import 'package:academy_2_app/core/utils/phone_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -62,9 +63,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
+  String _prevPhone = '';
+
   void _onPhoneChanged() {
     final raw = _phoneCtl.text;
-    final formatted = _formatPlPhone(raw);
+    final formatted = PlPhoneFormatter.format(raw, previousValue: _prevPhone);
+    _prevPhone = formatted;
 
     if (formatted != raw) {
       final newValue = TextEditingValue(
@@ -76,42 +80,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     setState(() {
       _phoneError = (_phoneCtl.text.trim().isEmpty ||
-              _isValidPlPhone(_phoneCtl.text.trim()))
+              PlPhoneFormatter.isValid(_phoneCtl.text.trim()))
           ? null
           : AppLocalizations.of(context)!.loginPhoneInvalid;
     });
-  }
-
-  String _formatPlPhone(String input) {
-    var digits = input.replaceAll(RegExp(r'\D'), '');
-
-    if (digits.startsWith('48')) {
-      digits = digits.substring(2);
-    }
-
-    if (digits.isEmpty) {
-      return '';
-    }
-
-    if (digits.length > 9) {
-      digits = digits.substring(0, 9);
-    }
-
-    final buffer = StringBuffer('+48 ');
-
-    for (var i = 0; i < digits.length; i++) {
-      buffer.write(digits[i]);
-      if (i == 2 || i == 5) {
-        buffer.write(' ');
-      }
-    }
-
-    return buffer.toString();
-  }
-
-  bool _isValidPlPhone(String text) {
-    final regex = RegExp(r'^\+48 [0-9]{3} [0-9]{3} [0-9]{3}$');
-    return regex.hasMatch(text);
   }
 
   @override
