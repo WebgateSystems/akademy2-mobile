@@ -166,6 +166,10 @@
   "profileLogoutMessage": "Do you want to logout from your account?",
   "profileLogoutCancel": "Cancel",
   "profileLogoutConfirm": "Logout",
+  "profileDeleteTitle": "Delete account",
+  "profileDeleteMessage": "Are you sure you want to delete your account? This action cannot be undone.",
+  "profileDeleteCancel": "Cancel",
+  "profileDeleteConfirm": "Delete",
   "profileSaveSuccess": "Profile saved",
   "profileSaveFailed": "Save failed: {error}",
   "@profileSaveFailed": {

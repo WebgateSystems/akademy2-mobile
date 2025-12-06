@@ -12,8 +12,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/auth/auth_provider.dart';
 import '../../core/network/dio_provider.dart';
-import '../../core/storage/secure_storage.dart';
 import '../../core/settings/settings_provider.dart';
+import '../../core/storage/secure_storage.dart';
+import '../../core/utils/phone_formatter.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -32,6 +33,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
   String _theme = 'light';
   String _language = 'en';
+  String _prevPhone = '';
   bool _loading = false;
   bool _deleting = false;
   bool _dirty = false;
@@ -45,11 +47,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       _lastNameCtrl,
       _dobCtrl,
       _emailCtrl,
-      _phoneCtrl,
       _pinCtrl,
     ]) {
       ctrl.addListener(_updateDirty);
     }
+    // Phone has separate listener for formatting
+    _phoneCtrl.addListener(_onPhoneChanged);
     _loadProfile();
   }
 
@@ -81,9 +84,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       'email': _emailCtrl.text,
       'phone': _phoneCtrl.text,
       'pin': _pinCtrl.text,
-      'theme': _theme,
-      'language': _language,
     };
+    _prevPhone = _phoneCtrl.text;
     if (mounted) {
       setState(() {
         _dirty = false;
@@ -95,26 +97,39 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     final l10n = AppLocalizations.of(context)!;
     setState(() => _loading = true);
     final dio = ref.read(dioProvider);
+    final storage = SecureStorage();
     try {
-      await dio.post('v1/account/update', data: {
-        'firstName': _firstNameCtrl.text.trim(),
-        'lastName': _lastNameCtrl.text.trim(),
-        'dob': _dobCtrl.text.trim(),
-        'email': _emailCtrl.text.trim(),
-        'phone': _phoneCtrl.text.trim(),
-        'pin': _pinCtrl.text.trim(),
-        'theme': _theme,
-        'language': _language,
+      final userId = await storage.read('userId');
+      final schoolId = await storage.read('schoolId');
+
+      if (userId == null) {
+        throw Exception('User ID not found');
+      }
+
+      // Convert phone to API format (remove formatting)
+      final phoneForApi = PlPhoneFormatter.toApiFormat(_phoneCtrl.text);
+
+      // Send profile data to PATCH /api/v1/students/{id}
+      await dio.patch('v1/students/$userId', data: {
+        'student': {
+          'first_name': _firstNameCtrl.text.trim(),
+          'last_name': _lastNameCtrl.text.trim(),
+          'email': _emailCtrl.text.trim(),
+          'school_id': schoolId,
+          'metadata': {
+            'phone': phoneForApi,
+            'birth_date': _dobCtrl.text.trim(),
+          },
+        },
       });
-      final storage = SecureStorage();
+
       await storage.write('firstName', _firstNameCtrl.text.trim());
       await storage.write('lastName', _lastNameCtrl.text.trim());
       await storage.write('dob', _dobCtrl.text.trim());
       await storage.write('email', _emailCtrl.text.trim());
       await storage.write('phone', _phoneCtrl.text.trim());
       await storage.write('userPin', _pinCtrl.text.trim());
-      await storage.write('theme', _theme);
-      await storage.write('language', _language);
+      // Note: theme and language are saved by settingsProvider automatically
       if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(l10n.profileSaveSuccess)));
@@ -125,8 +140,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           'email': _emailCtrl.text.trim(),
           'phone': _phoneCtrl.text.trim(),
           'pin': _pinCtrl.text.trim(),
-          'theme': _theme,
-          'language': _language,
         };
         _dirty = false;
       }
@@ -155,18 +168,34 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     await ref.read(authProvider.notifier).logout();
 
     if (mounted) {
-      context.go('/join-group');
+      context.go('/login');
     }
   }
 
   Future<void> _deleteAccount() async {
     final l10n = AppLocalizations.of(context)!;
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return DeleteAccountDialog();
+      },
+    );
+
+    if (confirm != true) return;
+
     setState(() => _deleting = true);
     final dio = ref.read(dioProvider);
+    final storage = SecureStorage();
     try {
-      await dio.delete('v1/account/delete');
+      final userId = await storage.read('userId');
+      if (userId == null) {
+        throw Exception('User ID not found');
+      }
+      await dio.delete('v1/students/$userId');
       await ref.read(authProvider.notifier).logout();
-      if (mounted) context.go('/join-group');
+      if (mounted) context.go('/login');
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -248,7 +277,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               onChanged: (v) {
                 setState(() => _theme = v ?? 'light');
                 ref.read(settingsProvider.notifier).setTheme(_theme);
-                _updateDirty();
               },
             ),
             SizedBox(height: 8.h),
@@ -263,7 +291,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               onChanged: (v) {
                 setState(() => _language = v ?? 'en');
                 ref.read(settingsProvider.notifier).setLanguage(_language);
-                _updateDirty();
               },
             ),
             SizedBox(height: 20.h),
@@ -382,6 +409,22 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     );
   }
 
+  void _onPhoneChanged() {
+    final raw = _phoneCtrl.text;
+    final formatted = PlPhoneFormatter.format(raw, previousValue: _prevPhone);
+    _prevPhone = formatted;
+
+    if (formatted != raw) {
+      final newValue = TextEditingValue(
+        text: formatted,
+        selection: TextSelection.collapsed(offset: formatted.length),
+      );
+      _phoneCtrl.value = newValue;
+    }
+
+    _updateDirty();
+  }
+
   void _updateDirty() {
     final current = {
       'firstName': _firstNameCtrl.text,
@@ -390,8 +433,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       'email': _emailCtrl.text,
       'phone': _phoneCtrl.text,
       'pin': _pinCtrl.text,
-      'theme': _theme,
-      'language': _language,
     };
     final dirtyNow =
         current.entries.any((e) => e.value != (_initial[e.key] ?? ''));
@@ -452,6 +493,68 @@ class LogoutDialog extends StatelessWidget {
                     height: 48.h,
                     onPressed: () => Navigator.pop(context, true),
                     text: l10n.profileLogoutConfirm,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DeleteAccountDialog extends StatelessWidget {
+  const DeleteAccountDialog({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.all(20.w),
+      child: Container(
+        padding: EdgeInsets.all(20.w),
+        decoration: BoxDecoration(
+          color: AppColors.surfacePrimary(context),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.profileDeleteTitle,
+              style: AppTextStyles.h3(context),
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              l10n.profileDeleteMessage,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.b1(context)
+                  .copyWith(color: AppColors.contentSecondary(context)),
+            ),
+            SizedBox(height: 40.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: ActionOutlinedButtonWidget(
+                    height: 48.h,
+                    onPressed: () => Navigator.pop(context, false),
+                    text: l10n.profileDeleteCancel,
+                  ),
+                ),
+                SizedBox(width: 20.w),
+                Flexible(
+                  flex: 1,
+                  child: ActionButtonWidget(
+                    height: 48.h,
+                    onPressed: () => Navigator.pop(context, true),
+                    text: l10n.profileDeleteConfirm,
                   ),
                 ),
               ],

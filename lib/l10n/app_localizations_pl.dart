@@ -370,6 +370,19 @@ class AppLocalizationsPl extends AppLocalizations {
   String get profileLogoutConfirm => 'Wyloguj się';
 
   @override
+  String get profileDeleteTitle => 'Usuń konto';
+
+  @override
+  String get profileDeleteMessage =>
+      'Czy na pewno chcesz usunąć swoje konto? Tej operacji nie można cofnąć.';
+
+  @override
+  String get profileDeleteCancel => 'Anuluj';
+
+  @override
+  String get profileDeleteConfirm => 'Usuń';
+
+  @override
   String get profileSaveSuccess => 'Profil zapisany';
 
   @override

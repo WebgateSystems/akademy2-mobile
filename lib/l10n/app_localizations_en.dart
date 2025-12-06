@@ -367,6 +367,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileLogoutConfirm => 'Logout';
 
   @override
+  String get profileDeleteTitle => 'Delete account';
+
+  @override
+  String get profileDeleteMessage =>
+      'Are you sure you want to delete your account? This action cannot be undone.';
+
+  @override
+  String get profileDeleteCancel => 'Cancel';
+
+  @override
+  String get profileDeleteConfirm => 'Delete';
+
+  @override
   String get profileSaveSuccess => 'Profile saved';
 
   @override

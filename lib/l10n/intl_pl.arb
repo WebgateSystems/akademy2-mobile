@@ -166,6 +166,10 @@
   "profileLogoutMessage": "Czy chcesz wylogować się ze swojego konta?",
   "profileLogoutCancel": "Anuluj",
   "profileLogoutConfirm": "Wyloguj się",
+  "profileDeleteTitle": "Usuń konto",
+  "profileDeleteMessage": "Czy na pewno chcesz usunąć swoje konto? Tej operacji nie można cofnąć.",
+  "profileDeleteCancel": "Anuluj",
+  "profileDeleteConfirm": "Usuń",
   "profileSaveSuccess": "Profil zapisany",
   "profileSaveFailed": "Nie udało się zapisać: {error}",
   "@profileSaveFailed": {

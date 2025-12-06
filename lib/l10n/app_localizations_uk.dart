@@ -368,6 +368,19 @@ class AppLocalizationsUk extends AppLocalizations {
   String get profileLogoutConfirm => 'Вийти';
 
   @override
+  String get profileDeleteTitle => 'Видалити акаунт';
+
+  @override
+  String get profileDeleteMessage =>
+      'Ви впевнені, що хочете видалити свій акаунт? Цю дію неможливо скасувати.';
+
+  @override
+  String get profileDeleteCancel => 'Скасувати';
+
+  @override
+  String get profileDeleteConfirm => 'Видалити';
+
+  @override
   String get profileSaveSuccess => 'Профіль збережено';
 
   @override

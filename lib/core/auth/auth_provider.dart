@@ -77,6 +77,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
           if (refreshToken != null) {
             await _storage.write('refreshToken', refreshToken);
           }
+          if (userId != null) {
+            await _storage.write('userId', userId);
+          }
           await saveUserProfile(attributes,
               email: attributes?['email'] as String?,
               phone: attributes?['phone'] as String? ?? phone,
@@ -167,7 +170,9 @@ class AuthNotifier extends StateNotifier<AuthState> {
     final storage = _storage;
     final firstName = attrs?['first_name'] as String?;
     final lastName = attrs?['last_name'] as String?;
-    final birthdate = attrs?['birthdate'] as String?;
+    final birthdate =
+        attrs?['birthdate'] as String? ?? attrs?['birth_date'] as String?;
+    final schoolId = attrs?['school_id'] as String?;
     final metaPin = attrs?['metadata'] is Map<String, dynamic>
         ? (attrs?['metadata'] as Map<String, dynamic>)['pin'] as String?
         : null;
@@ -175,6 +180,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (firstName != null) await storage.write('firstName', firstName);
     if (lastName != null) await storage.write('lastName', lastName);
     if (birthdate != null) await storage.write('dob', birthdate);
+    if (schoolId != null) await storage.write('schoolId', schoolId);
     if (email != null) await storage.write('email', email);
     if (phone != null) await storage.write('phone', phone);
     if (pin != null) await storage.write('userPin', pin);

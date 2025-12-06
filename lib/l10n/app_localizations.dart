@@ -754,6 +754,30 @@ abstract class AppLocalizations {
   /// **'Logout'**
   String get profileLogoutConfirm;
 
+  /// No description provided for @profileDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account'**
+  String get profileDeleteTitle;
+
+  /// No description provided for @profileDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account? This action cannot be undone.'**
+  String get profileDeleteMessage;
+
+  /// No description provided for @profileDeleteCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get profileDeleteCancel;
+
+  /// No description provided for @profileDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get profileDeleteConfirm;
+
   /// No description provided for @profileSaveSuccess.
   ///
   /// In en, this message translates to:

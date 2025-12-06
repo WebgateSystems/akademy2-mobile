@@ -166,6 +166,10 @@
   "profileLogoutMessage": "Вийти з акаунту?",
   "profileLogoutCancel": "Скасувати",
   "profileLogoutConfirm": "Вийти",
+  "profileDeleteTitle": "Видалити акаунт",
+  "profileDeleteMessage": "Ви впевнені, що хочете видалити свій акаунт? Цю дію неможливо скасувати.",
+  "profileDeleteCancel": "Скасувати",
+  "profileDeleteConfirm": "Видалити",
   "profileSaveSuccess": "Профіль збережено",
   "profileSaveFailed": "Не вдалося зберегти: {error}",
   "@profileSaveFailed": {
