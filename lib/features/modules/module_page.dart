@@ -460,11 +460,22 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     final youtubeUrl = content.youtubeUrl;
     if (fileUrl == null && (youtubeUrl == null || youtubeUrl.isEmpty)) return;
 
+    // Get subtitles URL (local or network)
+    final localSubtitles = contentLocalPath(
+      content,
+      DownloadAssetType.subtitles,
+      ensureExists: true,
+    );
+    final subtitlesUrl = localSubtitles ?? _absUrl(content.subtitlesUrl);
+
     if (fileUrl != null) {
       await showDialog<void>(
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
-        builder: (_) => NetworkVideoPreviewDialog(videoUrl: fileUrl),
+        builder: (_) => NetworkVideoPreviewDialog(
+          videoUrl: fileUrl,
+          subtitlesUrl: subtitlesUrl,
+        ),
       );
       return;
     }
@@ -475,7 +486,10 @@ class _ModulePageState extends ConsumerState<ModulePage> {
       await showDialog<void>(
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
-        builder: (_) => YoutubePreviewDialog(videoId: videoId),
+        builder: (_) => YoutubePreviewDialog(
+          videoId: videoId,
+          subtitlesUrl: subtitlesUrl,
+        ),
       );
     }
   }
