@@ -439,4 +439,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String quizScoreLabel(Object score) {
     return '$score pts';
   }
+
+  @override
+  String get editVideoTitle => 'Edit video';
+
+  @override
+  String get editVideoTitleLabel => 'Title';
+
+  @override
+  String get editVideoDescriptionLabel => 'Description';
+
+  @override
+  String get editVideoSaveButton => 'Save';
 }

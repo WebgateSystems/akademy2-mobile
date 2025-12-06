@@ -879,6 +879,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{score} pts'**
   String quizScoreLabel(Object score);
+
+  /// No description provided for @editVideoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit video'**
+  String get editVideoTitle;
+
+  /// No description provided for @editVideoTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get editVideoTitleLabel;
+
+  /// No description provided for @editVideoDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get editVideoDescriptionLabel;
+
+  /// No description provided for @editVideoSaveButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get editVideoSaveButton;
 }
 
 class _AppLocalizationsDelegate

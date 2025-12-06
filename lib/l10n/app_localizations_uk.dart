@@ -440,4 +440,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String quizScoreLabel(Object score) {
     return '$score бал(ів)';
   }
+
+  @override
+  String get editVideoTitle => 'Редагувати відео';
+
+  @override
+  String get editVideoTitleLabel => 'Назва';
+
+  @override
+  String get editVideoDescriptionLabel => 'Опис';
+
+  @override
+  String get editVideoSaveButton => 'Зберегти';
 }

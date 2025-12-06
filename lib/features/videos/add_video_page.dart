@@ -65,15 +65,17 @@ class _AddVideoPageState extends State<AddVideoPage> {
   }
 
   Future<void> _submit() async {
-    if (_file == null || _subjectId == null || _titleCtrl.text.trim().isEmpty)
+    if (_file == null || _subjectId == null || _titleCtrl.text.trim().isEmpty) {
       return;
+    }
     setState(() => _saving = true);
     try {
       await VideoService().addVideo(
         title: _titleCtrl.text.trim(),
-        description: _descCtrl.text.trim(),
         subjectId: _subjectId!,
-        filePath: _file!.path ?? '',
+        filePath: _file!.path!,
+        description:
+            _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
       );
       if (!mounted) return;
       Navigator.of(context).pop(true);

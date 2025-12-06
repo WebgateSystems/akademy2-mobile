@@ -442,4 +442,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String quizScoreLabel(Object score) {
     return '$score pkt';
   }
+
+  @override
+  String get editVideoTitle => 'Edytuj wideo';
+
+  @override
+  String get editVideoTitleLabel => 'Tytuł';
+
+  @override
+  String get editVideoDescriptionLabel => 'Opis';
+
+  @override
+  String get editVideoSaveButton => 'Zapisz';
 }
