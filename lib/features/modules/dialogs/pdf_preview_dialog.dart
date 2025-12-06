@@ -61,6 +61,7 @@ class _PdfPreviewDialogState extends State<PdfPreviewDialog> {
         showBackButton: true,
         stickChildrenToBottom: true,
         paddingBottom: 20.w,
+        isOneToolbarRow: true,
         rightIcon: Text(
           '$_currentPage / $_totalPages',
           style: AppTextStyles.b2(context),

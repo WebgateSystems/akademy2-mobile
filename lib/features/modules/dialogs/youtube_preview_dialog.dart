@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/features/modules/models/subtitle_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
@@ -20,7 +22,7 @@ class YoutubePreviewDialog extends StatefulWidget {
 
 class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
   late final YoutubePlayerController _controller;
-  List<_SubtitleEntry> _subtitles = [];
+  List<SubtitleEntry> _subtitles = [];
   String _currentSubtitle = '';
 
   @override
@@ -78,8 +80,8 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
     }
   }
 
-  List<_SubtitleEntry> _parseSubtitles(String content) {
-    final entries = <_SubtitleEntry>[];
+  List<SubtitleEntry> _parseSubtitles(String content) {
+    final entries = <SubtitleEntry>[];
 
     // Remove BOM if present
     content = content.replaceAll('\uFEFF', '');
@@ -121,7 +123,7 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
           .replaceAll(RegExp(r'<[^>]+>'), '');
 
       if (text.isNotEmpty) {
-        entries.add(_SubtitleEntry(start: start, end: end, text: text));
+        entries.add(SubtitleEntry(start: start, end: end, text: text));
       }
     }
 
@@ -199,16 +201,6 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Close button
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 24.h,
-            right: 8.w,
-            child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.white, size: 28),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
-
           // YouTube Player
           Center(
             child: YoutubePlayerBuilder(
@@ -229,14 +221,14 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
           // Custom subtitles overlay
           if (_currentSubtitle.isNotEmpty)
             Positioned(
-              bottom: 100,
-              left: 16,
-              right: 16,
+              bottom: 80.h,
+              left: 16.w,
+              right: 16.w,
               child: Center(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 8.h,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.7),
@@ -245,29 +237,37 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
                   child: Text(
                     _currentSubtitle,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: AppTextStyles.h5(context).copyWith(
                       color: Colors.white,
-                      fontSize: 16,
-                      height: 1.3,
                     ),
                   ),
                 ),
               ),
             ),
+
+          // Close button - separate widget, on top of everything
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 24.h,
+            right: 8.w,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                borderRadius: BorderRadius.circular(24.w),
+                child: Container(
+                  width: 48.w,
+                  height: 48.w,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.close, color: Colors.white, size: 24.w),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
-}
-
-class _SubtitleEntry {
-  final Duration start;
-  final Duration end;
-  final String text;
-
-  _SubtitleEntry({
-    required this.start,
-    required this.end,
-    required this.text,
-  });
 }

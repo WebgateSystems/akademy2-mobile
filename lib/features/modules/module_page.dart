@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 
 import '../../core/db/entities/content_entity.dart';
 import '../../core/db/entities/module_entity.dart';
@@ -451,14 +452,33 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     BuildContext context,
     ContentEntity content,
   ) async {
+    // Check if content is downloaded locally
     final localFile = contentLocalPath(
       content,
       DownloadAssetType.file,
       ensureExists: true,
     );
-    final fileUrl = localFile ?? _absUrl(content.fileUrl);
+    final hasLocalFile = localFile != null;
+
     final youtubeUrl = content.youtubeUrl;
-    if (fileUrl == null && (youtubeUrl == null || youtubeUrl.isEmpty)) return;
+    final hasYoutube = youtubeUrl != null && youtubeUrl.isNotEmpty;
+
+    final networkFileUrl = _absUrl(content.fileUrl);
+    final hasNetworkFile = networkFileUrl != null;
+
+    // Debug logging
+    debugPrint('_showVideoPreview: content.id=${content.id}');
+    debugPrint('_showVideoPreview: content.fileUrl=${content.fileUrl}');
+    debugPrint('_showVideoPreview: content.youtubeUrl=${content.youtubeUrl}');
+    debugPrint(
+        '_showVideoPreview: content.downloadPath=${content.downloadPath}');
+    debugPrint(
+        '_showVideoPreview: localFile=$localFile, hasLocalFile=$hasLocalFile');
+    debugPrint(
+        '_showVideoPreview: hasYoutube=$hasYoutube, hasNetworkFile=$hasNetworkFile');
+
+    // No video source available
+    if (!hasLocalFile && !hasYoutube && !hasNetworkFile) return;
 
     // Get subtitles URL (local or network)
     final localSubtitles = contentLocalPath(
@@ -468,29 +488,82 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     );
     final subtitlesUrl = localSubtitles ?? _absUrl(content.subtitlesUrl);
 
-    if (fileUrl != null) {
+    // Priority:
+    // 1. If downloaded locally -> use local file
+    // 2. If no local file -> check internet before showing online content
+
+    if (hasLocalFile) {
+      // Play from local storage (offline mode or downloaded content)
       await showDialog<void>(
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
         builder: (_) => NetworkVideoPreviewDialog(
-          videoUrl: fileUrl,
+          videoUrl: localFile,
           subtitlesUrl: subtitlesUrl,
         ),
       );
       return;
     }
 
-    if (youtubeUrl != null && youtubeUrl.isNotEmpty) {
+    // No local file - need internet. Check connectivity first.
+    final hasInternet = await _checkInternetConnection();
+    if (!hasInternet) {
+      if (context.mounted) {
+        // Check if video can be downloaded at all
+        final canDownload = hasNetworkFile;
+        final message = canDownload
+            ? 'Відео недоступне офлайн. Завантажте контент для перегляду без інтернету.'
+            : 'Це відео доступне тільки онлайн через YouTube і не може бути завантажене.';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+      return;
+    }
+
+    if (hasYoutube) {
+      // Play from YouTube (online mode, preferred for streaming)
       final videoId = _youtubeVideoId(youtubeUrl);
-      if (videoId == null) return;
+      if (videoId != null) {
+        await showDialog<void>(
+          context: context,
+          barrierColor: Colors.black.withOpacity(0.9),
+          builder: (_) => YoutubePreviewDialog(
+            videoId: videoId,
+            subtitlesUrl: subtitlesUrl,
+          ),
+        );
+        return;
+      }
+    }
+
+    if (hasNetworkFile) {
+      // Stream from network file URL (fallback if no YouTube)
       await showDialog<void>(
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
-        builder: (_) => YoutubePreviewDialog(
-          videoId: videoId,
+        builder: (_) => NetworkVideoPreviewDialog(
+          videoUrl: networkFileUrl,
           subtitlesUrl: subtitlesUrl,
         ),
       );
+    }
+  }
+
+  /// Simple internet connectivity check
+  Future<bool> _checkInternetConnection() async {
+    try {
+      final response = await http
+          .get(
+            Uri.parse('https://www.google.com'),
+          )
+          .timeout(const Duration(seconds: 3));
+      return response.statusCode == 200;
+    } catch (_) {
+      return false;
     }
   }
 

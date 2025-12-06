@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
+import 'package:academy_2_app/features/modules/models/subtitle_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
@@ -26,7 +27,7 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
   VideoPlayerController? _controller;
   bool _loading = true;
   bool _error = false;
-  List<_SubtitleEntry> _subtitles = [];
+  List<SubtitleEntry> _subtitles = [];
   String _currentSubtitle = '';
   bool _showControls = true;
 
@@ -39,17 +40,36 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
   Future<void> _init() async {
     VideoPlayerController? controller;
     try {
+      debugPrint('NetworkVideoPreviewDialog: videoUrl = ${widget.videoUrl}');
+
       final uri = Uri.tryParse(widget.videoUrl);
       final isNetwork =
           uri != null && (uri.scheme == 'http' || uri.scheme == 'https');
-      controller = isNetwork
-          ? VideoPlayerController.networkUrl(uri)
-          : VideoPlayerController.file(
-              widget.videoUrl.startsWith('file://') && uri != null
-                  ? File.fromUri(uri)
-                  : File(widget.videoUrl),
-            );
+
+      debugPrint(
+          'NetworkVideoPreviewDialog: isNetwork = $isNetwork, uri = $uri');
+
+      if (isNetwork) {
+        controller = VideoPlayerController.networkUrl(uri);
+      } else {
+        // Local file
+        final file = widget.videoUrl.startsWith('file://') && uri != null
+            ? File.fromUri(uri)
+            : File(widget.videoUrl);
+
+        debugPrint('NetworkVideoPreviewDialog: Local file path = ${file.path}');
+        debugPrint(
+            'NetworkVideoPreviewDialog: File exists = ${file.existsSync()}');
+
+        if (!file.existsSync()) {
+          throw Exception('Local video file not found: ${file.path}');
+        }
+
+        controller = VideoPlayerController.file(file);
+      }
+
       await controller.initialize();
+      debugPrint('NetworkVideoPreviewDialog: Video initialized successfully');
 
       // Load subtitles if available
       if (widget.subtitlesUrl != null && widget.subtitlesUrl!.isNotEmpty) {
@@ -72,8 +92,9 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) setState(() => _showControls = false);
       });
-    } catch (e) {
+    } catch (e, st) {
       debugPrint('Video init error: $e');
+      debugPrint('Stack trace: $st');
       controller?.dispose();
       if (!mounted) return;
       setState(() {
@@ -115,8 +136,8 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
     }
   }
 
-  List<_SubtitleEntry> _parseSubtitles(String content) {
-    final entries = <_SubtitleEntry>[];
+  List<SubtitleEntry> _parseSubtitles(String content) {
+    final entries = <SubtitleEntry>[];
 
     // Remove BOM if present
     content = content.replaceAll('\uFEFF', '');
@@ -157,7 +178,7 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
           .replaceAll(RegExp(r'<[^>]+>'), '');
 
       if (text.isNotEmpty) {
-        entries.add(_SubtitleEntry(start: start, end: end, text: text));
+        entries.add(SubtitleEntry(start: start, end: end, text: text));
       }
     }
 
@@ -248,109 +269,139 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: GestureDetector(
-        onTap: _toggleControls,
-        child: Stack(
-          children: [
-            // Video
-            Center(
-              child: _loading
-                  ? const CircularProgressWidget()
-                  : _error || _controller == null
-                      ? const Icon(Icons.error, color: Colors.white, size: 48)
-                      : AspectRatio(
-                          aspectRatio: _controller!.value.aspectRatio,
-                          child: VideoPlayer(_controller!),
-                        ),
-            ),
+      body: Stack(
+        children: [
+          // Close button - at bottom of stack so it's behind content
+          // but we'll make sure it's accessible
 
-            // Subtitles
-            if (_currentSubtitle.isNotEmpty)
-              Positioned(
-                bottom: 80.h,
-                left: 20.w,
-                right: 20.w,
-                child: Center(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      _currentSubtitle,
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.h5(context).copyWith(
-                        color: Colors.white,
+          // Main content with gesture detector for controls toggle
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: _toggleControls,
+              behavior: HitTestBehavior.translucent,
+              child: Stack(
+                children: [
+                  // Video
+                  Center(
+                    child: _loading
+                        ? const CircularProgressWidget()
+                        : _error || _controller == null
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.error,
+                                      color: Colors.white, size: 48),
+                                  SizedBox(height: 16.h),
+                                  Text(
+                                    'Помилка завантаження відео',
+                                    style: TextStyle(
+                                        color: Colors.white70, fontSize: 14.sp),
+                                  ),
+                                ],
+                              )
+                            : AspectRatio(
+                                aspectRatio: _controller!.value.aspectRatio,
+                                child: VideoPlayer(_controller!),
+                              ),
+                  ),
+
+                  // Subtitles
+                  if (_currentSubtitle.isNotEmpty)
+                    Positioned(
+                      bottom: 80.h,
+                      left: 20.w,
+                      right: 20.w,
+                      child: Center(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 8.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            _currentSubtitle,
+                            textAlign: TextAlign.center,
+                            style: AppTextStyles.h5(context).copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
 
-            // Controls overlay
-            if (_showControls &&
-                !_loading &&
-                !_error &&
-                _controller != null) ...[
-              // Close button
-              Positioned(
-                top: MediaQuery.of(context).padding.top + 24.h,
-                right: 8.w,
-                child: IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white, size: 28),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ),
+                  // Controls overlay (play/pause and progress bar)
+                  if (_showControls &&
+                      !_loading &&
+                      !_error &&
+                      _controller != null) ...[
+                    // Play/Pause button
+                    Center(
+                      child: GestureDetector(
+                        onTap: _togglePlayPause,
+                        child: Container(
+                          padding: EdgeInsets.all(16.w),
+                          decoration: BoxDecoration(
+                            color: Colors.black45,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            _controller!.value.isPlaying
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                            color: Colors.white,
+                            size: 48.w,
+                          ),
+                        ),
+                      ),
+                    ),
 
-              // Play/Pause button
-              Center(
-                child: IconButton(
-                  iconSize: 64,
-                  icon: Icon(
-                    _controller!.value.isPlaying
-                        ? Icons.pause_circle_filled
-                        : Icons.play_circle_filled,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                  onPressed: _togglePlayPause,
-                ),
+                    // Progress bar
+                    Positioned(
+                      bottom: 20.h,
+                      left: 16.w,
+                      right: 16.w,
+                      child: VideoProgressIndicator(
+                        _controller!,
+                        allowScrubbing: true,
+                        colors: const VideoProgressColors(
+                          playedColor: Colors.white,
+                          bufferedColor: Colors.white30,
+                          backgroundColor: Colors.white10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
+            ),
+          ),
 
-              // Progress bar
-              Positioned(
-                bottom: 20,
-                left: 16,
-                right: 16,
-                child: VideoProgressIndicator(
-                  _controller!,
-                  allowScrubbing: true,
-                  colors: const VideoProgressColors(
-                    playedColor: Colors.white,
-                    bufferedColor: Colors.white30,
-                    backgroundColor: Colors.white10,
+          // Close button - OUTSIDE of GestureDetector, always on top
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 24.h,
+            right: 8.w,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                borderRadius: BorderRadius.circular(24.w),
+                child: Container(
+                  width: 48.w,
+                  height: 48.w,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.6),
+                    shape: BoxShape.circle,
                   ),
+                  child: Icon(Icons.close, color: Colors.white, size: 24.w),
                 ),
               ),
-            ],
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
-}
-
-class _SubtitleEntry {
-  final Duration start;
-  final Duration end;
-  final String text;
-
-  _SubtitleEntry({
-    required this.start,
-    required this.end,
-    required this.text,
-  });
 }
