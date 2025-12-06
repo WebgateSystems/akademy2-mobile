@@ -18,7 +18,10 @@ class App extends ConsumerStatefulWidget {
 }
 
 class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
-  bool _wasBackgrounded = false;
+  DateTime? _backgroundedAt;
+
+  // Minimum time in background before requiring unlock (in seconds)
+  static const _minBackgroundDuration = 30;
 
   @override
   void initState() {
@@ -29,7 +32,8 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
       if (auth.isAuthenticated && !auth.isUnlocked) {
         final router = ref.read(routerProvider);
         router.go(
-          Uri(path: '/unlock', queryParameters: {'redirect': '/home'}).toString(),
+          Uri(path: '/unlock', queryParameters: {'redirect': '/home'})
+              .toString(),
         );
       }
     });
@@ -43,32 +47,36 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.paused ||
-        state == AppLifecycleState.detached ||
-        state == AppLifecycleState.hidden) {
-      _wasBackgrounded = true;
+    // Record when app goes to background
+    if (state == AppLifecycleState.paused) {
+      _backgroundedAt = DateTime.now();
     }
 
-    if (state == AppLifecycleState.resumed) {
-      final auth = ref.read(authProvider);
-      final shouldUnlock = auth.isAuthenticated &&
-          (_wasBackgrounded || !auth.isUnlocked);
-      if (shouldUnlock) {
-        ref.read(authProvider.notifier).requireUnlock();
-        final router = ref.read(routerProvider);
-        var redirectTo = '/home';
-        try {
-          final current = router.routerDelegate.currentConfiguration.fullPath;
-          redirectTo = current == '/unlock' || current.isEmpty ? '/home' : current;
-        } catch (_) {
-          redirectTo = router.routeInformationProvider.value.uri.toString();
+    if (state == AppLifecycleState.resumed && _backgroundedAt != null) {
+      final secondsInBackground =
+          DateTime.now().difference(_backgroundedAt!).inSeconds;
+      _backgroundedAt = null;
+
+      // Only require unlock if app was in background for more than threshold
+      // This prevents unlock screen when using file pickers or permission dialogs
+      if (secondsInBackground >= _minBackgroundDuration) {
+        final auth = ref.read(authProvider);
+        if (auth.isAuthenticated) {
+          ref.read(authProvider.notifier).requireUnlock();
+          final router = ref.read(routerProvider);
+          var redirectTo = '/home';
+          try {
+            final current = router.routerDelegate.currentConfiguration.fullPath;
+            redirectTo =
+                current == '/unlock' || current.isEmpty ? '/home' : current;
+          } catch (_) {
+            redirectTo = router.routeInformationProvider.value.uri.toString();
+          }
+          router.go(Uri(path: '/unlock', queryParameters: {
+            'redirect': redirectTo,
+          }).toString());
         }
-        router.go(Uri(path: '/unlock', queryParameters: {
-          'redirect': redirectTo,
-        }).toString());
       }
-      _wasBackgrounded = false;
     }
     super.didChangeAppLifecycleState(state);
   }

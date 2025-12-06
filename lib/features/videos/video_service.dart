@@ -29,11 +29,11 @@ class VideoService {
     String? description,
   }) async {
     final formData = FormData.fromMap({
-      'title': title,
-      'subject_id': subjectId,
+      'video[title]': title,
+      'video[subject_id]': subjectId,
       if (description != null && description.isNotEmpty)
-        'description': description,
-      'file': await MultipartFile.fromFile(
+        'video[description]': description,
+      'video[file]': await MultipartFile.fromFile(
         filePath,
         filename: filePath.split('/').last,
       ),
