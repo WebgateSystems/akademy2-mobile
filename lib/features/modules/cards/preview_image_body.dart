@@ -3,10 +3,10 @@ import 'dart:typed_data';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
+import 'package:academy_2_app/core/services/pdf_cache_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:http/http.dart' as http;
 
 class PreviewImageBody extends StatefulWidget {
   const PreviewImageBody({
@@ -52,28 +52,14 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
       _pdfLoadError = false;
     });
 
-    try {
-      final response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200 && mounted) {
-        setState(() {
-          _pdfData = response.bodyBytes;
-          _isLoadingPdf = false;
-        });
-      } else {
-        if (mounted) {
-          setState(() {
-            _pdfLoadError = true;
-            _isLoadingPdf = false;
-          });
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _pdfLoadError = true;
-          _isLoadingPdf = false;
-        });
-      }
+    final data = await PdfCacheService.instance.getPdfData(url);
+
+    if (mounted) {
+      setState(() {
+        _pdfData = data;
+        _pdfLoadError = data == null;
+        _isLoadingPdf = false;
+      });
     }
   }
 
@@ -113,18 +99,25 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
       }
 
       // Show PDF first page preview
+      // Use Stack with transparent overlay to capture taps while showing PDF
       return ClipRRect(
-        child: IgnorePointer(
-          child: PDFView(
-            pdfData: _pdfData,
-            enableSwipe: false,
-            pageFling: false,
-            autoSpacing: false,
-            fitPolicy: FitPolicy.BOTH,
-            onError: (error) {
-              debugPrint('PDF preview error: $error');
-            },
-          ),
+        child: Stack(
+          children: [
+            PDFView(
+              pdfData: _pdfData,
+              enableSwipe: false,
+              pageFling: false,
+              autoSpacing: false,
+              fitPolicy: FitPolicy.BOTH,
+              onError: (error) {
+                debugPrint('PDF preview error: $error');
+              },
+            ),
+            // Transparent overlay to pass taps to parent GestureDetector
+            Positioned.fill(
+              child: Container(color: Colors.transparent),
+            ),
+          ],
         ),
       );
     }

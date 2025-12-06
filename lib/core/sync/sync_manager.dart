@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -23,8 +24,22 @@ class SyncManager {
       debugPrint('SyncManager: Starting bootstrap sync...');
 
       final auth = ref.read(authProvider);
+      debugPrint(
+          'SyncManager: Auth state - isAuthenticated=${auth.isAuthenticated}, isLoading=${auth.isLoading}');
+
       if (!auth.isAuthenticated) {
         debugPrint('SyncManager: Skip bootstrap, user not authenticated');
+        return;
+      }
+
+      // Check if token exists
+      final authNotifier = ref.read(authProvider.notifier);
+      final token = await authNotifier.getAccessToken();
+      debugPrint(
+          'SyncManager: Token exists=${token != null}, length=${token?.length ?? 0}');
+
+      if (token == null) {
+        debugPrint('SyncManager: Skip bootstrap, no access token');
         return;
       }
 
@@ -99,6 +114,14 @@ class SyncManager {
       }
 
       debugPrint('SyncManager: Bootstrap sync completed successfully');
+    } on DioException catch (e, st) {
+      debugPrint('SyncManager: DioException during bootstrap:');
+      debugPrint('  Type: ${e.type}');
+      debugPrint('  Message: ${e.message}');
+      debugPrint('  Response status: ${e.response?.statusCode}');
+      debugPrint('  Response data: ${e.response?.data}');
+      debugPrint('  Request URL: ${e.requestOptions.uri}');
+      debugPrint('  Stack trace: $st');
     } catch (e, st) {
       debugPrint('SyncManager: Bootstrap sync failed: $e\n$st');
       // For M1, we'll continue with mock data if sync fails
@@ -206,7 +229,7 @@ _ParsedData _parseSubjectsWithContents(List<Map<String, dynamic>> data) {
           ..subtitlesUrl = subtitlesUrl
           ..payloadJson = _encodePayload(c['payload'])
           ..learningModuleId = learningModuleId
-          ..learningModuleTitle = learningModule?['title'] as String?
+          ..learningModuleTitle = learningModule['title'] as String?
           ..bestScore = 0
           ..updatedAt = DateTime.now()
           ..downloaded = false

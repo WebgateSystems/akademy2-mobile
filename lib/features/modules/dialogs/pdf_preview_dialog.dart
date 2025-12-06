@@ -1,17 +1,19 @@
-import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
+import 'package:academy_2_app/core/services/pdf_cache_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:http/http.dart' as http;
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 class PdfPreviewDialog extends StatefulWidget {
-  const PdfPreviewDialog(
-      {super.key, required this.title, required this.pdfUrl});
+  const PdfPreviewDialog({
+    super.key,
+    required this.title,
+    required this.pdfUrl,
+  });
 
   final String title;
   final String pdfUrl;
@@ -21,7 +23,6 @@ class PdfPreviewDialog extends StatefulWidget {
 }
 
 class _PdfPreviewDialogState extends State<PdfPreviewDialog> {
-  final PdfViewerController _pdfViewerController = PdfViewerController();
   Uint8List? _pdfData;
   bool _loading = true;
   String? _error;
@@ -34,53 +35,21 @@ class _PdfPreviewDialogState extends State<PdfPreviewDialog> {
     _loadPdf();
   }
 
-  @override
-  void dispose() {
-    _pdfViewerController.dispose();
-    super.dispose();
-  }
-
   Future<void> _loadPdf() async {
-    try {
-      final url = widget.pdfUrl;
-      final isLocal = url.startsWith('file://') || url.startsWith('/');
+    final data = await PdfCacheService.instance.getPdfData(widget.pdfUrl);
 
-      if (isLocal) {
-        final file =
-            url.startsWith('file://') ? File(Uri.parse(url).path) : File(url);
-        if (!file.existsSync()) {
-          setState(() {
-            _error = 'File not found';
-            _loading = false;
-          });
-          return;
-        }
-        _pdfData = await file.readAsBytes();
-      } else {
-        final response = await http.get(Uri.parse(url));
-        if (response.statusCode != 200) {
-          if (mounted) {
-            setState(() {
-              _error = 'Failed to load PDF: ${response.statusCode}';
-              _loading = false;
-            });
-          }
-          return;
-        }
-        _pdfData = response.bodyBytes;
-      }
+    if (!mounted) return;
 
-      if (!mounted) return;
-
-      setState(() => _loading = false);
-    } catch (e) {
-      debugPrint('Error loading PDF: $e');
-      if (mounted) {
-        setState(() {
-          _error = 'Error loading PDF: $e';
-          _loading = false;
-        });
-      }
+    if (data == null) {
+      setState(() {
+        _error = 'Failed to load PDF';
+        _loading = false;
+      });
+    } else {
+      setState(() {
+        _pdfData = data;
+        _loading = false;
+      });
     }
   }
 
@@ -88,10 +57,14 @@ class _PdfPreviewDialogState extends State<PdfPreviewDialog> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BasePageWithToolbar(
-        stickChildrenToBottom: true,
-        showBackButton: true,
-        paddingBottom: 20.w,
         title: widget.title,
+        showBackButton: true,
+        stickChildrenToBottom: true,
+        paddingBottom: 20.w,
+        rightIcon: Text(
+          '$_currentPage / $_totalPages',
+          style: AppTextStyles.b2(context),
+        ),
         children: [
           SizedBox(height: 16.h),
           _buildBody(),
@@ -102,51 +75,59 @@ class _PdfPreviewDialogState extends State<PdfPreviewDialog> {
 
   Widget _buildBody() {
     if (_loading) {
-      return Expanded(
-        child: Center(child: CircularProgressWidget()),
-      );
+      return Expanded(child: const Center(child: CircularProgressWidget()));
     }
 
     if (_error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.error,
-                color: AppColors.contentError(context), size: 48.w),
-            const SizedBox(height: 16),
-            Text(
-              _error!,
-              style: AppTextStyles.b2(context)
-                  .copyWith(color: AppColors.contentError(context)),
-            ),
-          ],
+      return Expanded(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.error,
+                  color: AppColors.contentError(context), size: 48.w),
+              const SizedBox(height: 16),
+              Text(
+                _error!,
+                style: AppTextStyles.b2(context)
+                    .copyWith(color: AppColors.contentError(context)),
+              ),
+            ],
+          ),
         ),
       );
     }
 
     if (_pdfData == null) {
-      return Center(
-        child: Text('No PDF data', style: AppTextStyles.b2(context)),
+      return Expanded(
+        child: Center(
+          child: Text('No PDF data', style: AppTextStyles.b2(context)),
+        ),
       );
     }
 
     return Expanded(
-      child: SfPdfViewer.memory(
-        _pdfData!,
-        controller: _pdfViewerController,
-        canShowScrollHead: true,
-        canShowScrollStatus: true,
-        enableDoubleTapZooming: true,
-        onDocumentLoaded: (PdfDocumentLoadedDetails details) {
+      child: PDFView(
+        pdfData: _pdfData,
+        enableSwipe: true,
+        swipeHorizontal: false,
+        autoSpacing: false,
+        pageFling: true,
+        fitPolicy: FitPolicy.BOTH,
+        backgroundColor: Colors.transparent,
+        onRender: (pages) {
           setState(() {
-            _totalPages = details.document.pages.count;
+            _totalPages = pages ?? 0;
           });
         },
-        onPageChanged: (PdfPageChangedDetails details) {
+        onPageChanged: (page, total) {
           setState(() {
-            _currentPage = details.newPageNumber;
+            _currentPage = (page ?? 0) + 1;
+            _totalPages = total ?? 0;
           });
+        },
+        onError: (error) {
+          debugPrint('PDF error: $error');
         },
       ),
     );

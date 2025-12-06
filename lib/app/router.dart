@@ -21,7 +21,6 @@ import '../features/join/join_page.dart';
 import '../features/modules/content_pages.dart';
 import '../features/modules/module_page.dart';
 import '../features/modules/modules_page.dart';
-import '../features/modules/quiz_page.dart';
 import '../features/profile/profile_page.dart';
 import '../features/splash/splash_page.dart';
 import '../features/videos/add_video_page.dart';

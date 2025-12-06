@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../auth/auth_provider.dart';
@@ -18,10 +19,17 @@ class AuthInterceptor extends Interceptor {
     try {
       final notifier = ref.read(authProvider.notifier);
       final accessToken = await notifier.getAccessToken();
+      debugPrint(
+          'AuthInterceptor: Token exists=${accessToken != null}, length=${accessToken?.length ?? 0}');
       if (accessToken != null) {
         options.headers['Authorization'] = 'Bearer $accessToken';
+        debugPrint(
+            'AuthInterceptor: Added Bearer token to request ${options.uri}');
+      } else {
+        debugPrint('AuthInterceptor: No token for request ${options.uri}');
       }
-    } catch (_) {
+    } catch (e) {
+      debugPrint('AuthInterceptor: Error getting token: $e');
       // ignore and continue without auth header
     }
     handler.next(options);
