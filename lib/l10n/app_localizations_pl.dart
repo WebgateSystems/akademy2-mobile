@@ -454,4 +454,15 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get editVideoSaveButton => 'Zapisz';
+
+  @override
+  String get offlineBanner =>
+      'Jesteś offline. Niektóre akcje zsynchronizują się automatycznie po przywróceniu połączenia.';
+
+  @override
+  String get syncingBanner => 'Synchronizacja danych...';
+
+  @override
+  String get syncedBanner =>
+      'Połączenie przywrócone. Twoje dane zostały zsynchronizowane.';
 }

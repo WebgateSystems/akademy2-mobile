@@ -451,4 +451,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get editVideoSaveButton => 'Save';
+
+  @override
+  String get offlineBanner =>
+      'You\'re offline. Some actions will sync automatically when you reconnect.';
+
+  @override
+  String get syncingBanner => 'Syncing your data...';
+
+  @override
+  String get syncedBanner => 'Connection restored. Your data has been synced.';
 }

@@ -204,5 +204,8 @@
   "editVideoTitle": "Edit video",
   "editVideoTitleLabel": "Title",
   "editVideoDescriptionLabel": "Description",
-  "editVideoSaveButton": "Save"
+  "editVideoSaveButton": "Save",
+  "offlineBanner": "You're offline. Some actions will sync automatically when you reconnect.",
+  "syncingBanner": "Syncing your data...",
+  "syncedBanner": "Connection restored. Your data has been synced."
 }

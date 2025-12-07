@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/core/services/quiz_sync_service.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +19,25 @@ class HomeShell extends StatefulWidget {
 
 class _HomeShellState extends State<HomeShell> {
   int _index = 0;
+  SyncStatus _syncStatus = SyncStatus.online;
+  StreamSubscription<SyncStatus>? _syncSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    QuizSyncService.instance.init();
+    _syncSubscription = QuizSyncService.instance.statusStream.listen((status) {
+      if (mounted) {
+        setState(() => _syncStatus = status);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _syncSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +50,14 @@ class _HomeShellState extends State<HomeShell> {
     ];
 
     return Scaffold(
-      body: SafeArea(child: pages[_index]),
+      body: SafeArea(
+        child: Column(
+          children: [
+            _SyncBanner(status: _syncStatus),
+            Expanded(child: pages[_index]),
+          ],
+        ),
+      ),
       bottomNavigationBar: SafeArea(
         top: false,
         child: CustomBottomBar(
@@ -119,6 +148,63 @@ class CustomBottomBar extends StatelessWidget {
             ),
           );
         }),
+      ),
+    );
+  }
+}
+
+class _SyncBanner extends StatelessWidget {
+  const _SyncBanner({required this.status});
+
+  final SyncStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    if (status == SyncStatus.online) {
+      return const SizedBox.shrink();
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+
+    String message;
+    Color bgColor;
+    IconData icon;
+
+    switch (status) {
+      case SyncStatus.offline:
+        message = l10n.offlineBanner;
+        bgColor = AppColors.orange70;
+        icon = Icons.wifi_off;
+        break;
+      case SyncStatus.syncing:
+        message = l10n.syncingBanner;
+        bgColor = AppColors.blue60;
+        icon = Icons.sync;
+        break;
+      case SyncStatus.synced:
+        message = l10n.syncedBanner;
+        bgColor = AppColors.green60;
+        icon = Icons.check_circle;
+        break;
+      case SyncStatus.online:
+        return const SizedBox.shrink();
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      color: bgColor,
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.white, size: 20.w),
+          SizedBox(width: 10.w),
+          Expanded(
+            child: Text(
+              message,
+              style: AppTextStyles.b3(context).copyWith(color: Colors.white),
+            ),
+          ),
+        ],
       ),
     );
   }

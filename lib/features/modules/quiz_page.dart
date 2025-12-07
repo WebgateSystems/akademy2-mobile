@@ -8,6 +8,7 @@ import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/core/db/entities/content_entity.dart';
 import 'package:academy_2_app/core/db/isar_service.dart';
+import 'package:academy_2_app/core/services/quiz_sync_service.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -193,6 +194,18 @@ class _QuizPageState extends State<QuizPage> {
         await isar.updateQuizBestScore(_quizContentId!, score);
       }
     }
+
+    // Submit quiz result to server (will queue if offline)
+    final payload = QuizResultPayload(
+      learningModuleId: widget.moduleId,
+      score: score,
+      details: {
+        'total_points': totalPoints,
+        'answers': _selected.map((k, v) => MapEntry(k, v.toList())),
+      },
+    );
+    QuizSyncService.instance.submitResult(payload);
+
     if (!mounted) return;
     context.go(
       '/quiz-result',

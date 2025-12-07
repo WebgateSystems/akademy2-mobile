@@ -903,6 +903,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get editVideoSaveButton;
+
+  /// No description provided for @offlineBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline. Some actions will sync automatically when you reconnect.'**
+  String get offlineBanner;
+
+  /// No description provided for @syncingBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing your data...'**
+  String get syncingBanner;
+
+  /// No description provided for @syncedBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection restored. Your data has been synced.'**
+  String get syncedBanner;
 }
 
 class _AppLocalizationsDelegate

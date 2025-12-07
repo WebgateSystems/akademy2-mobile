@@ -204,5 +204,8 @@
   "editVideoTitle": "Edytuj wideo",
   "editVideoTitleLabel": "Tytuł",
   "editVideoDescriptionLabel": "Opis",
-  "editVideoSaveButton": "Zapisz"
+  "editVideoSaveButton": "Zapisz",
+  "offlineBanner": "Jesteś offline. Niektóre akcje zsynchronizują się automatycznie po przywróceniu połączenia.",
+  "syncingBanner": "Synchronizacja danych...",
+  "syncedBanner": "Połączenie przywrócone. Twoje dane zostały zsynchronizowane."
 }

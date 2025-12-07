@@ -204,5 +204,8 @@
   "editVideoTitle": "Редагувати відео",
   "editVideoTitleLabel": "Назва",
   "editVideoDescriptionLabel": "Опис",
-  "editVideoSaveButton": "Зберегти"
+  "editVideoSaveButton": "Зберегти",
+  "offlineBanner": "Ви офлайн. Деякі дії синхронізуються автоматично після відновлення з'єднання.",
+  "syncingBanner": "Синхронізація даних...",
+  "syncedBanner": "З'єднання відновлено. Ваші дані синхронізовано."
 }

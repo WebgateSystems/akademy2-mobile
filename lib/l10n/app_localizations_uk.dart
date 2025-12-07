@@ -452,4 +452,14 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get editVideoSaveButton => 'Зберегти';
+
+  @override
+  String get offlineBanner =>
+      'Ви офлайн. Деякі дії синхронізуються автоматично після відновлення з\'єднання.';
+
+  @override
+  String get syncingBanner => 'Синхронізація даних...';
+
+  @override
+  String get syncedBanner => 'З\'єднання відновлено. Ваші дані синхронізовано.';
 }
