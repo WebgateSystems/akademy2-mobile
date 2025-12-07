@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
+import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
+import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -76,6 +79,12 @@ class _AddVideoPageState extends State<AddVideoPage> {
         filePath: _file!.path!,
         description:
             _descCtrl.text.trim().isEmpty ? null : _descCtrl.text.trim(),
+      );
+      if (!mounted) return;
+      // Show pending dialog before returning
+      await showDialog(
+        context: context,
+        builder: (context) => const _PendingDialog(),
       );
       if (!mounted) return;
       Navigator.of(context).pop(true);
@@ -338,6 +347,40 @@ class _PlayPauseButton extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _PendingDialog extends StatefulWidget {
+  const _PendingDialog();
+
+  @override
+  State<_PendingDialog> createState() => _PendingDialogState();
+}
+
+class _PendingDialogState extends State<_PendingDialog> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer(const Duration(seconds: 3), () {
+      if (mounted) Navigator.pop(context);
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return BaseWaitApprovalPage(
+      title: l10n.schoolVideosPendingTitle,
+      subtitle: l10n.schoolVideosPendingMessage,
     );
   }
 }
