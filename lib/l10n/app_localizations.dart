@@ -921,6 +921,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connection restored. Your data has been synced.'**
   String get syncedBanner;
+
+  /// No description provided for @loginPinInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid PIN. Please try again.'**
+  String get loginPinInvalid;
+
+  /// No description provided for @loginUserNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found. Please check your phone number.'**
+  String get loginUserNotFound;
+
+  /// No description provided for @networkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Please check your connection.'**
+  String get networkError;
 }
 
 class _AppLocalizationsDelegate

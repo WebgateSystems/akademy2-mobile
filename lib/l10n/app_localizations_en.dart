@@ -461,4 +461,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get syncedBanner => 'Connection restored. Your data has been synced.';
+
+  @override
+  String get loginPinInvalid => 'Invalid PIN. Please try again.';
+
+  @override
+  String get loginUserNotFound =>
+      'User not found. Please check your phone number.';
+
+  @override
+  String get networkError => 'Network error. Please check your connection.';
 }

@@ -191,6 +191,7 @@ class PinScaffold extends StatelessWidget {
     this.showProgress = false,
     this.showBackButton = true,
     this.footer,
+    this.errorMessage,
   });
 
   final String title;
@@ -201,10 +202,13 @@ class PinScaffold extends StatelessWidget {
   final void Function(String value) onKey;
   final bool showBackButton;
   final Widget? footer;
+  final String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final hasError =
+        mismatch || (errorMessage != null && errorMessage!.isNotEmpty);
     return Scaffold(
       body: BasePageWithToolbar(
         title: title,
@@ -213,17 +217,19 @@ class PinScaffold extends StatelessWidget {
         children: [
           SizedBox(height: 56.h),
           DotsWidget(pin: pin),
-          if (mismatch) SizedBox(height: 16.h),
-          if (mismatch)
+          if (hasError) SizedBox(height: 16.h),
+          if (hasError)
             Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  l10n.pinMismatchInline,
-                  textAlign: TextAlign.center,
-                  style: AppTextStyles.b2(context).copyWith(
-                    color: AppColors.contentError(context),
+                Flexible(
+                  child: Text(
+                    errorMessage ?? l10n.pinMismatchInline,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.b2(context).copyWith(
+                      color: AppColors.contentError(context),
+                    ),
                   ),
                 ),
               ],

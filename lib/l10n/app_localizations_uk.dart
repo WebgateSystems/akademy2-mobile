@@ -462,4 +462,14 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get syncedBanner => 'З\'єднання відновлено. Ваші дані синхронізовано.';
+
+  @override
+  String get loginPinInvalid => 'Невірний PIN-код. Спробуйте ще раз.';
+
+  @override
+  String get loginUserNotFound =>
+      'Користувача не знайдено. Перевірте номер телефону.';
+
+  @override
+  String get networkError => 'Помилка мережі. Перевірте з\'єднання.';
 }

@@ -207,5 +207,8 @@
   "editVideoSaveButton": "Zapisz",
   "offlineBanner": "Jesteś offline. Niektóre akcje zsynchronizują się automatycznie po przywróceniu połączenia.",
   "syncingBanner": "Synchronizacja danych...",
-  "syncedBanner": "Połączenie przywrócone. Twoje dane zostały zsynchronizowane."
+  "syncedBanner": "Połączenie przywrócone. Twoje dane zostały zsynchronizowane.",
+  "loginPinInvalid": "Nieprawidłowy PIN. Spróbuj ponownie.",
+  "loginUserNotFound": "Nie znaleziono użytkownika. Sprawdź numer telefonu.",
+  "networkError": "Błąd sieci. Sprawdź połączenie."
 }

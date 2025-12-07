@@ -3,6 +3,7 @@ import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/core/utils/phone_formatter.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -151,9 +152,23 @@ class LoginPinPage extends ConsumerStatefulWidget {
 class _LoginPinPageState extends ConsumerState<LoginPinPage> {
   String _current = '';
   bool _submitting = false;
+  String? _errorMessage;
+  late String _phone;
+
+  @override
+  void initState() {
+    super.initState();
+    _phone = widget.args.phone.trim().replaceAll(' ', '');
+  }
 
   void _handleKey(String value) async {
     if (_submitting) return;
+
+    // Clear error when user starts typing again
+    if (_errorMessage != null) {
+      setState(() => _errorMessage = null);
+    }
+
     if (value == 'back') {
       if (_current.isNotEmpty) {
         setState(() => _current = _current.substring(0, _current.length - 1));
@@ -172,22 +187,43 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
     setState(() => _submitting = true);
     final l10n = AppLocalizations.of(context)!;
     try {
-      final phone = widget.args.phone.trim().replaceAll(" ", "");
-      if (phone.isEmpty) {
-        throw Exception('Missing phone number');
+      if (_phone.isEmpty) {
+        setState(() {
+          _errorMessage = l10n.loginPhoneRequired;
+          _current = '';
+          _submitting = false;
+        });
+        return;
       }
-      await ref.read(authProvider.notifier).login(phone, _current);
+      await ref.read(authProvider.notifier).login(_phone, _current);
       if (!mounted) return;
       final target = (widget.args.redirect?.isNotEmpty ?? false)
           ? widget.args.redirect!
           : '/home';
       context.go(target);
+    } on DioException catch (e) {
+      if (!mounted) return;
+      String message;
+      if (e.response?.statusCode == 401) {
+        message = l10n.loginPinInvalid;
+      } else if (e.response?.statusCode == 404) {
+        message = l10n.loginUserNotFound;
+      } else if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.connectionTimeout) {
+        message = l10n.networkError;
+      } else {
+        message = l10n.loginPinInvalid;
+      }
+      setState(() {
+        _errorMessage = message;
+        _current = '';
+      });
     } catch (e) {
       if (!mounted) return;
-      setState(() => _current = '');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.loginFailed('$e'))),
-      );
+      setState(() {
+        _errorMessage = l10n.loginPinInvalid;
+        _current = '';
+      });
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
@@ -202,6 +238,7 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
       pin: _current,
       onKey: _handleKey,
       showProgress: _submitting,
+      errorMessage: _errorMessage,
     );
   }
 }

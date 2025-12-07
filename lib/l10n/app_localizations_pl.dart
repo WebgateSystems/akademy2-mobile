@@ -465,4 +465,14 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get syncedBanner =>
       'Połączenie przywrócone. Twoje dane zostały zsynchronizowane.';
+
+  @override
+  String get loginPinInvalid => 'Nieprawidłowy PIN. Spróbuj ponownie.';
+
+  @override
+  String get loginUserNotFound =>
+      'Nie znaleziono użytkownika. Sprawdź numer telefonu.';
+
+  @override
+  String get networkError => 'Błąd sieci. Sprawdź połączenie.';
 }

@@ -207,5 +207,8 @@
   "editVideoSaveButton": "Save",
   "offlineBanner": "You're offline. Some actions will sync automatically when you reconnect.",
   "syncingBanner": "Syncing your data...",
-  "syncedBanner": "Connection restored. Your data has been synced."
+  "syncedBanner": "Connection restored. Your data has been synced.",
+  "loginPinInvalid": "Invalid PIN. Please try again.",
+  "loginUserNotFound": "User not found. Please check your phone number.",
+  "networkError": "Network error. Please check your connection."
 }
