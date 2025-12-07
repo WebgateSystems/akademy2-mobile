@@ -68,6 +68,40 @@ class QuizResultResponse {
   }
 }
 
+/// Model for quiz result fetched from server
+class QuizResultItem {
+  QuizResultItem({
+    required this.id,
+    required this.score,
+    required this.passed,
+    this.completedAt,
+    required this.learningModuleId,
+    required this.subjectId,
+  });
+
+  final String id;
+  final int score;
+  final bool passed;
+  final DateTime? completedAt;
+  final String learningModuleId;
+  final String subjectId;
+
+  factory QuizResultItem.fromJson(Map<String, dynamic> json) {
+    final learningModule = json['learning_module'] as Map<String, dynamic>?;
+    final subject = json['subject'] as Map<String, dynamic>?;
+    return QuizResultItem(
+      id: json['id'] as String? ?? '',
+      score: json['score'] as int? ?? 0,
+      passed: json['passed'] as bool? ?? false,
+      completedAt: json['completed_at'] != null
+          ? DateTime.tryParse(json['completed_at'] as String)
+          : null,
+      learningModuleId: learningModule?['id'] as String? ?? '',
+      subjectId: subject?['id'] as String? ?? '',
+    );
+  }
+}
+
 /// Sync status for UI
 enum SyncStatus {
   online,
@@ -100,7 +134,19 @@ class QuizSyncService {
     _connectivitySub =
         _connectivity.onConnectivityChanged.listen(_onConnectivityChanged);
     // Check initial status
-    _connectivity.checkConnectivity().then(_onConnectivityChanged);
+    _checkInitialConnectivity();
+  }
+
+  Future<void> _checkInitialConnectivity() async {
+    try {
+      final results = await _connectivity.checkConnectivity();
+      _onConnectivityChanged(results);
+    } catch (e) {
+      debugPrint('QuizSyncService: Failed to check connectivity: $e');
+      // Assume online if check fails
+      _isOnline = true;
+      _statusController.add(SyncStatus.online);
+    }
   }
 
   void dispose() {
@@ -229,6 +275,24 @@ class QuizSyncService {
   Future<void> trySyncNow() async {
     if (_isOnline) {
       await _syncQueue();
+    }
+  }
+
+  /// Fetch quiz results from server
+  /// Returns list of quiz results or empty list on error
+  Future<List<QuizResultItem>> fetchQuizResults() async {
+    try {
+      final response = await _dio.get('v1/student/quiz_results');
+      final data = response.data as Map<String, dynamic>;
+      if (data['success'] != true) return [];
+
+      final list = data['data'] as List<dynamic>? ?? [];
+      return list
+          .map((item) => QuizResultItem.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      debugPrint('QuizSyncService: Failed to fetch quiz results: $e');
+      return [];
     }
   }
 }

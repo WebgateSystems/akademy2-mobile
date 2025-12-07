@@ -40,9 +40,11 @@ class AppColors {
   static const red80 = Color(0xFFB71C1C);
   static const red90 = Color(0xFF7F0000);
 
+  static const green20 = Color(0xFFBFE4B0);
   static const green40 = Color(0xFF88CD6C);
   static const green50 = Color(0xFF6CC24A);
   static const green60 = Color(0xFF529C35);
+  static const green70 = Color(0xFF3B7026);
 
   static const yellow50 = Color(0xFFFFD74B);
   static const yellow60 = Color(0xFFFDC832);
@@ -104,6 +106,12 @@ class AppColors {
 
   static Color surfaceAccent(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue50 : blue50;
+
+  static Color surfaceActive(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? blue70 : blue10;
+
+  static Color surfaceSucceess(BuildContext context) =>
+      Theme.of(context).brightness == Brightness.dark ? green70 : green20;
 
   static Color borderFocused(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? blue50 : blue50;

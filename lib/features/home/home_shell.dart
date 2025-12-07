@@ -50,33 +50,32 @@ class _HomeShellState extends State<HomeShell> {
     ];
 
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            _SyncBanner(status: _syncStatus),
-            Expanded(child: pages[_index]),
-          ],
-        ),
-      ),
+      body: SafeArea(child: pages[_index]),
       bottomNavigationBar: SafeArea(
         top: false,
-        child: CustomBottomBar(
-          currentIndex: _index,
-          onTap: (i) {
-            setState(() => _index = i);
-          },
-          items: [
-            CustomBottomItem(
-              icon: 'assets/images/ic_courses.png',
-              label: l10n.bottomNavCourses,
-            ),
-            CustomBottomItem(
-              icon: 'assets/images/ic_school_videos.png',
-              label: l10n.bottomNavSchoolVideos,
-            ),
-            CustomBottomItem(
-              icon: 'assets/images/ic_account.png',
-              label: l10n.bottomNavAccount,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            _SyncBanner(status: _syncStatus),
+            CustomBottomBar(
+              currentIndex: _index,
+              onTap: (i) {
+                setState(() => _index = i);
+              },
+              items: [
+                CustomBottomItem(
+                  icon: 'assets/images/ic_courses.png',
+                  label: l10n.bottomNavCourses,
+                ),
+                CustomBottomItem(
+                  icon: 'assets/images/ic_school_videos.png',
+                  label: l10n.bottomNavSchoolVideos,
+                ),
+                CustomBottomItem(
+                  icon: 'assets/images/ic_account.png',
+                  label: l10n.bottomNavAccount,
+                ),
+              ],
             ),
           ],
         ),
@@ -168,23 +167,23 @@ class _SyncBanner extends StatelessWidget {
 
     String message;
     Color bgColor;
-    IconData icon;
+    String icon;
 
     switch (status) {
       case SyncStatus.offline:
         message = l10n.offlineBanner;
-        bgColor = AppColors.orange70;
-        icon = Icons.wifi_off;
+        bgColor = AppColors.surfaceActive(context);
+        icon = 'assets/images/ic_wifi_off.png';
         break;
       case SyncStatus.syncing:
         message = l10n.syncingBanner;
-        bgColor = AppColors.blue60;
-        icon = Icons.sync;
+        bgColor = AppColors.surfaceSucceess(context);
+        icon = 'assets/images/ic_syncing.png';
         break;
       case SyncStatus.synced:
         message = l10n.syncedBanner;
-        bgColor = AppColors.green60;
-        icon = Icons.check_circle;
+        bgColor = AppColors.surfaceSucceess(context);
+        icon = 'assets/images/ic_synced.png';
         break;
       case SyncStatus.online:
         return const SizedBox.shrink();
@@ -192,16 +191,28 @@ class _SyncBanner extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+      height: 52.h,
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
       color: bgColor,
       child: Row(
         children: [
-          Icon(icon, color: Colors.white, size: 20.w),
+          Padding(
+            padding: EdgeInsets.only(top: 4.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Image.asset(icon,
+                    color: AppColors.contentPrimary(context),
+                    width: 20.w,
+                    height: 20.w),
+              ],
+            ),
+          ),
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
               message,
-              style: AppTextStyles.b3(context).copyWith(color: Colors.white),
+              style: AppTextStyles.b2(context),
             ),
           ),
         ],

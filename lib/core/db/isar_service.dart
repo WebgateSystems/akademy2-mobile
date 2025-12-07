@@ -250,6 +250,28 @@ class IsarService {
     return best;
   }
 
+  /// Update quiz best score by module ID (for syncing from server)
+  Future<void> updateQuizBestScoreByModuleId(String moduleId, int score) async {
+    await _ensureInit();
+    final contents = _isar.contentEntitys
+        .where()
+        .moduleIdEqualTo(moduleId)
+        .build()
+        .findAll();
+
+    for (final content in contents) {
+      if (content.type == 'quiz') {
+        if (score > content.bestScore) {
+          content.bestScore = score;
+          await _isar.writeAsync((isar) {
+            isar.contentEntitys.put(content);
+          });
+        }
+        break; // Only one quiz per module expected
+      }
+    }
+  }
+
   /// Clear all data
   Future<void> clearAll() async {
     await _ensureInit();

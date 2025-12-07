@@ -11,6 +11,7 @@ import '../db/entities/subject_entity.dart';
 import '../db/isar_service.dart';
 import '../network/api.dart';
 import '../network/dio_provider.dart';
+import '../services/quiz_sync_service.dart';
 
 /// Manages metadata synchronization between API and local Isar database
 class SyncManager {
@@ -113,6 +114,9 @@ class SyncManager {
         }
       }
 
+      // Sync quiz results from server
+      await _syncQuizResults(isarService);
+
       debugPrint('SyncManager: Bootstrap sync completed successfully');
     } on DioException catch (e, st) {
       debugPrint('SyncManager: DioException during bootstrap:');
@@ -138,6 +142,33 @@ class SyncManager {
     final isarService = IsarService();
     await isarService.clearAll();
     await bootstrap();
+  }
+
+  /// Sync quiz results from server to local database
+  Future<void> _syncQuizResults(IsarService isarService) async {
+    try {
+      debugPrint('SyncManager: Syncing quiz results from server...');
+      final results = await QuizSyncService.instance.fetchQuizResults();
+
+      if (results.isEmpty) {
+        debugPrint('SyncManager: No quiz results to sync');
+        return;
+      }
+
+      for (final result in results) {
+        await isarService.updateQuizBestScoreByModuleId(
+          result.learningModuleId,
+          result.score,
+        );
+        debugPrint(
+            'SyncManager: Synced quiz result moduleId=${result.learningModuleId} score=${result.score}');
+      }
+
+      debugPrint(
+          'SyncManager: Quiz results sync completed, count=${results.length}');
+    } catch (e) {
+      debugPrint('SyncManager: Failed to sync quiz results: $e');
+    }
   }
 }
 
