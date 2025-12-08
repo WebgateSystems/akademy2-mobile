@@ -35,6 +35,17 @@
   "moduleSingleFlow": "Послідовний потік",
   "moduleMultiStep": "Кілька етапів",
   "moduleScreenTitle": "Модуль",
+  "moduleNotFound": "Модуль {moduleId} не знайдено",
+  "@moduleNotFound": {
+    "placeholders": {
+      "moduleId": {
+        "type": "String"
+      }
+    }
+  },
+  "moduleDownloadNoFiles": "Немає файлів для офлайн. Перевірте, що API повертає file_url/poster_url.",
+  "moduleOfflineVideoUnavailable": "Відео недоступне офлайн. Завантажте контент для перегляду без інтернету.",
+  "moduleYoutubeOnly": "Це відео доступне тільки онлайн через YouTube і не може бути завантажене.",
   "videoTitle": "Відео",
   "infographicTitle": "Інфографіка",
   "quizTitle": "Розпочати тест",

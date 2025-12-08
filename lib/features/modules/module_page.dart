@@ -23,6 +23,15 @@ import '../../core/db/isar_service.dart';
 import '../../core/sync/sync_manager.dart';
 import '../../l10n/app_localizations.dart';
 
+class ModuleNotFoundException implements Exception {
+  ModuleNotFoundException(this.moduleId);
+
+  final String moduleId;
+
+  @override
+  String toString() => 'ModuleNotFoundException: $moduleId';
+}
+
 class _ModuleData {
   const _ModuleData({required this.module, required this.contents});
 
@@ -48,7 +57,7 @@ final moduleDataProvider = FutureProvider.autoDispose
     module = await service.getModuleById(moduleId);
   }
 
-  if (module == null) throw Exception('Module $moduleId not found');
+  if (module == null) throw ModuleNotFoundException(moduleId);
 
   var contents = await service.getContentsByModuleId(moduleId);
   if (contents.isEmpty || _needsPreviewRefresh(contents)) {
@@ -149,10 +158,15 @@ class _ModulePageState extends ConsumerState<ModulePage> {
         context,
         const Center(child: CircularProgressWidget()),
       ),
-      error: (error, _) => _buildScaffold(
-        context,
-        Center(child: Text('${l10n.retry}: $error')),
-      ),
+      error: (error, _) {
+        final message = error is ModuleNotFoundException
+            ? l10n.moduleNotFound(error.moduleId)
+            : error.toString();
+        return _buildScaffold(
+          context,
+          Center(child: Text('${l10n.retry}: $message')),
+        );
+      },
       data: (data) {
         final module = data.module;
         final contents = data.contents;
@@ -214,6 +228,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     required List<ContentEntity> contents,
     ModuleDownloadState? state,
   }) {
+    final l10n = AppLocalizations.of(context)!;
     final hasDownloadable = contents.any(_isDownloadableContent);
     final moduleDownloaded = _isModuleDownloaded(contents);
 
@@ -250,7 +265,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Немає файлів для офлайн. Перевірте що API повертає file_url/poster_url.',
+                l10n.moduleDownloadNoFiles,
               ),
               duration: const Duration(seconds: 3),
             ),
@@ -452,6 +467,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     BuildContext context,
     ContentEntity content,
   ) async {
+    final l10n = AppLocalizations.of(context)!;
     // Check if content is downloaded locally
     final localFile = contentLocalPath(
       content,
@@ -512,8 +528,8 @@ class _ModulePageState extends ConsumerState<ModulePage> {
         // Check if video can be downloaded at all
         final canDownload = hasNetworkFile;
         final message = canDownload
-            ? 'Відео недоступне офлайн. Завантажте контент для перегляду без інтернету.'
-            : 'Це відео доступне тільки онлайн через YouTube і не може бути завантажене.';
+            ? l10n.moduleOfflineVideoUnavailable
+            : l10n.moduleYoutubeOnly;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(message),

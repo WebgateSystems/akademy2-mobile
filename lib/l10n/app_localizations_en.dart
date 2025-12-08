@@ -77,6 +77,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get moduleScreenTitle => 'Module';
 
   @override
+  String moduleNotFound(String moduleId) {
+    return 'Module $moduleId not found';
+  }
+
+  @override
+  String get moduleDownloadNoFiles =>
+      'No files available for offline. Check that API returns file_url/poster_url.';
+
+  @override
+  String get moduleOfflineVideoUnavailable =>
+      'Video isn\'t available offline. Download the content to watch without internet.';
+
+  @override
+  String get moduleYoutubeOnly =>
+      'This video is only available online via YouTube and can\'t be downloaded.';
+
+  @override
   String get videoTitle => 'Video';
 
   @override

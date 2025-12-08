@@ -77,6 +77,23 @@ class AppLocalizationsUk extends AppLocalizations {
   String get moduleScreenTitle => 'Модуль';
 
   @override
+  String moduleNotFound(String moduleId) {
+    return 'Модуль $moduleId не знайдено';
+  }
+
+  @override
+  String get moduleDownloadNoFiles =>
+      'Немає файлів для офлайн. Перевірте, що API повертає file_url/poster_url.';
+
+  @override
+  String get moduleOfflineVideoUnavailable =>
+      'Відео недоступне офлайн. Завантажте контент для перегляду без інтернету.';
+
+  @override
+  String get moduleYoutubeOnly =>
+      'Це відео доступне тільки онлайн через YouTube і не може бути завантажене.';
+
+  @override
   String get videoTitle => 'Відео';
 
   @override

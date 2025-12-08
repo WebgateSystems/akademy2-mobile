@@ -226,6 +226,30 @@ abstract class AppLocalizations {
   /// **'Module'**
   String get moduleScreenTitle;
 
+  /// No description provided for @moduleNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Module {moduleId} not found'**
+  String moduleNotFound(String moduleId);
+
+  /// No description provided for @moduleDownloadNoFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'No files available for offline. Check that API returns file_url/poster_url.'**
+  String get moduleDownloadNoFiles;
+
+  /// No description provided for @moduleOfflineVideoUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Video isn\'t available offline. Download the content to watch without internet.'**
+  String get moduleOfflineVideoUnavailable;
+
+  /// No description provided for @moduleYoutubeOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'This video is only available online via YouTube and can\'t be downloaded.'**
+  String get moduleYoutubeOnly;
+
   /// No description provided for @videoTitle.
   ///
   /// In en, this message translates to:
