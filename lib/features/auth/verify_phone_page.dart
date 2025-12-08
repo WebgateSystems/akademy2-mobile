@@ -163,11 +163,11 @@ class _VerifyPhonePageState extends ConsumerState<VerifyPhonePage> {
         children: [
           Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: List.generate(_controllers.length, (index) {
               return SizedBox(
-                height: 82.w,
-                width: 70.w,
+                height: 90.w,
+                width: 60.w,
                 child: EditTextWidget(
                   controller: _controllers[index],
                   focusNode: _focusNodes[index],
@@ -185,7 +185,9 @@ class _VerifyPhonePageState extends ConsumerState<VerifyPhonePage> {
           if (_invalid)
             Text(
               l10n.verifyPhoneInvalidCode,
-              style: const TextStyle(color: Colors.red),
+              textAlign: TextAlign.center,
+              style: AppTextStyles.b2(context)
+                  .copyWith(color: AppColors.contentError(context)),
             ),
           SizedBox(height: 12.h),
           ActionButtonWidget(

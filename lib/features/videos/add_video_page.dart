@@ -109,6 +109,7 @@ class _AddVideoPageState extends State<AddVideoPage> {
         showBackButton: true,
         stickChildrenToBottom: true,
         children: [
+          SizedBox(height: 16.h),
           _PreviewPicker(
             controller: _controller,
             onPick: _pickFile,
@@ -287,10 +288,11 @@ class _PreviewPicker extends StatelessWidget {
                   radius: 48.w / 2,
                   backgroundColor: AppColors.surfaceIcon(context),
                   child: Image.asset(
-                    'assets/images/ic_upload.png',
-                    width: 24.w,
-                    height: 24.w,
-                    color: AppColors.contentPrimary(context),
+                    Theme.of(context).brightness == Brightness.dark
+                        ? 'assets/images/ic_upload_dark.png'
+                        : 'assets/images/ic_upload.png',
+                    width: 48.w,
+                    height: 48.w,
                   ),
                 ),
               ),

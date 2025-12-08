@@ -175,7 +175,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
             'last_name': _lastNameCtrl.text.trim(),
             'email': _emailCtrl.text.trim(),
             'birthdate': _dobCtrl.text.trim(),
-            'phone': _phoneCtrl.text.trim(),
+            'phone': _phoneCtrl.text.trim().replaceAll(' ', ''),
           },
         },
       );

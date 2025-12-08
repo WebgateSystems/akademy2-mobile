@@ -75,7 +75,7 @@ class AppColors {
       Theme.of(context).brightness == Brightness.dark ? blue90 : grey05;
 
   static Color contentOnAccentSecondary(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? grey30 : grey30;
+      Theme.of(context).brightness == Brightness.dark ? grey40 : grey30;
 
   static Color contentSecondary(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? grey40 : grey60;
@@ -117,7 +117,7 @@ class AppColors {
       Theme.of(context).brightness == Brightness.dark ? blue50 : blue50;
 
   static Color borderPrimary(BuildContext context) =>
-      Theme.of(context).brightness == Brightness.dark ? blue10 : blue10;
+      Theme.of(context).brightness == Brightness.dark ? blue70 : blue10;
 
   static Color borderError(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark ? red60 : red70;

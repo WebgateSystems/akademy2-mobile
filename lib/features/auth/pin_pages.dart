@@ -325,13 +325,15 @@ class _PinKeypad extends StatelessWidget {
                   onTap: () => onKey('back'),
                   backgroundColor: Colors.transparent,
                   splashColor: AppColors.surfaceAccent(context),
-                  assetImage: 'assets/images/ic_back_button.png',
+                  assetImage: Theme.of(context).brightness == Brightness.dark
+                      ? 'assets/images/ic_back_button_dark.png'
+                      : 'assets/images/ic_back_button.png',
                   pressedImageOpacity: 0.5,
                 )
               : RoundButton.text(
                   size: 72.r,
                   onTap: () => onKey(key),
-                  backgroundColor: AppColors.blue10,
+                  backgroundColor: AppColors.surfaceActive(context),
                   splashColor: AppColors.surfaceAccent(context),
                   textColor: AppColors.contentPrimary(context),
                   pressedTextColor: AppColors.background(context),
