@@ -489,4 +489,14 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get networkError => 'Помилка мережі. Перевірте з\'єднання.';
+
+  @override
+  String get offlineContentTitle => 'Контент недоступний офлайн';
+
+  @override
+  String get offlineContentMessage =>
+      'Підключіться до інтернету та спробуйте ще раз.';
+
+  @override
+  String get ok => 'OK';
 }

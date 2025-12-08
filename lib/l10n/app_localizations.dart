@@ -963,6 +963,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Network error. Please check your connection.'**
   String get networkError;
+
+  /// No description provided for @offlineContentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Content unavailable offline'**
+  String get offlineContentTitle;
+
+  /// No description provided for @offlineContentMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect to the internet and try again.'**
+  String get offlineContentMessage;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
 }
 
 class _AppLocalizationsDelegate

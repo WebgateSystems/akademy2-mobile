@@ -7,6 +7,7 @@ import 'package:academy_2_app/core/services/pdf_cache_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class PreviewImageBody extends StatefulWidget {
   const PreviewImageBody({
@@ -26,13 +27,17 @@ class PreviewImageBody extends StatefulWidget {
 
 class _PreviewImageBodyState extends State<PreviewImageBody> {
   Uint8List? _pdfData;
+  Uint8List? _videoThumb;
   bool _isLoadingPdf = false;
   bool _pdfLoadError = false;
+  bool _isLoadingVideoThumb = false;
+  bool _videoThumbError = false;
 
   @override
   void initState() {
     super.initState();
     _loadPdfIfNeeded();
+    _loadVideoThumbIfNeeded();
   }
 
   @override
@@ -40,6 +45,7 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.networkUrl != widget.networkUrl) {
       _loadPdfIfNeeded();
+      _loadVideoThumbIfNeeded();
     }
   }
 
@@ -63,10 +69,54 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
     }
   }
 
+  Future<void> _loadVideoThumbIfNeeded() async {
+    final url = widget.networkUrl;
+    final isLocalVideo = url != null && _isLocalVideo(url);
+
+    if (!isLocalVideo) {
+      if (_videoThumb != null || _isLoadingVideoThumb || _videoThumbError) {
+        setState(() {
+          _videoThumb = null;
+          _isLoadingVideoThumb = false;
+          _videoThumbError = false;
+        });
+      }
+      return;
+    }
+
+    setState(() {
+      _isLoadingVideoThumb = true;
+      _videoThumbError = false;
+    });
+
+    final path = url!.startsWith('file://') ? Uri.parse(url).path : url;
+    try {
+      final bytes = await VideoThumbnail.thumbnailData(
+        video: path,
+        imageFormat: ImageFormat.PNG,
+        maxWidth: 512,
+        quality: 70,
+      );
+      if (!mounted) return;
+      setState(() {
+        _videoThumb = bytes;
+        _videoThumbError = bytes == null;
+        _isLoadingVideoThumb = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _videoThumbError = true;
+        _isLoadingVideoThumb = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (widget.networkUrl != null &&
-        widget.networkUrl!.toLowerCase().endsWith('.pdf')) {
+    final url = widget.networkUrl;
+
+    if (url != null && url.toLowerCase().endsWith('.pdf')) {
       if (_isLoadingPdf) {
         return Container(
           color: Colors.grey[200],
@@ -117,8 +167,27 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
       );
     }
 
-    if (widget.networkUrl != null && widget.networkUrl!.isNotEmpty) {
-      final url = widget.networkUrl!;
+    if (_videoThumb != null) {
+      return Image.memory(
+        _videoThumb!,
+        fit: widget.fit,
+        errorBuilder: (_, __, ___) =>
+            Image.asset(widget.imagePath, fit: widget.fit),
+      );
+    }
+
+    if (url != null && _isRemoteVideo(url)) {
+      return Image.asset(widget.imagePath, fit: widget.fit);
+    }
+
+    if (_isLoadingVideoThumb && url != null && _isLocalVideo(url)) {
+      return Container(
+        color: AppColors.surfacePrimary(context),
+        child: const Center(child: CircularProgressWidget()),
+      );
+    }
+
+    if (url != null && url.isNotEmpty) {
       final isLocal = url.startsWith('file://') || url.startsWith('/');
       final isSvg = url.toLowerCase().endsWith('.svg');
 
@@ -170,5 +239,25 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
     }
 
     return Image.asset(widget.imagePath, fit: widget.fit);
+  }
+
+  bool _isLocalVideo(String url) {
+    final lower = url.toLowerCase();
+    final hasVideoExt = lower.endsWith('.mp4') ||
+        lower.endsWith('.mov') ||
+        lower.endsWith('.mkv') ||
+        lower.endsWith('.avi') ||
+        lower.endsWith('.m4v');
+    return hasVideoExt && (url.startsWith('/') || url.startsWith('file://'));
+  }
+
+  bool _isRemoteVideo(String url) {
+    final lower = url.toLowerCase();
+    final hasVideoExt = lower.endsWith('.mp4') ||
+        lower.endsWith('.mov') ||
+        lower.endsWith('.mkv') ||
+        lower.endsWith('.avi') ||
+        lower.endsWith('.m4v');
+    return hasVideoExt && url.startsWith('http');
   }
 }

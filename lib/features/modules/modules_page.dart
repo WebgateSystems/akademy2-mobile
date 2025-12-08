@@ -1,3 +1,5 @@
+import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,23 +8,32 @@ import 'package:go_router/go_router.dart';
 import '../../core/services/student_api_service.dart';
 import '../../l10n/app_localizations.dart';
 
-class ModulesPage extends ConsumerWidget {
+class ModulesPage extends ConsumerStatefulWidget {
   const ModulesPage({super.key, required this.subjectId});
 
   final String subjectId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ModulesPage> createState() => _ModulesPageState();
+}
+
+class _ModulesPageState extends ConsumerState<ModulesPage> {
+  bool _offlineDialogShown = false;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final subjectAsync = ref.watch(subjectDetailProvider(subjectId));
+    final subjectAsync = ref.watch(subjectDetailProvider(widget.subjectId));
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.modulesTitle)),
       body: subjectAsync.when(
         data: (subject) {
           final allModules = subject.allModules;
           if (allModules.isEmpty) {
-            return Center(child: Text(l10n.loading));
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _showOfflineDialog(context, l10n);
+            });
+            return const SizedBox();
           }
 
           if (subject.units.length > 1) {
@@ -32,7 +43,12 @@ class ModulesPage extends ConsumerWidget {
           return _buildFlatList(context, allModules, l10n);
         },
         loading: () => const Center(child: CircularProgressWidget()),
-        error: (error, _) => Center(child: Text('${l10n.retry}: $error')),
+        error: (error, _) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showOfflineDialog(context, l10n);
+          });
+          return const SizedBox();
+        },
       ),
     );
   }
@@ -100,6 +116,78 @@ class ModulesPage extends ConsumerWidget {
       onTap: () {
         context.push('/module/${module.id}');
       },
+    );
+  }
+
+  Future<void> _showOfflineDialog(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    if (_offlineDialogShown) return;
+    _offlineDialogShown = true;
+
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => _OfflineContentDialog(
+        title: l10n.offlineContentTitle,
+        message: l10n.offlineContentMessage,
+        confirmText: l10n.ok,
+      ),
+    );
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+}
+
+class _OfflineContentDialog extends StatelessWidget {
+  const _OfflineContentDialog({
+    required this.title,
+    required this.message,
+    required this.confirmText,
+  });
+
+  final String title;
+  final String message;
+  final String confirmText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.all(20),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: AppColors.surfacePrimary(context),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.h3(context),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.b1(context)
+                  .copyWith(color: AppColors.contentSecondary(context)),
+            ),
+            const SizedBox(height: 32),
+            ActionButtonWidget(
+              height: 48,
+              onPressed: () => Navigator.of(context).pop(),
+              text: confirmText,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

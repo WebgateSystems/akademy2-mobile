@@ -114,6 +114,7 @@ class QuizSyncService {
 
   Dio get _dio => DioProviderSingleton.dio;
   final _statusController = StreamController<SyncStatus>.broadcast();
+  final _queueController = StreamController<bool>.broadcast();
   final _connectivity = Connectivity();
 
   StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
@@ -121,6 +122,7 @@ class QuizSyncService {
   bool _isSyncing = false;
 
   Stream<SyncStatus> get statusStream => _statusController.stream;
+  Stream<bool> get pendingStream => _queueController.stream;
   bool get isOnline => _isOnline;
 
   void init() {
@@ -144,6 +146,7 @@ class QuizSyncService {
   void dispose() {
     _connectivitySub?.cancel();
     _statusController.close();
+    _queueController.close();
   }
 
   void _onConnectivityChanged(List<ConnectivityResult> results) {
@@ -192,6 +195,7 @@ class QuizSyncService {
     queue.add(payload.toJson());
     await prefs.setString(_queueKey, jsonEncode(queue));
     debugPrint('QuizSyncService: Added to queue, total: ${queue.length}');
+    _queueController.add(queue.isNotEmpty);
   }
 
   List<Map<String, dynamic>> _getQueue(SharedPreferences prefs) {
@@ -237,6 +241,7 @@ class QuizSyncService {
     await prefs.setString(_queueKey, jsonEncode(failed));
 
     _isSyncing = false;
+    _queueController.add(failed.isNotEmpty);
 
     if (failed.isEmpty && queue.isNotEmpty) {
       _statusController.add(SyncStatus.synced);
@@ -255,7 +260,9 @@ class QuizSyncService {
   Future<bool> hasPendingItems() async {
     final prefs = await SharedPreferences.getInstance();
     final queue = _getQueue(prefs);
-    return queue.isNotEmpty;
+    final hasItems = queue.isNotEmpty;
+    _queueController.add(hasItems);
+    return hasItems;
   }
 
   Future<void> trySyncNow() async {

@@ -392,14 +392,14 @@ class _ModulePageState extends ConsumerState<ModulePage> {
       DownloadAssetType.file,
       ensureExists: true,
     );
-
     switch (content.type) {
       case 'video':
+        // Prefer local assets and light-weight thumbnails; avoid using remote
+        // video file as an image source to prevent huge downloads in preview.
         final url = localPoster ??
-            _youtubeThumbnail(content.youtubeUrl) ??
-            _absUrl(content.posterUrl) ??
             localFile ??
-            _absUrl(content.fileUrl);
+            _youtubeThumbnail(content.youtubeUrl) ??
+            _absUrl(content.posterUrl);
         if (url == null) {
           debugPrint(
               'ModulePage: missing preview for video id=${content.id} youtube=${content.youtubeUrl} poster=${content.posterUrl} file=${content.fileUrl}');
@@ -496,7 +496,6 @@ class _ModulePageState extends ConsumerState<ModulePage> {
       ensureExists: true,
     );
     final subtitlesUrl = localSubtitles ?? _absUrl(content.subtitlesUrl);
-
 
     if (hasLocalFile) {
       await showDialog<void>(

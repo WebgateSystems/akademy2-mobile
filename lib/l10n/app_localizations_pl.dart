@@ -492,4 +492,14 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get networkError => 'Błąd sieci. Sprawdź połączenie.';
+
+  @override
+  String get offlineContentTitle => 'Zawartość niedostępna offline';
+
+  @override
+  String get offlineContentMessage =>
+      'Połącz się z internetem i spróbuj ponownie.';
+
+  @override
+  String get ok => 'OK';
 }

@@ -20,15 +20,24 @@ class HomeShell extends StatefulWidget {
 class _HomeShellState extends State<HomeShell> {
   int _index = 0;
   SyncStatus _syncStatus = SyncStatus.online;
+  bool _hasPendingQueue = false;
   StreamSubscription<SyncStatus>? _syncSubscription;
+  StreamSubscription<bool>? _pendingSubscription;
 
   @override
   void initState() {
     super.initState();
     QuizSyncService.instance.init();
+    _checkPendingQueue();
     _syncSubscription = QuizSyncService.instance.statusStream.listen((status) {
       if (mounted) {
         setState(() => _syncStatus = status);
+      }
+    });
+    _pendingSubscription =
+        QuizSyncService.instance.pendingStream.listen((hasPending) {
+      if (mounted) {
+        setState(() => _hasPendingQueue = hasPending);
       }
     });
   }
@@ -36,6 +45,7 @@ class _HomeShellState extends State<HomeShell> {
   @override
   void dispose() {
     _syncSubscription?.cancel();
+    _pendingSubscription?.cancel();
     super.dispose();
   }
 
@@ -56,7 +66,10 @@ class _HomeShellState extends State<HomeShell> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _SyncBanner(status: _syncStatus),
+            _SyncBanner(
+              status: _syncStatus,
+              hasPendingQueue: _hasPendingQueue,
+            ),
             CustomBottomBar(
               currentIndex: _index,
               onTap: (i) {
@@ -81,6 +94,13 @@ class _HomeShellState extends State<HomeShell> {
         ),
       ),
     );
+  }
+
+  Future<void> _checkPendingQueue() async {
+    final hasPending = await QuizSyncService.instance.hasPendingItems();
+    if (mounted) {
+      setState(() => _hasPendingQueue = hasPending);
+    }
   }
 }
 
@@ -153,13 +173,17 @@ class CustomBottomBar extends StatelessWidget {
 }
 
 class _SyncBanner extends StatelessWidget {
-  const _SyncBanner({required this.status});
+  const _SyncBanner({
+    required this.status,
+    required this.hasPendingQueue,
+  });
 
   final SyncStatus status;
+  final bool hasPendingQueue;
 
   @override
   Widget build(BuildContext context) {
-    if (status == SyncStatus.online) {
+    if (status == SyncStatus.online || !hasPendingQueue) {
       return const SizedBox.shrink();
     }
 

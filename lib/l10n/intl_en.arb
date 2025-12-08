@@ -221,5 +221,8 @@
   "syncedBanner": "Connection restored. Your data has been synced.",
   "loginPinInvalid": "Invalid PIN. Please try again.",
   "loginUserNotFound": "User not found. Please check your phone number.",
-  "networkError": "Network error. Please check your connection."
+  "networkError": "Network error. Please check your connection.",
+  "offlineContentTitle": "Content unavailable offline",
+  "offlineContentMessage": "Connect to the internet and try again.",
+  "ok": "OK"
 }

@@ -488,4 +488,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get networkError => 'Network error. Please check your connection.';
+
+  @override
+  String get offlineContentTitle => 'Content unavailable offline';
+
+  @override
+  String get offlineContentMessage => 'Connect to the internet and try again.';
+
+  @override
+  String get ok => 'OK';
 }

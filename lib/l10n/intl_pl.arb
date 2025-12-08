@@ -221,5 +221,8 @@
   "syncedBanner": "Połączenie przywrócone. Twoje dane zostały zsynchronizowane.",
   "loginPinInvalid": "Nieprawidłowy PIN. Spróbuj ponownie.",
   "loginUserNotFound": "Nie znaleziono użytkownika. Sprawdź numer telefonu.",
-  "networkError": "Błąd sieci. Sprawdź połączenie."
+  "networkError": "Błąd sieci. Sprawdź połączenie.",
+  "offlineContentTitle": "Zawartość niedostępna offline",
+  "offlineContentMessage": "Połącz się z internetem i spróbuj ponownie.",
+  "ok": "OK"
 }

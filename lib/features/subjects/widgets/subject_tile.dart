@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/core/services/student_api_service.dart';
@@ -5,6 +8,8 @@ import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
 
 class SubjectTile extends StatelessWidget {
   final DashboardSubject subject;
@@ -120,13 +125,80 @@ class _SubjectIcon extends StatelessWidget {
         child: ClipOval(
           child: fullUrl == null
               ? const Icon(Icons.book)
-              : SvgPicture.network(
-                  fullUrl,
-                  fit: BoxFit.contain,
-                  placeholderBuilder: (_) => const CircularProgressWidget(),
+              : _NetworkSvg(
+                  url: fullUrl!,
+                  placeholder: const CircularProgressWidget(),
                 ),
         ),
       ),
+    );
+  }
+}
+
+class _NetworkSvg extends StatelessWidget {
+  const _NetworkSvg({
+    required this.url,
+    required this.placeholder,
+  });
+
+  final String url;
+  final Widget placeholder;
+
+  static final _memoryCache = <String, Uint8List?>{};
+
+  Future<Uint8List?> _loadBytes() async {
+    if (_memoryCache.containsKey(url)) return _memoryCache[url];
+    try {
+      final file = await _localFileForUrl(url);
+      if (await file.exists()) {
+        final bytes = await file.readAsBytes();
+        _memoryCache[url] = bytes;
+        return bytes;
+      }
+
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        _memoryCache[url] = response.bodyBytes;
+        try {
+          await file.parent.create(recursive: true);
+          await file.writeAsBytes(response.bodyBytes, flush: true);
+        } catch (_) {}
+        return response.bodyBytes;
+      }
+    } catch (_) {
+      // ignore and fallback to placeholder
+    }
+    return null;
+  }
+
+  Future<File> _localFileForUrl(String url) async {
+    final dir = await getApplicationDocumentsDirectory();
+    final safeName = url
+        .split('/')
+        .where((segment) => segment.isNotEmpty)
+        .last
+        .replaceAll(RegExp(r'[^a-zA-Z0-9._-]'), '_');
+    final fileName = safeName.isEmpty ? 'subject_icon.svg' : safeName;
+    return File('${dir.path}/subject_icons/$fileName');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Uint8List?>(
+      future: _loadBytes(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return placeholder;
+        }
+        final bytes = snapshot.data;
+        if (bytes == null) {
+          return const Icon(Icons.book);
+        }
+        return SvgPicture.memory(
+          bytes,
+          fit: BoxFit.contain,
+        );
+      },
     );
   }
 }
