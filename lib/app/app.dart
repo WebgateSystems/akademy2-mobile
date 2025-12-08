@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../app/theme/theme.dart';
 import '../core/auth/auth_provider.dart';
+import '../core/network/dio_provider.dart';
 import '../core/settings/settings_provider.dart';
 import '../core/sync/sync_manager.dart';
 import 'router.dart';
@@ -27,6 +28,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    ref.read(dioProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _runBootstrapSync();
 

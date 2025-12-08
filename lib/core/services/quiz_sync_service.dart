@@ -112,7 +112,7 @@ class QuizSyncService {
 
   static const _queueKey = 'quiz_results_queue';
 
-  final Dio _dio = DioProviderSingleton.dio;
+  Dio get _dio => DioProviderSingleton.dio;
   final _statusController = StreamController<SyncStatus>.broadcast();
   final _connectivity = Connectivity();
 

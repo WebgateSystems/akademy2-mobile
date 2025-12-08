@@ -188,72 +188,68 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: Center(
-                child: YoutubePlayerBuilder(
-                  player: YoutubePlayer(
-                    controller: _controller,
-                    showVideoProgressIndicator: true,
-                    progressIndicatorColor: Colors.redAccent,
-                  ),
-                  builder: (context, player) {
-                    return AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: player,
-                    );
-                  },
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Center(
+              child: YoutubePlayerBuilder(
+                player: YoutubePlayer(
+                  controller: _controller,
+                  showVideoProgressIndicator: true,
+                  progressIndicatorColor: Colors.redAccent,
                 ),
+                builder: (context, player) {
+                  return AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: player,
+                  );
+                },
               ),
             ),
-
-            if (_currentSubtitle.isNotEmpty)
-              Positioned(
-                bottom: 80.h,
-                left: 16.w,
-                right: 16.w,
-                child: Center(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 16.w,
-                      vertical: 8.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      _currentSubtitle,
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.h5(context).copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
+          ),
+          if (_currentSubtitle.isNotEmpty)
             Positioned(
-              top: 16.h,
+              bottom: 80.h,
+              left: 16.w,
               right: 16.w,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => Navigator.of(context).pop(),
+              child: Center(
                 child: Container(
-                  width: 48.w,
-                  height: 48.w,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
-                    shape: BoxShape.circle,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 8.h,
                   ),
-                  child: Icon(Icons.close, color: Colors.white, size: 24.w),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    _currentSubtitle,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.h5(context).copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ],
-        ),
+          Positioned(
+            top: 16.h,
+            right: 16.w,
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                width: 48.w,
+                height: 48.w,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(Icons.close, color: Colors.white, size: 24.w),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

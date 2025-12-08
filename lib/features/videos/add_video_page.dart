@@ -12,8 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../core/db/entities/subject_entity.dart';
-import '../../core/db/isar_service.dart';
+import 'video_models.dart';
 import 'video_service.dart';
 
 class AddVideoPage extends StatefulWidget {
@@ -30,7 +29,7 @@ class _AddVideoPageState extends State<AddVideoPage> {
   final _titleCtrl = TextEditingController();
   final _descCtrl = TextEditingController();
   bool _saving = false;
-  List<SubjectEntity> _subjects = [];
+  List<VideoSubjectFilter> _subjects = [];
 
   @override
   void initState() {
@@ -47,12 +46,17 @@ class _AddVideoPageState extends State<AddVideoPage> {
   }
 
   Future<void> _loadSubjects() async {
-    final isar = IsarService();
-    final subjects = await isar.getSubjects();
-    setState(() {
-      _subjects = subjects;
-      if (_subjects.isNotEmpty) _subjectId = _subjects.first.id;
-    });
+    try {
+      final service = VideoService();
+      final subjects = await service.fetchSubjects();
+      debugPrint('Loaded ${subjects.length} subjects');
+      setState(() {
+        _subjects = subjects;
+        if (_subjects.isNotEmpty) _subjectId = _subjects.first.id;
+      });
+    } catch (e) {
+      debugPrint('Error loading subjects: $e');
+    }
   }
 
   Future<void> _pickFile() async {

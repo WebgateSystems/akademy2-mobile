@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../network/dio_provider.dart';
 import '../storage/secure_storage.dart';
 
 class SettingsState {
@@ -34,10 +35,13 @@ class SettingsState {
 }
 
 class SettingsNotifier extends StateNotifier<SettingsState> {
-  SettingsNotifier() : super(const SettingsState(themeMode: ThemeMode.light, languageCode: 'en')) {
+  SettingsNotifier(this._ref)
+      : super(const SettingsState(
+            themeMode: ThemeMode.light, languageCode: 'en')) {
     _load();
   }
 
+  final Ref _ref;
   final _storage = SecureStorage();
 
   Future<void> _load() async {
@@ -62,9 +66,25 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     state = state.copyWith(languageCode: code, locale: Locale(code));
     unawaited(_storage.write('language', code));
   }
+
+  Future<void> setLanguageAndSync(String code) async {
+    state = state.copyWith(languageCode: code, locale: Locale(code));
+    await _storage.write('language', code);
+    try {
+      final dio = _ref.read(dioProvider);
+      final userId = await _storage.read('userId');
+      if (userId != null) {
+        await dio.patch('v1/students/$userId', data: {
+          'student': {'language': code},
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to sync language to server: $e');
+    }
+  }
 }
 
 final settingsProvider =
     StateNotifierProvider<SettingsNotifier, SettingsState>((ref) {
-  return SettingsNotifier();
+  return SettingsNotifier(ref);
 });

@@ -286,7 +286,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ],
               onChanged: (v) {
                 setState(() => _language = v ?? 'en');
-                ref.read(settingsProvider.notifier).setLanguage(_language);
+                ref
+                    .read(settingsProvider.notifier)
+                    .setLanguageAndSync(_language);
               },
             ),
             SizedBox(height: 20.h),

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/storage/secure_storage.dart';
 import '../network/dio_provider.dart';
+import '../settings/settings_provider.dart';
 
 class AuthState {
   final bool isAuthenticated;
@@ -93,6 +94,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
               email: attributes?['email'] as String?,
               phone: attributes?['phone'] as String? ?? phone,
               pin: pin);
+          final locale = attributes?['locale'] as String?;
+          if (locale != null) {
+            ref.read(settingsProvider.notifier).setLanguage(locale);
+          }
           final schoolId = attributes?['school_id'] as String?;
           state = AuthState(
             isAuthenticated: true,
@@ -191,6 +196,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     final birthdate =
         attrs?['birthdate'] as String? ?? attrs?['birth_date'] as String?;
     final schoolId = attrs?['school_id'] as String?;
+    final language = attrs?['locale'] as String?;
     final metaPin = attrs?['metadata'] is Map<String, dynamic>
         ? (attrs?['metadata'] as Map<String, dynamic>)['pin'] as String?
         : null;
@@ -199,6 +205,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (lastName != null) await storage.write('lastName', lastName);
     if (birthdate != null) await storage.write('dob', birthdate);
     if (schoolId != null) await storage.write('schoolId', schoolId);
+    if (language != null) await storage.write('language', language);
     if (email != null) await storage.write('email', email);
     if (phone != null) await storage.write('phone', phone);
     if (pin != null) await storage.write('userPin', pin);

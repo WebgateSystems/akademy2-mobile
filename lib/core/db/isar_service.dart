@@ -61,10 +61,29 @@ class IsarService {
 
   Future<void> saveSubjects(List<SubjectEntity> subjects) async {
     await _ensureInit();
+    if (subjects.isEmpty) return;
+
+    final existing = <String, SubjectEntity>{};
+    for (final subject in subjects) {
+      final current = _isar.subjectEntitys
+          .where()
+          .idEqualTo(subject.id)
+          .build()
+          .findFirst();
+      if (current != null) {
+        existing[subject.id] = current;
+      }
+    }
+
     debugPrint('IsarService: Saving ${subjects.length} subjects...');
     await _isar.writeAsync((isar) {
       for (final subject in subjects) {
-        subject.isarId = isar.subjectEntitys.autoIncrement();
+        final current = existing[subject.id];
+        subject.isarId = current?.isarId ?? isar.subjectEntitys.autoIncrement();
+        if (subject.moduleIds.isEmpty &&
+            (current?.moduleIds.isNotEmpty ?? false)) {
+          subject.moduleIds = current!.moduleIds;
+        }
         isar.subjectEntitys.put(subject);
       }
     });
@@ -107,9 +126,29 @@ class IsarService {
 
   Future<void> saveModules(List<ModuleEntity> modules) async {
     await _ensureInit();
+    if (modules.isEmpty) return;
+
+    final existing = <String, ModuleEntity>{};
+    for (final module in modules) {
+      final current =
+          _isar.moduleEntitys.where().idEqualTo(module.id).build().findFirst();
+      if (current != null) {
+        existing[module.id] = current;
+      }
+    }
+
     await _isar.writeAsync((isar) {
       for (final module in modules) {
-        module.isarId = isar.moduleEntitys.autoIncrement();
+        final current = existing[module.id];
+        module.isarId = current?.isarId ?? isar.moduleEntitys.autoIncrement();
+        if (module.contentIds.isEmpty &&
+            (current?.contentIds.isNotEmpty ?? false)) {
+          module.contentIds = current!.contentIds;
+        }
+        if (module.subjectId.isEmpty &&
+            (current?.subjectId.isNotEmpty ?? false)) {
+          module.subjectId = current!.subjectId;
+        }
         isar.moduleEntitys.put(module);
       }
     });

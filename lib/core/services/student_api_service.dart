@@ -5,9 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../db/entities/content_entity.dart';
+import '../db/entities/module_entity.dart';
+import '../db/entities/subject_entity.dart';
+import '../db/isar_service.dart';
 import '../network/api.dart';
 import '../network/dio_provider.dart';
-
 
 class DashboardSubject {
   final String id;
@@ -49,7 +51,6 @@ class DashboardSubject {
     );
   }
 }
-
 
 class SubjectModule {
   final String id;
@@ -156,7 +157,6 @@ class SubjectDetailData {
     );
   }
 }
-
 
 class ModuleContent {
   final String id;
@@ -269,9 +269,9 @@ class ModuleDetailData {
   }
 }
 
-
 class StudentApiService {
   final Dio _dio;
+  final IsarService _isar = IsarService();
 
   StudentApiService(this._dio);
 
@@ -284,10 +284,17 @@ class StudentApiService {
               .toList() ??
           [];
       debugPrint('StudentApiService: Fetched ${subjects.length} subjects');
+      await _cacheDashboardSubjects(subjects);
       return subjects;
     } on DioException catch (e) {
       debugPrint(
           'StudentApiService: fetchDashboardSubjects error - ${e.message}');
+      final cached = await _loadDashboardSubjectsFromCache();
+      if (cached.isNotEmpty) {
+        debugPrint(
+            'StudentApiService: Using ${cached.length} cached dashboard subjects');
+        return cached;
+      }
       rethrow;
     }
   }
@@ -299,9 +306,16 @@ class StudentApiService {
           SubjectDetailData.fromJson(response.data as Map<String, dynamic>);
       debugPrint(
           'StudentApiService: Fetched subject ${result.title} with ${result.units.length} units');
+      await _cacheSubjectDetail(result);
       return result;
     } on DioException catch (e) {
       debugPrint('StudentApiService: fetchSubjectDetail error - ${e.message}');
+      final cached = await _loadSubjectDetailFromCache(subjectId);
+      if (cached != null) {
+        debugPrint(
+            'StudentApiService: Using cached subject detail for $subjectId');
+        return cached;
+      }
       rethrow;
     }
   }
@@ -313,14 +327,255 @@ class StudentApiService {
           ModuleDetailData.fromJson(response.data as Map<String, dynamic>);
       debugPrint(
           'StudentApiService: Fetched module ${result.title} with ${result.contents.length} contents');
+      await _cacheModuleDetail(result);
       return result;
     } on DioException catch (e) {
       debugPrint('StudentApiService: fetchModuleDetail error - ${e.message}');
+      final cached = await _loadModuleDetailFromCache(moduleId);
+      if (cached != null) {
+        debugPrint(
+            'StudentApiService: Using cached module detail for $moduleId');
+        return cached;
+      }
       rethrow;
     }
   }
-}
 
+  Future<void> _cacheDashboardSubjects(
+    List<DashboardSubject> subjects,
+  ) async {
+    if (subjects.isEmpty) return;
+    final now = DateTime.now();
+    final entities = <SubjectEntity>[];
+    for (var i = 0; i < subjects.length; i++) {
+      final subject = subjects[i];
+      entities.add(
+        SubjectEntity()
+          ..id = subject.id
+          ..title = subject.title
+          ..slug = subject.slug
+          ..orderIndex = i
+          ..iconUrl = subject.iconUrl
+          ..colorLight = subject.colorLight
+          ..colorDark = subject.colorDark
+          ..moduleCount = subject.totalModules
+          ..updatedAt = now,
+      );
+    }
+    await _isar.saveSubjects(entities);
+  }
+
+  Future<List<DashboardSubject>> _loadDashboardSubjectsFromCache() async {
+    try {
+      final cached = await _isar.getSubjects();
+      if (cached.isEmpty) return [];
+      final subjects = <DashboardSubject>[];
+      for (final subject in cached) {
+        final bestScore = await _isar.getBestQuizScoreForSubject(subject.id);
+        subjects.add(
+          DashboardSubject(
+            id: subject.id,
+            title: subject.title,
+            slug: subject.slug,
+            iconUrl: subject.iconUrl,
+            colorLight: subject.colorLight,
+            colorDark: subject.colorDark,
+            totalModules: subject.moduleCount,
+            completedModules: 0,
+            completionRate: 0,
+            averageScore: bestScore,
+          ),
+        );
+      }
+      return subjects;
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<void> _cacheSubjectDetail(SubjectDetailData detail) async {
+    final now = DateTime.now();
+    final modules = detail.allModules;
+    final firstUnit = detail.units.isNotEmpty ? detail.units.first : null;
+
+    final subjectEntity = SubjectEntity()
+      ..id = detail.id
+      ..title = detail.title
+      ..slug = detail.slug
+      ..orderIndex = firstUnit?.orderIndex ?? 0
+      ..iconUrl = detail.iconUrl
+      ..colorLight = detail.colorLight
+      ..colorDark = detail.colorDark
+      ..moduleCount = detail.totalModules
+      ..unitId = firstUnit?.id
+      ..unitTitle = firstUnit?.title
+      ..unitOrderIndex = firstUnit?.orderIndex ?? 0
+      ..updatedAt = now
+      ..moduleIds = modules.map((m) => m.id).toList();
+
+    await _isar.saveSubjects([subjectEntity]);
+
+    if (modules.isEmpty) return;
+
+    final moduleEntities = modules
+        .map(
+          (module) => ModuleEntity()
+            ..id = module.id
+            ..subjectId = detail.id
+            ..title = module.title
+            ..order = module.orderIndex
+            ..singleFlow = false
+            ..published = true
+            ..updatedAt = now
+            ..contentIds = [],
+        )
+        .toList();
+
+    await _isar.saveModules(moduleEntities);
+    await _isar.updateSubjectModules(
+      detail.id,
+      moduleEntities.map((m) => m.id).toList(),
+    );
+  }
+
+  Future<SubjectDetailData?> _loadSubjectDetailFromCache(
+    String subjectId,
+  ) async {
+    final subject = await _isar.getSubject(subjectId);
+    if (subject == null) return null;
+
+    final modules = await _isar.getModulesBySubjectId(subjectId);
+    if (modules.isEmpty) return null;
+
+    final moduleDtos = modules
+        .map(
+          (module) => SubjectModule(
+            id: module.id,
+            title: module.title,
+            orderIndex: module.order,
+            contentsCount: module.contentIds.length,
+            completed: false,
+            score: null,
+          ),
+        )
+        .toList()
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+
+    final bestScore = await _isar.getBestQuizScoreForSubject(subjectId);
+
+    final unit = SubjectUnit(
+      id: subject.unitId ?? subject.id,
+      title: subject.unitTitle ?? subject.title,
+      orderIndex: subject.unitOrderIndex,
+      modules: moduleDtos,
+    );
+
+    return SubjectDetailData(
+      id: subject.id,
+      title: subject.title,
+      slug: subject.slug,
+      iconUrl: subject.iconUrl,
+      colorLight: subject.colorLight,
+      colorDark: subject.colorDark,
+      units: [unit],
+      totalModules: subject.moduleCount,
+      completedModules: 0,
+      averageScore: bestScore,
+    );
+  }
+
+  Future<void> _cacheModuleDetail(ModuleDetailData moduleDetail) async {
+    final now = DateTime.now();
+    final moduleId = moduleDetail.id;
+    final existing = await _isar.getModuleById(moduleId);
+
+    final module = ModuleEntity()
+      ..id = moduleId
+      ..subjectId = existing?.subjectId ?? moduleDetail.unitId
+      ..title = moduleDetail.title
+      ..description = moduleDetail.unitTitle
+      ..order = existing?.order ?? 0
+      ..singleFlow = moduleDetail.singleFlow
+      ..published = true
+      ..updatedAt = now
+      ..contentIds = moduleDetail.contents.map((c) => c.id).toList();
+
+    await _isar.saveModules([module]);
+
+    for (final content in moduleDetail.contents) {
+      var entity = await _isar.getContentById(content.id);
+      final downloaded = entity?.downloaded ?? false;
+      final downloadPath = entity?.downloadPath ?? '';
+
+      if (entity == null) {
+        entity = content.toContentEntity(moduleId);
+      } else {
+        entity
+          ..moduleId = moduleId
+          ..type = content.contentType
+          ..title = content.title
+          ..order = content.orderIndex
+          ..youtubeUrl = content.youtubeUrl
+          ..fileUrl = content.fileUrl
+          ..posterUrl = content.posterUrl
+          ..subtitlesUrl = content.subtitlesUrl
+          ..payloadJson = content.payloadJson
+          ..durationSec = content.durationSec ?? 0
+          ..updatedAt = now;
+        if (downloaded) {
+          entity
+            ..downloaded = true
+            ..downloadPath = downloadPath;
+        }
+      }
+
+      await _isar.saveContent(entity);
+    }
+  }
+
+  Future<ModuleDetailData?> _loadModuleDetailFromCache(
+    String moduleId,
+  ) async {
+    final module = await _isar.getModuleById(moduleId);
+    if (module == null) return null;
+
+    final contents = await _isar.getContentsByModuleId(moduleId);
+    if (contents.isEmpty) return null;
+
+    final moduleContents = contents
+        .map(
+          (content) => _moduleContentFromEntity(content),
+        )
+        .toList()
+      ..sort((a, b) => a.orderIndex.compareTo(b.orderIndex));
+
+    return ModuleDetailData(
+      id: module.id,
+      title: module.title,
+      unitId: module.subjectId,
+      unitTitle: module.description ?? '',
+      singleFlow: module.singleFlow,
+      contents: moduleContents,
+      previousResult: null,
+    );
+  }
+
+  ModuleContent _moduleContentFromEntity(ContentEntity entity) {
+    return ModuleContent(
+      id: entity.id,
+      title: entity.title,
+      contentType: entity.type,
+      orderIndex: entity.order,
+      fileUrl: entity.fileUrl,
+      posterUrl: entity.posterUrl,
+      subtitlesUrl: entity.subtitlesUrl,
+      youtubeUrl: entity.youtubeUrl,
+      durationSec: entity.durationSec,
+      payload:
+          entity.payloadJson != null ? jsonDecode(entity.payloadJson!) : null,
+    );
+  }
+}
 
 final studentApiServiceProvider = Provider<StudentApiService>((ref) {
   final dio = ref.watch(dioProvider);
@@ -344,7 +599,6 @@ final moduleDetailProvider =
   final service = ref.watch(studentApiServiceProvider);
   return service.fetchModuleDetail(moduleId);
 });
-
 
 String? _resolveUrl(String? path) {
   if (path == null || path.isEmpty) return null;
