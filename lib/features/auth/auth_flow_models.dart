@@ -9,6 +9,15 @@ class VerifyPhoneArgs {
   final String flowId;
 }
 
+class VerifyEmailArgs {
+  const VerifyEmailArgs({
+    required this.email,
+    required this.flowId,
+  });
+  final String email;
+  final String flowId;
+}
+
 class ConfirmPinArgs {
   const ConfirmPinArgs({required this.pin, required this.flowId});
   final String pin;

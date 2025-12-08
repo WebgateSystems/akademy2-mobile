@@ -92,7 +92,13 @@ class _VerifyPhonePageState extends ConsumerState<VerifyPhonePage> {
         },
       );
       if (!mounted) return;
-      context.push('/create-pin', extra: widget.args.flowId);
+      context.push(
+        '/verify-email',
+        extra: VerifyEmailArgs(
+          email: widget.args.email,
+          flowId: widget.args.flowId,
+        ),
+      );
     } catch (_) {
       if (!mounted) return;
       setState(() {

@@ -1,15 +1,16 @@
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
+import 'package:academy_2_app/features/auth/auth_flow_models.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 class VerifyEmailPage extends StatelessWidget {
-  const VerifyEmailPage({super.key, required this.email});
+  const VerifyEmailPage({super.key, required this.args});
 
-  final String email;
+  final VerifyEmailArgs args;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class VerifyEmailPage extends StatelessWidget {
     return Scaffold(
       body: BasePageWithToolbar(
         title: l10n.verifyYourAccount,
-        subtitle: l10n.verifyEmailMessage(email),
+        subtitle: l10n.verifyEmailMessage(args.email),
         showBackButton: true,
         children: [
           Text(
@@ -28,7 +29,7 @@ class VerifyEmailPage extends StatelessWidget {
           ),
           SizedBox(height: 32.h),
           ActionButtonWidget(
-            onPressed: () => context.push('/create-pin'),
+            onPressed: () => context.push('/create-pin', extra: args.flowId),
             text: l10n.next,
           ),
         ],

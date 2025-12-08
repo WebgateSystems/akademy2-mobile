@@ -148,7 +148,7 @@ class _ConfirmPinPageState extends ConsumerState<ConfirmPinPage> {
             .read(authProvider.notifier)
             .setTokens(accessToken, userId: userId);
         if (!mounted) return;
-        context.go('/join-group');
+        context.go('/enable-biometric');
         return;
       }
       throw Exception('No access token');

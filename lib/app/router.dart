@@ -15,7 +15,6 @@ import '../features/auth/unlock_page.dart';
 import '../features/auth/verify_email_page.dart';
 import '../features/auth/verify_phone_page.dart';
 import '../features/auth/wait_approval_page.dart';
-import '../features/downloads/downloads_page.dart';
 import '../features/home/home_shell.dart';
 import '../features/join/join_page.dart';
 import '../features/modules/content_pages.dart';
@@ -46,10 +45,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => LoginPage(
           redirect: state.uri.queryParameters['redirect'],
         ),
-      ),
-      GoRoute(
-        path: '/tech-login',
-        builder: (context, state) => const TechLoginPage(),
       ),
       GoRoute(
         path: '/tech-login',
@@ -95,10 +90,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/verify-email',
         builder: (context, state) {
-          final email = state.extra is String
-              ? state.extra as String
-              : 'user@example.com';
-          return VerifyEmailPage(email: email);
+          final extra = state.extra;
+          final args = extra is VerifyEmailArgs
+              ? extra
+              : const VerifyEmailArgs(email: 'user@example.com', flowId: '');
+          return VerifyEmailPage(args: args);
         },
       ),
       GoRoute(
@@ -174,10 +170,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/downloads',
-        builder: (context, state) => const DownloadsPage(),
-      ),
-      GoRoute(
         path: '/profile',
         builder: (context, state) => const ProfilePage(),
       ),
@@ -196,7 +188,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       final onSplash = loc == '/splash';
       final onCreateAccount = loc == '/create-account';
       final onVerifyPhone = loc == '/verify-phone';
-      final onVerifyEmail = loc == '/verify-email';
       final onJoinGroup = loc == '/join-group';
       final onWaitApproval = loc == '/wait-approval';
       final onCreatePin = loc == '/create-pin';
@@ -213,7 +204,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         onTechLogin,
         onCreateAccount,
         onVerifyPhone,
-        onVerifyEmail,
         onJoinGroup,
         onWaitApproval,
         onCreatePin,
