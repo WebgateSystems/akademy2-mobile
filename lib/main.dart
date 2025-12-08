@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'app/app.dart';
 import 'core/auth/auth_provider.dart';
 import 'core/db/isar_service.dart';
-import 'core/sync/sync_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +14,7 @@ void main() async {
 
   final container = ProviderContainer();
   await container.read(authProvider.notifier).load();
-  await container.read(syncManagerProvider).bootstrap();
+  // Note: bootstrap() is now called in App.initState() to avoid blocking UI
 
   runApp(
     UncontrolledProviderScope(

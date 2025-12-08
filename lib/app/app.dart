@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../app/theme/theme.dart';
 import '../core/auth/auth_provider.dart';
 import '../core/settings/settings_provider.dart';
+import '../core/sync/sync_manager.dart';
 import 'router.dart';
 
 class App extends ConsumerStatefulWidget {
@@ -28,6 +29,9 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Run bootstrap sync asynchronously after UI is shown
+      _runBootstrapSync();
+
       final auth = ref.read(authProvider);
       if (auth.isAuthenticated && !auth.isUnlocked) {
         final router = ref.read(routerProvider);
@@ -37,6 +41,15 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
         );
       }
     });
+  }
+
+  /// Run bootstrap sync in background without blocking UI
+  Future<void> _runBootstrapSync() async {
+    try {
+      await ref.read(syncManagerProvider).bootstrap();
+    } catch (e) {
+      debugPrint('App: Bootstrap sync failed: $e');
+    }
   }
 
   @override
