@@ -129,11 +129,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ),
             ],
           ),
-          // const SizedBox(height: 12),
-          // ActionOutlinedButtonWidget(
-          //   onPressed: () => context.go('/tech-login'),
-          //   text: 'Tech login (email/password)',
-          // ),
         ],
       ),
     );
@@ -164,7 +159,6 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
   void _handleKey(String value) async {
     if (_submitting) return;
 
-    // Clear error when user starts typing again
     if (_errorMessage != null) {
       setState(() => _errorMessage = null);
     }

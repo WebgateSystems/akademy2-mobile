@@ -68,6 +68,7 @@ class _WaitApprovalPageState extends ConsumerState<WaitApprovalPage> {
       await ref.read(authProvider.notifier).setTokens(
             status.accessToken!,
             refreshToken: status.refreshToken,
+            schoolId: status.schoolId,
           );
       if (!mounted) return;
       context.go('/home');

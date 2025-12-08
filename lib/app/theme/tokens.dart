@@ -1,4 +1,4 @@
-import 'package:academy_2_app/core/db/entities/subject_entity.dart';
+import 'package:academy_2_app/core/services/student_api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -129,7 +129,7 @@ class AppColors {
       Theme.of(context).brightness == Brightness.dark ? grey60 : grey60;
 
   static Color subjectCardColor(
-      BuildContext context, SubjectEntity subject, bool completed) {
+      BuildContext context, DashboardSubject subject, bool completed) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     if (completed) {
       return isDark ? grey40 : grey20;

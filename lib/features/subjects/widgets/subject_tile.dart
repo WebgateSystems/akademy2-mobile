@@ -1,15 +1,13 @@
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
-import 'package:academy_2_app/core/db/entities/subject_entity.dart';
-import 'package:academy_2_app/core/db/isar_service.dart';
-import 'package:academy_2_app/core/network/api.dart';
+import 'package:academy_2_app/core/services/student_api_service.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class SubjectTile extends StatefulWidget {
-  final SubjectEntity subject;
+class SubjectTile extends StatelessWidget {
+  final DashboardSubject subject;
   final VoidCallback? onTap;
 
   const SubjectTile({
@@ -19,33 +17,13 @@ class SubjectTile extends StatefulWidget {
   });
 
   @override
-  State<SubjectTile> createState() => _SubjectTileState();
-}
-
-class _SubjectTileState extends State<SubjectTile> {
-  int _bestScore = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadScore();
-  }
-
-  Future<void> _loadScore() async {
-    final isar = IsarService();
-    final score = await isar.getBestQuizScoreForSubject(widget.subject.id);
-    if (mounted) setState(() => _bestScore = score);
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final completed = _bestScore > 0;
-    final cardColor =
-        AppColors.subjectCardColor(context, widget.subject, completed);
-    final rezultCardColor =
-        AppColors.subjectCardColor(context, widget.subject, false);
+    final completed = subject.averageScore > 0;
+    final cardColor = AppColors.subjectCardColor(context, subject, completed);
+    final rezultCardColor = AppColors.subjectCardColor(context, subject, false);
+
     return InkWell(
-      onTap: widget.onTap,
+      onTap: onTap,
       child: Stack(
         children: [
           Padding(
@@ -61,11 +39,11 @@ class _SubjectTileState extends State<SubjectTile> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    _SubjectIcon(url: widget.subject.iconUrl),
+                    _SubjectIcon(url: subject.iconUrl),
                     SizedBox(height: 12.h),
                     Center(
                       child: Text(
-                        widget.subject.title,
+                        subject.title,
                         style: AppTextStyles.h4(context),
                         textAlign: TextAlign.center,
                         maxLines: 2,
@@ -82,7 +60,9 @@ class _SubjectTileState extends State<SubjectTile> {
               left: 16.r,
               top: 0,
               child: ResultQuizWidget(
-                  bgColor: rezultCardColor, bestScore: _bestScore),
+                bgColor: rezultCardColor,
+                bestScore: subject.averageScore,
+              ),
             ),
         ],
       ),
@@ -127,8 +107,7 @@ class _SubjectIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = 56.w;
     final bg = AppColors.surfaceIcon(context);
-    final fullUrl =
-        (url == null || url!.isEmpty) ? null : Api.baseUploadUrl + url!;
+    final fullUrl = (url == null || url!.isEmpty) ? null : url;
 
     return SizedBox(
       width: size,

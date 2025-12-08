@@ -349,12 +349,10 @@ class RoundButton extends StatefulWidget {
   final double size;
   final VoidCallback onTap;
 
-  // Випадок 1: текст
   final String? text;
   final Color textColor;
   final Color pressedTextColor;
 
-  // Випадок 2: картинка
   final String? assetImage;
   final double pressedImageOpacity;
 
@@ -382,7 +380,6 @@ class RoundButton extends StatefulWidget {
           'Або text, або assetImage, але не обидва одночасно',
         );
 
-  /// Конструктор для текстової кнопки
   factory RoundButton.text({
     Key? key,
     required VoidCallback onTap,
@@ -409,7 +406,6 @@ class RoundButton extends StatefulWidget {
     );
   }
 
-  /// Конструктор для кнопки з картинкою
   factory RoundButton.image({
     Key? key,
     required VoidCallback onTap,
@@ -495,7 +491,6 @@ class _RoundButtonState extends State<RoundButton> {
 
   Widget _buildChild() {
     if (widget.text != null) {
-      // Випадок з текстом: змінюємо колір
       return AnimatedDefaultTextStyle(
         duration: const Duration(milliseconds: 120),
         style: AppTextStyles.h1(context).copyWith(
@@ -504,7 +499,6 @@ class _RoundButtonState extends State<RoundButton> {
         child: Text(widget.text!),
       );
     } else if (widget.assetImage != null) {
-      // Випадок з картинкою: змінюємо прозорість
       return AnimatedOpacity(
         duration: const Duration(milliseconds: 120),
         opacity: _pressed ? widget.pressedImageOpacity : 1.0,

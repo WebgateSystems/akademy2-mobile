@@ -31,7 +31,6 @@ class BasePageWithToolbar extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         if (stickChildrenToBottom) {
-          // Режим "контент притиснутий донизу", без вертикального скролу
           return SizedBox(
             height: constraints.maxHeight,
             child: Column(

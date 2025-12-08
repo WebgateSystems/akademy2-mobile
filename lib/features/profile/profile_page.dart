@@ -51,7 +51,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     ]) {
       ctrl.addListener(_updateDirty);
     }
-    // Phone has separate listener for formatting
     _phoneCtrl.addListener(_onPhoneChanged);
     _loadProfile();
   }
@@ -106,10 +105,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         throw Exception('User ID not found');
       }
 
-      // Convert phone to API format (remove formatting)
       final phoneForApi = PlPhoneFormatter.toApiFormat(_phoneCtrl.text);
 
-      // Send profile data to PATCH /api/v1/students/{id}
       await dio.patch('v1/students/$userId', data: {
         'student': {
           'first_name': _firstNameCtrl.text.trim(),
@@ -129,7 +126,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       await storage.write('email', _emailCtrl.text.trim());
       await storage.write('phone', _phoneCtrl.text.trim());
       await storage.write('userPin', _pinCtrl.text.trim());
-      // Note: theme and language are saved by settingsProvider automatically
       if (mounted) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(l10n.profileSaveSuccess)));
@@ -157,7 +153,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   Future<void> _logout() async {
     final confirm = await showDialog<bool>(
       context: context,
-      barrierDismissible: false, // щоб не закривалось тапом поза діалогом
+      barrierDismissible: false,
       builder: (context) {
         return LogoutDialog();
       },

@@ -125,7 +125,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
         _dob = picked;
         _dobCtrl.text = '${picked.day.toString().padLeft(2, '0')}.'
             '${picked.month.toString().padLeft(2, '0')}.'
-            '${picked.year.toString()}'; // DD.MM.YYYY
+            '${picked.year.toString()}';
       });
     }
   }
@@ -137,7 +137,6 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     final formatted = PlPhoneFormatter.format(raw, previousValue: _prevPhone);
     _prevPhone = formatted;
 
-    // щоб не зациклитися – тільки якщо реально змінилось
     if (formatted != raw) {
       final newValue = TextEditingValue(
         text: formatted,

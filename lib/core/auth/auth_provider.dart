@@ -10,25 +10,32 @@ class AuthState {
   final bool isLoading;
   final bool isUnlocked;
   final String? userId;
+  final String? schoolId;
 
   const AuthState({
     required this.isAuthenticated,
     this.isLoading = false,
     this.isUnlocked = false,
     this.userId,
+    this.schoolId,
   });
+
+  bool get needsSchoolBinding => isAuthenticated && schoolId == null;
 
   AuthState copyWith({
     bool? isAuthenticated,
     bool? isLoading,
     bool? isUnlocked,
     String? userId,
+    String? schoolId,
+    bool clearSchoolId = false,
   }) {
     return AuthState(
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       isLoading: isLoading ?? this.isLoading,
       isUnlocked: isUnlocked ?? this.isUnlocked,
       userId: userId ?? this.userId,
+      schoolId: clearSchoolId ? null : (schoolId ?? this.schoolId),
     );
   }
 }
@@ -43,11 +50,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> load() async {
     state = state.copyWith(isLoading: true);
     final token = await _storage.read('accessToken');
+    final schoolId = await _storage.read('schoolId');
     state = AuthState(
       isAuthenticated: token != null,
       isLoading: false,
       isUnlocked: false,
       userId: token != null ? 'me' : null,
+      schoolId: schoolId,
     );
   }
 
@@ -84,16 +93,17 @@ class AuthNotifier extends StateNotifier<AuthState> {
               email: attributes?['email'] as String?,
               phone: attributes?['phone'] as String? ?? phone,
               pin: pin);
+          final schoolId = attributes?['school_id'] as String?;
           state = AuthState(
             isAuthenticated: true,
             isUnlocked: true,
             userId: userId ?? phone,
+            schoolId: schoolId,
             isLoading: false,
           );
           return;
         }
       }
-      // Якщо дійшли сюди, авторизація не вдалась
       state = state.copyWith(isLoading: false);
       throw Exception('Invalid response: missing access_token');
     } catch (e) {
@@ -104,25 +114,35 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> setTokens(String accessToken,
-      {String? refreshToken, String? userId}) async {
+      {String? refreshToken, String? userId, String? schoolId}) async {
     await _storage.write('accessToken', accessToken);
     if (refreshToken != null) {
       await _storage.write('refreshToken', refreshToken);
+    }
+    if (schoolId != null) {
+      await _storage.write('schoolId', schoolId);
     }
     state = AuthState(
       isAuthenticated: true,
       isUnlocked: true,
       isLoading: false,
       userId: userId ?? 'me',
+      schoolId: schoolId,
     );
   }
 
-  void markAuthenticated({String? userId}) {
+  Future<void> updateSchoolId(String schoolId) async {
+    await _storage.write('schoolId', schoolId);
+    state = state.copyWith(schoolId: schoolId);
+  }
+
+  void markAuthenticated({String? userId, String? schoolId}) {
     state = AuthState(
       isAuthenticated: true,
       isUnlocked: true,
       isLoading: false,
       userId: userId,
+      schoolId: schoolId ?? state.schoolId,
     );
   }
 
@@ -150,8 +170,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
     );
   }
 
-  /// Refreshes access token using refresh token.
-  /// Ensures only one refresh runs concurrently; other callers await the same future.
   Future<bool> refreshAccessToken() async {
     await logout();
     return false;

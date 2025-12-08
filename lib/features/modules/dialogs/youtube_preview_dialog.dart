@@ -34,13 +34,11 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
         autoPlay: true,
         mute: false,
         forceHD: true,
-        // Disable YouTube captions if we have custom subtitles
         enableCaption: widget.subtitlesUrl == null,
         useHybridComposition: true,
       ),
     );
 
-    // Load custom subtitles if provided
     if (widget.subtitlesUrl != null && widget.subtitlesUrl!.isNotEmpty) {
       _loadSubtitles(widget.subtitlesUrl!);
     }
@@ -61,7 +59,6 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
           return;
         }
       } else {
-        // Local file
         final file = url.startsWith('file://') && uri != null
             ? File.fromUri(uri)
             : File(url);
@@ -72,7 +69,6 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
         }
       }
 
-      // Parse subtitles (supports both SRT and VTT)
       _subtitles = _parseSubtitles(content);
       debugPrint('YouTube: Loaded ${_subtitles.length} subtitle entries');
     } catch (e) {
@@ -83,17 +79,14 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
   List<SubtitleEntry> _parseSubtitles(String content) {
     final entries = <SubtitleEntry>[];
 
-    // Remove BOM if present
     content = content.replaceAll('\uFEFF', '');
 
-    // Split into blocks (works for both SRT and VTT)
     final blocks = content.split(RegExp(r'\n\s*\n'));
 
     for (final block in blocks) {
       final lines = block.trim().split('\n');
       if (lines.length < 2) continue;
 
-      // Find timestamp line
       int timestampIndex = 0;
       for (int i = 0; i < lines.length; i++) {
         if (lines[i].contains('-->')) {
@@ -113,13 +106,11 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
 
       if (start == null || end == null) continue;
 
-      // Get text (all lines after timestamp)
       final textLines = lines.sublist(timestampIndex + 1);
       final text = textLines
           .map((l) => l.trim())
           .where((l) => l.isNotEmpty)
           .join('\n')
-          // Remove VTT styling tags
           .replaceAll(RegExp(r'<[^>]+>'), '');
 
       if (text.isNotEmpty) {
@@ -132,7 +123,6 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
 
   Duration? _parseTimestamp(String timestamp) {
     try {
-      // Handle both SRT (00:00:00,000) and VTT (00:00:00.000) formats
       timestamp = timestamp.replaceAll(',', '.');
 
       final parts = timestamp.split(':');
@@ -151,7 +141,6 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
           milliseconds: milliseconds,
         );
       } else if (parts.length == 2) {
-        // MM:SS.mmm format
         final minutes = int.parse(parts[0]);
         final secondsParts = parts[1].split('.');
         final seconds = int.parse(secondsParts[0]);
@@ -202,7 +191,6 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
       body: SafeArea(
         child: Stack(
           children: [
-            // YouTube Player - constrained to center, doesn't cover close button
             Positioned.fill(
               child: Center(
                 child: YoutubePlayerBuilder(
@@ -221,7 +209,6 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
               ),
             ),
 
-            // Custom subtitles overlay
             if (_currentSubtitle.isNotEmpty)
               Positioned(
                 bottom: 80.h,
@@ -248,7 +235,6 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
                 ),
               ),
 
-            // Close button - GestureDetector ensures tap is captured
             Positioned(
               top: 16.h,
               right: 16.w,

@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/join_repository.dart';
 
-/// Model for quiz result to be synced
 class QuizResultPayload {
   QuizResultPayload({
     required this.learningModuleId,
@@ -35,7 +34,6 @@ class QuizResultPayload {
   }
 }
 
-/// Response from quiz result submission
 class QuizResultResponse {
   QuizResultResponse({
     required this.success,
@@ -68,7 +66,6 @@ class QuizResultResponse {
   }
 }
 
-/// Model for quiz result fetched from server
 class QuizResultItem {
   QuizResultItem({
     required this.id,
@@ -102,7 +99,6 @@ class QuizResultItem {
   }
 }
 
-/// Sync status for UI
 enum SyncStatus {
   online,
   offline,
@@ -110,7 +106,6 @@ enum SyncStatus {
   synced,
 }
 
-/// Service for submitting quiz results with offline queue support
 class QuizSyncService {
   QuizSyncService._();
   static final QuizSyncService instance = QuizSyncService._();
@@ -128,12 +123,10 @@ class QuizSyncService {
   Stream<SyncStatus> get statusStream => _statusController.stream;
   bool get isOnline => _isOnline;
 
-  /// Initialize connectivity monitoring
   void init() {
     _connectivitySub?.cancel();
     _connectivitySub =
         _connectivity.onConnectivityChanged.listen(_onConnectivityChanged);
-    // Check initial status
     _checkInitialConnectivity();
   }
 
@@ -143,7 +136,6 @@ class QuizSyncService {
       _onConnectivityChanged(results);
     } catch (e) {
       debugPrint('QuizSyncService: Failed to check connectivity: $e');
-      // Assume online if check fails
       _isOnline = true;
       _statusController.add(SyncStatus.online);
     }
@@ -160,7 +152,6 @@ class QuizSyncService {
         results.isNotEmpty && results.any((r) => r != ConnectivityResult.none);
 
     if (_isOnline && !wasOnline) {
-      // Connection restored - try to sync
       _syncQueue();
     } else if (!_isOnline) {
       _statusController.add(SyncStatus.offline);
@@ -169,7 +160,6 @@ class QuizSyncService {
     }
   }
 
-  /// Submit quiz result - will queue if offline
   Future<QuizResultResponse?> submitResult(QuizResultPayload payload) async {
     if (_isOnline) {
       try {
@@ -244,14 +234,12 @@ class QuizSyncService {
       }
     }
 
-    // Save failed items back to queue
     await prefs.setString(_queueKey, jsonEncode(failed));
 
     _isSyncing = false;
 
     if (failed.isEmpty && queue.isNotEmpty) {
       _statusController.add(SyncStatus.synced);
-      // Reset to online after showing synced message
       Future.delayed(const Duration(seconds: 3), () {
         if (_isOnline) {
           _statusController.add(SyncStatus.online);
@@ -264,22 +252,18 @@ class QuizSyncService {
     }
   }
 
-  /// Check if there are pending items in queue
   Future<bool> hasPendingItems() async {
     final prefs = await SharedPreferences.getInstance();
     final queue = _getQueue(prefs);
     return queue.isNotEmpty;
   }
 
-  /// Force sync attempt
   Future<void> trySyncNow() async {
     if (_isOnline) {
       await _syncQueue();
     }
   }
 
-  /// Fetch quiz results from server
-  /// Returns list of quiz results or empty list on error
   Future<List<QuizResultItem>> fetchQuizResults() async {
     try {
       final response = await _dio.get('v1/student/quiz_results');

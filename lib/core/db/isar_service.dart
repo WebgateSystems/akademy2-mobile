@@ -17,7 +17,6 @@ class IsarService {
     return _instance;
   }
 
-  /// Initialize Isar database using isar_plus and generated schemas
   Future<void> init() async {
     if (_initialized) return;
 
@@ -30,7 +29,6 @@ class IsarService {
           ContentEntitySchema,
         ],
         directory: dir.path,
-        // Bump name to force a fresh schema when fields change (no migrations in isar_plus)
         name: 'academy_v3',
       );
       _initialized = true;
@@ -47,7 +45,6 @@ class IsarService {
     }
   }
 
-  /// Get all subjects from Isar
   Future<List<SubjectEntity>> getSubjects() async {
     await _ensureInit();
     final subjects =
@@ -62,7 +59,6 @@ class IsarService {
     return _isar.subjectEntitys.where().idEqualTo(id).build().findFirst();
   }
 
-  /// Save subjects to Isar
   Future<void> saveSubjects(List<SubjectEntity> subjects) async {
     await _ensureInit();
     debugPrint('IsarService: Saving ${subjects.length} subjects...');
@@ -81,19 +77,16 @@ class IsarService {
     List<String> moduleIds,
   ) async {
     await _ensureInit();
-    // Read outside transaction
     final subject =
         _isar.subjectEntitys.where().idEqualTo(subjectId).build().findFirst();
     if (subject != null) {
       subject.moduleIds = moduleIds;
-      // Write inside transaction
       await _isar.writeAsync((isar) {
         isar.subjectEntitys.put(subject);
       });
     }
   }
 
-  /// Get modules for a subject
   Future<List<ModuleEntity>> getModulesBySubjectId(String subjectId) async {
     await _ensureInit();
     final modules = _isar.moduleEntitys
@@ -112,7 +105,6 @@ class IsarService {
     return _isar.moduleEntitys.where().idEqualTo(moduleId).build().findFirst();
   }
 
-  /// Save modules to Isar
   Future<void> saveModules(List<ModuleEntity> modules) async {
     await _ensureInit();
     await _isar.writeAsync((isar) {
@@ -128,19 +120,16 @@ class IsarService {
     List<String> contentIds,
   ) async {
     await _ensureInit();
-    // Read outside transaction
     final module =
         _isar.moduleEntitys.where().idEqualTo(moduleId).build().findFirst();
     if (module != null) {
       module.contentIds = contentIds;
-      // Write inside transaction
       await _isar.writeAsync((isar) {
         isar.moduleEntitys.put(module);
       });
     }
   }
 
-  /// Get contents for a module
   Future<List<ContentEntity>> getContentsByModuleId(String moduleId) async {
     await _ensureInit();
     final contents = _isar.contentEntitys
@@ -183,7 +172,6 @@ class IsarService {
         .findFirst();
   }
 
-  /// Save contents to Isar
   Future<void> saveContents(List<ContentEntity> contents) async {
     await _ensureInit();
     await _isar.writeAsync((isar) {
@@ -191,6 +179,20 @@ class IsarService {
         content.isarId = isar.contentEntitys.autoIncrement();
         isar.contentEntitys.put(content);
       }
+    });
+  }
+
+  Future<void> saveContent(ContentEntity content) async {
+    await _ensureInit();
+    final existing =
+        _isar.contentEntitys.where().idEqualTo(content.id).build().findFirst();
+    await _isar.writeAsync((isar) {
+      if (existing != null) {
+        content.isarId = existing.isarId;
+      } else {
+        content.isarId = isar.contentEntitys.autoIncrement();
+      }
+      isar.contentEntitys.put(content);
     });
   }
 
@@ -250,7 +252,6 @@ class IsarService {
     return best;
   }
 
-  /// Update quiz best score by module ID (for syncing from server)
   Future<void> updateQuizBestScoreByModuleId(String moduleId, int score) async {
     await _ensureInit();
     final contents = _isar.contentEntitys
@@ -267,12 +268,11 @@ class IsarService {
             isar.contentEntitys.put(content);
           });
         }
-        break; // Only one quiz per module expected
+        break;
       }
     }
   }
 
-  /// Clear all data
   Future<void> clearAll() async {
     await _ensureInit();
     await _isar.writeAsync((isar) {
@@ -280,7 +280,6 @@ class IsarService {
     });
   }
 
-  /// Close database
   Future<void> close() async {
     if (_initialized) {
       _isar.close();

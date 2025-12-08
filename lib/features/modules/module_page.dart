@@ -4,6 +4,7 @@ import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/core/download/download_manager.dart';
 import 'package:academy_2_app/core/network/api.dart';
+import 'package:academy_2_app/core/services/student_api_service.dart';
 import 'package:academy_2_app/features/modules/cards/default_content_card.dart';
 import 'package:academy_2_app/features/modules/cards/infographic_content_card.dart';
 import 'package:academy_2_app/features/modules/cards/preview_image_body.dart';
@@ -18,9 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 import '../../core/db/entities/content_entity.dart';
-import '../../core/db/entities/module_entity.dart';
 import '../../core/db/isar_service.dart';
-import '../../core/sync/sync_manager.dart';
 import '../../l10n/app_localizations.dart';
 
 class ModuleNotFoundException implements Exception {
@@ -33,60 +32,59 @@ class ModuleNotFoundException implements Exception {
 }
 
 class _ModuleData {
-  const _ModuleData({required this.module, required this.contents});
+  const _ModuleData({
+    required this.moduleId,
+    required this.title,
+    required this.singleFlow,
+    required this.contents,
+  });
 
-  final ModuleEntity module;
+  final String moduleId;
+  final String title;
+  final bool singleFlow;
   final List<ContentEntity> contents;
 }
 
 final moduleDataProvider = FutureProvider.autoDispose
     .family<_ModuleData, String>((ref, moduleId) async {
-  final service = IsarService();
-  final syncManager = ref.read(syncManagerProvider);
-  var bootstrapped = false;
+  final service = ref.watch(studentApiServiceProvider);
+  final isarService = IsarService();
 
-  Future<void> ensureBootstrap() async {
-    if (bootstrapped) return;
-    bootstrapped = true;
-    await syncManager.bootstrap();
-  }
+  final moduleDetail = await service.fetchModuleDetail(moduleId);
 
-  var module = await service.getModuleById(moduleId);
-  if (module == null) {
-    await ensureBootstrap();
-    module = await service.getModuleById(moduleId);
-  }
-
-  if (module == null) throw ModuleNotFoundException(moduleId);
-
-  var contents = await service.getContentsByModuleId(moduleId);
-  if (contents.isEmpty || _needsPreviewRefresh(contents)) {
-    await ensureBootstrap();
-    contents = await service.getContentsByModuleId(moduleId);
-    module = await service.getModuleById(moduleId) ?? module;
-  }
-
-  contents = await _validateDownloadedContent(contents);
-
-  return _ModuleData(module: module, contents: contents);
-});
-
-bool _needsPreviewRefresh(List<ContentEntity> items) {
-  return items.any((c) {
-    final hasYoutube = c.youtubeUrl?.isNotEmpty ?? false;
-    final hasPoster = c.posterUrl?.isNotEmpty ?? false;
-    final hasFile = c.fileUrl?.isNotEmpty ?? false;
-
-    switch (c.type) {
-      case 'video':
-        return !(hasYoutube || hasPoster || hasFile);
-      case 'infographic':
-        return !(hasPoster || hasFile);
-      default:
-        return false;
+  final contentEntities = <ContentEntity>[];
+  for (final content in moduleDetail.contents) {
+    var entity = await isarService.getContentById(content.id);
+    if (entity == null) {
+      entity = content.toContentEntity(moduleId);
+      await isarService.saveContent(entity);
+    } else {
+      entity
+        ..moduleId = moduleId
+        ..type = content.contentType
+        ..title = content.title
+        ..order = content.orderIndex
+        ..youtubeUrl = content.youtubeUrl
+        ..fileUrl = content.fileUrl
+        ..posterUrl = content.posterUrl
+        ..subtitlesUrl = content.subtitlesUrl
+        ..payloadJson = content.payloadJson
+        ..durationSec = content.durationSec ?? 0
+        ..updatedAt = DateTime.now();
+      await isarService.saveContent(entity);
     }
-  });
-}
+    contentEntities.add(entity);
+  }
+
+  final validatedContents = await _validateDownloadedContent(contentEntities);
+
+  return _ModuleData(
+    moduleId: moduleDetail.id,
+    title: moduleDetail.title,
+    singleFlow: moduleDetail.singleFlow,
+    contents: validatedContents,
+  );
+});
 
 Future<List<ContentEntity>> _validateDownloadedContent(
   List<ContentEntity> items,
@@ -168,10 +166,9 @@ class _ModulePageState extends ConsumerState<ModulePage> {
         );
       },
       data: (data) {
-        final module = data.module;
+        final moduleId = data.moduleId;
         final contents = data.contents;
-        final title =
-            module.title.isEmpty ? l10n.moduleScreenTitle : module.title;
+        final title = data.title.isEmpty ? l10n.moduleScreenTitle : data.title;
 
         if (contents.isEmpty) {
           return _buildScaffold(
@@ -180,7 +177,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
           );
         }
 
-        final downloadState = downloadMap[module.id];
+        final downloadState = downloadMap[moduleId];
 
         return _buildScaffold(
           context,
@@ -188,7 +185,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
             title: title,
             rightIcon: _buildDownloadAction(
               context: context,
-              module: module,
+              moduleId: moduleId,
               contents: contents,
               state: downloadState,
             ),
@@ -206,7 +203,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
                     return _buildContentCard(
                       context: context,
                       l10n: l10n,
-                      moduleId: module.id,
+                      moduleId: moduleId,
                       content: content,
                       onVideoPreview: () => _showVideoPreview(context, content),
                       onInfographicPreview: () =>
@@ -224,7 +221,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
 
   Widget _buildDownloadAction({
     required BuildContext context,
-    required ModuleEntity module,
+    required String moduleId,
     required List<ContentEntity> contents,
     ModuleDownloadState? state,
   }) {
@@ -294,7 +291,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
             ? AppColors.contentError(context)
             : AppColors.contentSecondary(context),
       ),
-      onPressed: () => _onDownloadTap(module.id, contents),
+      onPressed: () => _onDownloadTap(moduleId, contents),
     );
   }
 
@@ -468,7 +465,6 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     ContentEntity content,
   ) async {
     final l10n = AppLocalizations.of(context)!;
-    // Check if content is downloaded locally
     final localFile = contentLocalPath(
       content,
       DownloadAssetType.file,
@@ -482,7 +478,6 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     final networkFileUrl = _absUrl(content.fileUrl);
     final hasNetworkFile = networkFileUrl != null;
 
-    // Debug logging
     debugPrint('_showVideoPreview: content.id=${content.id}');
     debugPrint('_showVideoPreview: content.fileUrl=${content.fileUrl}');
     debugPrint('_showVideoPreview: content.youtubeUrl=${content.youtubeUrl}');
@@ -493,10 +488,8 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     debugPrint(
         '_showVideoPreview: hasYoutube=$hasYoutube, hasNetworkFile=$hasNetworkFile');
 
-    // No video source available
     if (!hasLocalFile && !hasYoutube && !hasNetworkFile) return;
 
-    // Get subtitles URL (local or network)
     final localSubtitles = contentLocalPath(
       content,
       DownloadAssetType.subtitles,
@@ -504,12 +497,8 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     );
     final subtitlesUrl = localSubtitles ?? _absUrl(content.subtitlesUrl);
 
-    // Priority:
-    // 1. If downloaded locally -> use local file
-    // 2. If no local file -> check internet before showing online content
 
     if (hasLocalFile) {
-      // Play from local storage (offline mode or downloaded content)
       await showDialog<void>(
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
@@ -521,11 +510,9 @@ class _ModulePageState extends ConsumerState<ModulePage> {
       return;
     }
 
-    // No local file - need internet. Check connectivity first.
     final hasInternet = await _checkInternetConnection();
     if (!hasInternet) {
       if (context.mounted) {
-        // Check if video can be downloaded at all
         final canDownload = hasNetworkFile;
         final message = canDownload
             ? l10n.moduleOfflineVideoUnavailable
@@ -541,7 +528,6 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     }
 
     if (hasYoutube) {
-      // Play from YouTube (online mode, preferred for streaming)
       final videoId = _youtubeVideoId(youtubeUrl);
       if (videoId != null) {
         await showDialog<void>(
@@ -557,7 +543,6 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     }
 
     if (hasNetworkFile) {
-      // Stream from network file URL (fallback if no YouTube)
       await showDialog<void>(
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
@@ -569,7 +554,6 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     }
   }
 
-  /// Simple internet connectivity check
   Future<bool> _checkInternetConnection() async {
     try {
       final response = await http

@@ -67,7 +67,6 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
   Widget build(BuildContext context) {
     if (widget.networkUrl != null &&
         widget.networkUrl!.toLowerCase().endsWith('.pdf')) {
-      // Loading state
       if (_isLoadingPdf) {
         return Container(
           color: Colors.grey[200],
@@ -75,7 +74,6 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
         );
       }
 
-      // Error state - show PDF icon
       if (_pdfLoadError || _pdfData == null) {
         return Container(
           color: Colors.grey[300],
@@ -98,8 +96,6 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
         );
       }
 
-      // Show PDF first page preview
-      // Use Stack with transparent overlay to capture taps while showing PDF
       return ClipRRect(
         child: Stack(
           children: [
@@ -113,7 +109,6 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
                 debugPrint('PDF preview error: $error');
               },
             ),
-            // Transparent overlay to pass taps to parent GestureDetector
             Positioned.fill(
               child: Container(color: Colors.transparent),
             ),

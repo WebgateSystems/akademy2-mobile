@@ -17,7 +17,7 @@ class ContentEntity {
   @Index()
   late String moduleId;
 
-  late String type; // video, infographic, quiz, pdf
+  late String type;
 
   @Index()
   late String title;

@@ -21,7 +21,6 @@ import 'video_service.dart';
 final _subjectFiltersProvider = StateProvider<Set<String>>((ref) => {});
 final _searchProvider = StateProvider<String>((ref) => '');
 
-// Initial videos fetch provider
 final videosProvider = FutureProvider<VideosResponse>((ref) async {
   final subjectIds = ref.watch(_subjectFiltersProvider);
   final query = ref.watch(_searchProvider);
@@ -47,7 +46,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
   final Set<String> _likedIds = {};
   final Map<String, VideoDetail> _videoDetails = {};
 
-  // Pagination state
   final List<SchoolVideo> _videos = [];
   List<VideoSubjectFilter> _subjects = [];
   bool _isLoadingMore = false;
@@ -63,7 +61,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
 
-    // Load initial data
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadSubjects();
       _loadVideos(reset: true);
@@ -86,7 +83,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
         _subjects = subjects;
       });
     } catch (e) {
-      // Ignore error, filters just won't be available
     }
   }
 
@@ -132,7 +128,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
 
       final newVideos = <SchoolVideo>[];
       for (final video in response.data) {
-        // Filter by subject if multiple selected
         if (subjectIds.isNotEmpty && !subjectIds.contains(video.subjectId)) {
           continue;
         }
@@ -146,7 +141,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
         _isLoadingMore = false;
       });
 
-      // Fetch details for new videos in background
       _fetchVideoDetails(newVideos.map((v) => v.id).toList());
     } catch (e) {
       setState(() => _isLoadingMore = false);
@@ -170,7 +164,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
           });
         }
       } catch (e) {
-        // Ignore errors for individual video details
       }
     }
   }
@@ -196,7 +189,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
   }
 
   Future<void> _onVideoTap(SchoolVideo video) async {
-    // Use cached details if available
     final detail = _videoDetails[video.id];
 
     if (detail != null) {
@@ -211,7 +203,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       return;
     }
 
-    // Fetch details if not cached
     try {
       final service = VideoService();
       final fetchedDetail = await service.fetchVideoById(video.id);
@@ -230,7 +221,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
         _showVideoPreview(video);
       }
     } catch (e) {
-      // On error, just try to open video
       _showVideoPreview(video);
     }
   }
@@ -277,7 +267,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
 
   Future<void> _toggleLike(
       String videoId, int currentLikes, bool isLiked) async {
-    // Optimistic update
     setState(() {
       if (isLiked) {
         _likedIds.remove(videoId);
@@ -292,7 +281,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       final service = VideoService();
       await service.toggleLike(videoId);
     } catch (e) {
-      // Revert on error
       setState(() {
         if (isLiked) {
           _likedIds.add(videoId);
@@ -310,7 +298,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     final l10n = AppLocalizations.of(context)!;
     final selectedSubject = ref.watch(_subjectFiltersProvider);
 
-    // Listen for filter changes
     ref.listen(_subjectFiltersProvider, (_, __) {
       _loadVideos(reset: true);
     });
@@ -432,14 +419,12 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       return Center(child: Text(l10n.schoolVideosEmpty));
     }
 
-    // Group videos by subject
     final Map<String, List<SchoolVideo>> grouped = {};
     for (final video in _videos) {
       grouped.putIfAbsent(video.subjectId, () => []).add(video);
     }
     final groups = grouped.entries.toList();
 
-    // Build subjects map for titles lookup
     final subjectsMap = {for (final s in _subjects) s.id: s.title};
 
     return ListView.builder(
@@ -483,7 +468,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
 
   Card _getVideoCard(BuildContext context, SchoolVideo video, bool isLiked,
       int likeCount, VideoDetail? detail) {
-    // Show delete button instead of likes if it's my pending video
     final isMyPendingVideo =
         detail != null && detail.author?.isMe == true && detail.isPending;
 
@@ -549,7 +533,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                 ),
               ),
               if (isMyPendingVideo)
-                // Show delete button for my pending videos
                 IconButton(
                   padding: EdgeInsets.zero,
                   constraints: BoxConstraints(
@@ -568,7 +551,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                   },
                 )
               else
-                // Show likes for approved videos
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

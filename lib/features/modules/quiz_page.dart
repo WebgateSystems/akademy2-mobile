@@ -195,7 +195,6 @@ class _QuizPageState extends State<QuizPage> {
       }
     }
 
-    // Submit quiz result to server (will queue if offline)
     final payload = QuizResultPayload(
       learningModuleId: widget.moduleId,
       score: score,

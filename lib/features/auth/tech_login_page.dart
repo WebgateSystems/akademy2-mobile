@@ -9,7 +9,6 @@ import 'package:go_router/go_router.dart';
 import '../../core/auth/auth_provider.dart';
 import '../../core/network/dio_provider.dart';
 
-/// Тимчасовий технічний екран для логіну по email/password, щоб отримати токен.
 class TechLoginPage extends ConsumerStatefulWidget {
   const TechLoginPage({super.key});
 

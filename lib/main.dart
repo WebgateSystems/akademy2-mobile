@@ -8,13 +8,11 @@ import 'core/db/isar_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Isar database
   final isarService = IsarService();
   await isarService.init();
 
   final container = ProviderContainer();
   await container.read(authProvider.notifier).load();
-  // Note: bootstrap() is now called in App.initState() to avoid blocking UI
 
   runApp(
     UncontrolledProviderScope(

@@ -9,7 +9,6 @@ class SubjectEntity {
   @Id()
   var isarId = 0;
 
-  /// UUID from backend
   @Index(unique: true)
   late String id;
 
@@ -46,7 +45,6 @@ class SubjectEntity {
   List<String> moduleIds = [];
 
   factory SubjectEntity.fromJson(Map<String, dynamic> json) {
-    // API returns attributes nested; fallback to flat map for old mock
     final attrs = json['attributes'] as Map<String, dynamic>? ?? json;
     final unit = attrs['unit'] as Map<String, dynamic>?;
     final learningModule = unit?['learning_module'] as Map<String, dynamic>?;

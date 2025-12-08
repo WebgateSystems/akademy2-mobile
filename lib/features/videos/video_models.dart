@@ -18,7 +18,6 @@ class VideoAuthor {
   }
 }
 
-/// Model for single video details from GET /v1/student/videos/{id}
 class VideoDetail {
   VideoDetail({
     required this.id,
@@ -50,7 +49,6 @@ class VideoDetail {
   }
 }
 
-/// Response wrapper for single video details
 class VideoDetailResponse {
   VideoDetailResponse({
     required this.success,
@@ -135,7 +133,6 @@ class SchoolVideo {
   final DateTime? createdAt;
   final bool canDelete;
 
-  // Compatibility getters
   String get subjectId => subject?.id ?? '';
   String get url => fileUrl.isNotEmpty ? fileUrl : youtubeUrl;
   int? get likes => likesCount;

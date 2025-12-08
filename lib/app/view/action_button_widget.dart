@@ -32,9 +32,9 @@ class ActionButtonWidget extends StatelessWidget {
         child: TextButton(
           onPressed: loading ? null : onPressed,
           style: TextButton.styleFrom(
-            minimumSize: Size(double.infinity, double.infinity), // важливо!
-            padding: EdgeInsets.zero, // прибирає внутрішній відступ
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap, // щоб не роздувало
+            minimumSize: Size(double.infinity, double.infinity),
+            padding: EdgeInsets.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.r),
             ),

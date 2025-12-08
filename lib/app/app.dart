@@ -21,7 +21,6 @@ class App extends ConsumerStatefulWidget {
 class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   DateTime? _backgroundedAt;
 
-  // Minimum time in background before requiring unlock (in seconds)
   static const _minBackgroundDuration = 30;
 
   @override
@@ -29,7 +28,6 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Run bootstrap sync asynchronously after UI is shown
       _runBootstrapSync();
 
       final auth = ref.read(authProvider);
@@ -43,7 +41,6 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
     });
   }
 
-  /// Run bootstrap sync in background without blocking UI
   Future<void> _runBootstrapSync() async {
     try {
       await ref.read(syncManagerProvider).bootstrap();
@@ -60,7 +57,6 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Record when app goes to background
     if (state == AppLifecycleState.paused) {
       _backgroundedAt = DateTime.now();
     }
@@ -70,8 +66,6 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
           DateTime.now().difference(_backgroundedAt!).inSeconds;
       _backgroundedAt = null;
 
-      // Only require unlock if app was in background for more than threshold
-      // This prevents unlock screen when using file pickers or permission dialogs
       if (secondsInBackground >= _minBackgroundDuration) {
         final auth = ref.read(authProvider);
         if (auth.isAuthenticated) {

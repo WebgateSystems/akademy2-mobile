@@ -237,7 +237,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         ).toString();
       }
 
-      if (auth.isAuthenticated && onboarding && !onUnlock) {
+      if (auth.needsSchoolBinding && !onJoinGroup && !onWaitApproval) {
+        return '/join-group';
+      }
+
+      if (auth.isAuthenticated &&
+          onboarding &&
+          !onUnlock &&
+          !onJoinGroup &&
+          !onWaitApproval) {
         return '/home';
       }
 

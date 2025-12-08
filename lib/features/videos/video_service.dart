@@ -49,12 +49,10 @@ class VideoService {
     await _dio.delete('v1/student/videos/$id');
   }
 
-  /// Toggle like on video (POST)
   Future<void> toggleLike(String id) async {
     await _dio.post('v1/student/videos/$id/like');
   }
 
-  /// Get available subjects for filtering
   Future<List<VideoSubjectFilter>> fetchSubjects() async {
     final resp = await _dio.get('v1/student/videos/subjects');
     final response =
@@ -62,7 +60,6 @@ class VideoService {
     return response.data;
   }
 
-  /// Get single video details by ID
   Future<VideoDetail> fetchVideoById(String id) async {
     final resp = await _dio.get('v1/student/videos/$id');
     final response =
@@ -70,7 +67,6 @@ class VideoService {
     return response.data;
   }
 
-  /// Update own pending video (title and description only)
   Future<void> updateVideo({
     required String id,
     required String title,

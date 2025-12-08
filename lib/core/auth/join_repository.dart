@@ -21,9 +21,18 @@ class JoinRepository {
     final resp = await _dio.get('v1/classes/join/$requestId/status');
     final data = resp.data as Map<String, dynamic>;
     final status = data['status'] as String? ?? 'pending';
-    final token = data['accessToken'] as String?;
-    final refresh = data['refreshToken'] as String?;
-    return JoinStatus(status: status, accessToken: token, refreshToken: refresh);
+    final token =
+        data['accessToken'] as String? ?? data['access_token'] as String?;
+    final refresh =
+        data['refreshToken'] as String? ?? data['refresh_token'] as String?;
+    final schoolId =
+        data['schoolId'] as String? ?? data['school_id'] as String?;
+    return JoinStatus(
+      status: status,
+      accessToken: token,
+      refreshToken: refresh,
+      schoolId: schoolId,
+    );
   }
 
   Future<void> clearPending() async {
@@ -34,13 +43,18 @@ class JoinRepository {
 }
 
 class JoinStatus {
-  const JoinStatus({required this.status, this.accessToken, this.refreshToken});
+  const JoinStatus({
+    required this.status,
+    this.accessToken,
+    this.refreshToken,
+    this.schoolId,
+  });
   final String status;
   final String? accessToken;
   final String? refreshToken;
+  final String? schoolId;
 }
 
-/// Singleton holder for Dio with interceptors already attached via Riverpod provider.
 class DioProviderSingleton {
   static late Dio dio;
 }

@@ -30,7 +30,6 @@ class AuthInterceptor extends Interceptor {
       }
     } catch (e) {
       debugPrint('AuthInterceptor: Error getting token: $e');
-      // ignore and continue without auth header
     }
     handler.next(options);
   }
@@ -54,7 +53,6 @@ class AuthInterceptor extends Interceptor {
             final response = await DioClient().dio.fetch(clone);
             return handler.resolve(response);
           } catch (e) {
-            // proceed to original error handling
           }
         }
       }

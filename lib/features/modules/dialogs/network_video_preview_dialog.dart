@@ -52,7 +52,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
       if (isNetwork) {
         controller = VideoPlayerController.networkUrl(uri);
       } else {
-        // Local file
         final file = widget.videoUrl.startsWith('file://') && uri != null
             ? File.fromUri(uri)
             : File(widget.videoUrl);
@@ -71,7 +70,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
       await controller.initialize();
       debugPrint('NetworkVideoPreviewDialog: Video initialized successfully');
 
-      // Load subtitles if available
       if (widget.subtitlesUrl != null && widget.subtitlesUrl!.isNotEmpty) {
         await _loadSubtitles(widget.subtitlesUrl!);
       }
@@ -88,7 +86,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
         _loading = false;
       });
 
-      // Hide controls after 3 seconds
       Future.delayed(const Duration(seconds: 3), () {
         if (mounted) setState(() => _showControls = false);
       });
@@ -117,7 +114,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
           return;
         }
       } else {
-        // Local file
         final file = url.startsWith('file://') && uri != null
             ? File.fromUri(uri)
             : File(url);
@@ -128,7 +124,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
         }
       }
 
-      // Parse subtitles (supports both SRT and VTT)
       _subtitles = _parseSubtitles(content);
       debugPrint('Loaded ${_subtitles.length} subtitle entries');
     } catch (e) {
@@ -139,16 +134,13 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
   List<SubtitleEntry> _parseSubtitles(String content) {
     final entries = <SubtitleEntry>[];
 
-    // Remove BOM if present
     content = content.replaceAll('\uFEFF', '');
 
-    // Split into blocks (works for both SRT and VTT)
     final blocks = content.split(RegExp(r'\n\s*\n'));
     for (final block in blocks) {
       final lines = block.trim().split('\n');
       if (lines.length < 2) continue;
 
-      // Find timestamp line
       int timestampIndex = 0;
       for (int i = 0; i < lines.length; i++) {
         if (lines[i].contains('-->')) {
@@ -168,13 +160,11 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
 
       if (start == null || end == null) continue;
 
-      // Get text (all lines after timestamp)
       final textLines = lines.sublist(timestampIndex + 1);
       final text = textLines
           .map((l) => l.trim())
           .where((l) => l.isNotEmpty)
           .join('\n')
-          // Remove VTT styling tags
           .replaceAll(RegExp(r'<[^>]+>'), '');
 
       if (text.isNotEmpty) {
@@ -187,7 +177,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
 
   Duration? _parseTimestamp(String timestamp) {
     try {
-      // Handle both SRT (00:00:00,000) and VTT (00:00:00.000) formats
       timestamp = timestamp.replaceAll(',', '.');
 
       final parts = timestamp.split(':');
@@ -206,7 +195,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
           milliseconds: milliseconds,
         );
       } else if (parts.length == 2) {
-        // MM:SS.mmm format
         final minutes = int.parse(parts[0]);
         final secondsParts = parts[1].split('.');
         final seconds = int.parse(secondsParts[0]);
@@ -271,17 +259,13 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Close button - at bottom of stack so it's behind content
-          // but we'll make sure it's accessible
 
-          // Main content with gesture detector for controls toggle
           Positioned.fill(
             child: GestureDetector(
               onTap: _toggleControls,
               behavior: HitTestBehavior.translucent,
               child: Stack(
                 children: [
-                  // Video
                   Center(
                     child: _loading
                         ? const CircularProgressWidget()
@@ -305,7 +289,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
                               ),
                   ),
 
-                  // Subtitles
                   if (_currentSubtitle.isNotEmpty)
                     Positioned(
                       bottom: 80.h,
@@ -332,12 +315,10 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
                       ),
                     ),
 
-                  // Controls overlay (play/pause and progress bar)
                   if (_showControls &&
                       !_loading &&
                       !_error &&
                       _controller != null) ...[
-                    // Play/Pause button
                     Center(
                       child: GestureDetector(
                         onTap: _togglePlayPause,
@@ -358,7 +339,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
                       ),
                     ),
 
-                    // Progress bar
                     Positioned(
                       bottom: 20.h,
                       left: 16.w,
@@ -379,7 +359,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
             ),
           ),
 
-          // Close button - OUTSIDE of GestureDetector, always on top
           Positioned(
             top: MediaQuery.of(context).padding.top + 24.h,
             right: 8.w,

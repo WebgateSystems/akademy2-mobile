@@ -62,7 +62,6 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
     if (_saving) return;
     setState(() => _saving = true);
     try {
-      // Явно вимикаємо обидва прапори, щоб не зберігати сміття.
       _fingerprint = false;
       _face = false;
       await _saveAndClose(enable: false);

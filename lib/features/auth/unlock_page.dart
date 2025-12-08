@@ -82,7 +82,6 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
         await _finishUnlock();
       }
     } catch (_) {
-      // ignore biometric errors; user can fallback to PIN
     }
   }
 

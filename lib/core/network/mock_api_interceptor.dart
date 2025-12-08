@@ -2,8 +2,6 @@ import 'package:dio/dio.dart';
 
 import 'fake_backend.dart';
 
-/// MockApiInterceptor intercepts requests to v1/* and returns mock JSON responses.
-/// This allows local testing without a real backend.
 class MockApiInterceptor extends Interceptor {
   @override
   void onRequest(

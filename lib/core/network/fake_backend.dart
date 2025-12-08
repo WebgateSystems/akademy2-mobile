@@ -1,5 +1,4 @@
 class FakeBackend {
-  /// Mock login response: { access_token, data { id, type, attributes } }
   static Map<String, dynamic> mockLogin(String phone, String pin) {
     return {
       'access_token': 'access_token_${DateTime.now().millisecondsSinceEpoch}',
@@ -17,7 +16,6 @@ class FakeBackend {
     };
   }
 
-  /// Mock refresh response: { accessToken, refreshToken }
   static Map<String, dynamic> mockRefresh(String oldRefreshToken) {
     return {
       'accessToken': 'access_token_${DateTime.now().millisecondsSinceEpoch}',
@@ -40,7 +38,6 @@ class FakeBackend {
   static final Map<String, List<Map<String, dynamic>>> _modulesBySubject = {};
   static final Map<String, List<Map<String, dynamic>>> _contentsByModule = {};
 
-  /// Mock subjects list
   static Map<String, dynamic> mockSubjects({String? updatedSince}) {
     final subjects = _subjects.map((subject) {
       final modules = mockModules(subject['id'] as String)['modules'] as List;
@@ -50,11 +47,9 @@ class FakeBackend {
       };
     }).toList();
 
-    // TODO: handle updatedSince filter
     return {'subjects': subjects};
   }
 
-  /// Mock modules list for a subject
   static Map<String, dynamic> mockModules(String subjectId) {
     final modules = _modulesBySubject.putIfAbsent(
       subjectId,
@@ -77,7 +72,6 @@ class FakeBackend {
     return {'modules': modules};
   }
 
-  /// Mock contents (video, infographic, quiz) for a module
   static Map<String, dynamic> mockContents(String moduleId) {
     final contents = _contentsByModule.putIfAbsent(
       moduleId,
@@ -100,7 +94,6 @@ class FakeBackend {
     return {'contents': contents};
   }
 
-  /// Mock logout response
   static Map<String, dynamic> mockLogout() {
     return {'success': true};
   }

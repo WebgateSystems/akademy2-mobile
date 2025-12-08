@@ -7,25 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../core/db/entities/subject_entity.dart';
-import '../../core/db/isar_service.dart';
-import '../../core/sync/sync_manager.dart';
+import '../../core/services/student_api_service.dart';
 import '../../l10n/app_localizations.dart';
 import 'widgets/subject_tile.dart';
-
-final subjectsProvider = FutureProvider<List<SubjectEntity>>((ref) async {
-  final service = IsarService();
-  await service.init(); // ensure DB open before queries
-  var subjects = await service.getSubjects();
-
-  // Ensure we have data in the local cache
-  if (subjects.isEmpty) {
-    await ref.read(syncManagerProvider).bootstrap();
-    subjects = await service.getSubjects();
-  }
-
-  return subjects;
-});
 
 class SubjectsPage extends ConsumerStatefulWidget {
   const SubjectsPage({super.key});
@@ -36,22 +20,25 @@ class SubjectsPage extends ConsumerStatefulWidget {
 
 class _SubjectsPageState extends ConsumerState<SubjectsPage> {
   Future<void> _refresh() async {
-    await ref.read(syncManagerProvider).bootstrap();
-    ref.invalidate(subjectsProvider);
+    ref.invalidate(dashboardSubjectsProvider);
   }
 
-  Future<void> _handleSubjectTap(SubjectEntity subject) async {
+  Future<void> _handleSubjectTap(DashboardSubject subject) async {
     if (!mounted) return;
-    // Navigate according to tech spec:
-    // If subject has exactly one module → go directly to its video flow.
-    // Otherwise → go to modules list for the subject.
-    final service = IsarService();
-    await service.init();
-    final modules = await service.getModulesBySubjectId(subject.id);
-    if (modules.length == 1) {
-      final moduleId = modules.first.id;
-      context.push('/module/$moduleId');
-    } else {
+    if (subject.totalModules == 1) {
+      try {
+        final detail = await ref
+            .read(studentApiServiceProvider)
+            .fetchSubjectDetail(subject.id);
+        final modules = detail.allModules;
+        if (modules.length == 1 && mounted) {
+          context.push('/module/${modules.first.id}');
+          return;
+        }
+      } catch (_) {
+      }
+    }
+    if (mounted) {
       context.push('/subject/${subject.id}');
     }
   }
@@ -59,7 +46,7 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final subjectsAsync = ref.watch(subjectsProvider);
+    final subjectsAsync = ref.watch(dashboardSubjectsProvider);
 
     return subjectsAsync.when(
       data: (data) {
@@ -104,7 +91,7 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
                     crossAxisCount: 2,
                     mainAxisSpacing: 2.w,
                     crossAxisSpacing: 12.w,
-                    childAspectRatio: 0.9, // taller cards
+                    childAspectRatio: 0.9,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
