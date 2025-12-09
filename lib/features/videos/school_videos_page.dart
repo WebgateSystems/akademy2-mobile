@@ -366,6 +366,65 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     );
   }
 
+  Future<bool> _confirmDelete() async {
+    final l10n = AppLocalizations.of(context)!;
+    final cancelLabel = MaterialLocalizations.of(context).cancelButtonLabel;
+
+    return (await showDialog<bool>(
+          context: context,
+          builder: (_) => Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: EdgeInsets.all(20.w),
+            child: Container(
+              padding: EdgeInsets.all(20.w),
+              decoration: BoxDecoration(
+                color: AppColors.surfacePrimary(context),
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.schoolVideosDeleteTitle,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.h3(context),
+                  ),
+                  SizedBox(height: 12.h),
+                  Text(
+                    l10n.schoolVideosDeleteMessage,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.b2(context).copyWith(
+                      color: AppColors.contentSecondary(context),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: Text(cancelLabel),
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: ActionButtonWidget(
+                          height: 44.h,
+                          onPressed: () => Navigator.of(context).pop(true),
+                          text: l10n.ok,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )) ??
+        false;
+  }
+
   void _showVideoPreview(SchoolVideo video) {
     final youtubeUrl = video.youtubeUrl;
     final hasYoutube = youtubeUrl.isNotEmpty;
@@ -697,8 +756,11 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                     height: 20.w,
                   ),
                   onPressed: () async {
-                    await VideoService().deleteVideo(video.id);
-                    _loadVideos(reset: true);
+                    final confirmed = await _confirmDelete();
+                    if (confirmed) {
+                      await VideoService().deleteVideo(video.id);
+                      _loadVideos(reset: true);
+                    }
                   },
                 )
               else if (isRejected)

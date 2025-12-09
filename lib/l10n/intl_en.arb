@@ -146,6 +146,8 @@
   },
   "schoolVideosStatusPending": "Pending approval",
   "schoolVideosStatusApproved": "Approved",
+  "schoolVideosDeleteTitle": "Delete video",
+  "schoolVideosDeleteMessage": "Delete this video?",
   "schoolVideosPendingTitle": "Wait for teacher's approval",
   "schoolVideosPendingMessage": "Your teacher will review your request soon - hang tight!",
   "schoolVideosError": "Error: {error}",

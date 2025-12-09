@@ -146,6 +146,8 @@
   },
   "schoolVideosStatusPending": "Очікує на підтвердження",
   "schoolVideosStatusApproved": "Схвалено",
+  "schoolVideosDeleteTitle": "Видалити відео",
+  "schoolVideosDeleteMessage": "Видалити це відео?",
   "schoolVideosPendingTitle": "Зачекайте на підтвердження вчителя",
   "schoolVideosPendingMessage": "Ваш учитель незабаром розгляне ваш запит — трошки зачекайте!",
   "schoolVideosError": "Помилка: {error}",

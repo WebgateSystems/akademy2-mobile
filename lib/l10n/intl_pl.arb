@@ -146,6 +146,8 @@
   },
   "schoolVideosStatusPending": "Oczekuje na akceptację",
   "schoolVideosStatusApproved": "Zatwierdzony",
+  "schoolVideosDeleteTitle": "Usuń wideo",
+  "schoolVideosDeleteMessage": "Usunąć to wideo?",
   "schoolVideosPendingTitle": "Poczekaj na zatwierdzenie nauczyciela",
   "schoolVideosPendingMessage": "Twój nauczyciel wkrótce rozpatrzy Twoje zgłoszenie – chwilę poczekaj!",
   "schoolVideosError": "Błąd: {error}",

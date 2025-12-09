@@ -313,6 +313,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get schoolVideosStatusApproved => 'Zatwierdzony';
 
   @override
+  String get schoolVideosDeleteTitle => 'Usuń wideo';
+
+  @override
+  String get schoolVideosDeleteMessage => 'Usunąć to wideo?';
+
+  @override
   String get schoolVideosPendingTitle =>
       'Poczekaj na zatwierdzenie nauczyciela';
 

@@ -640,6 +640,18 @@ abstract class AppLocalizations {
   /// **'Approved'**
   String get schoolVideosStatusApproved;
 
+  /// No description provided for @schoolVideosDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete video'**
+  String get schoolVideosDeleteTitle;
+
+  /// No description provided for @schoolVideosDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this video?'**
+  String get schoolVideosDeleteMessage;
+
   /// No description provided for @schoolVideosPendingTitle.
   ///
   /// In en, this message translates to:

@@ -312,6 +312,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get schoolVideosStatusApproved => 'Approved';
 
   @override
+  String get schoolVideosDeleteTitle => 'Delete video';
+
+  @override
+  String get schoolVideosDeleteMessage => 'Delete this video?';
+
+  @override
   String get schoolVideosPendingTitle => 'Wait for teacher\'s approval';
 
   @override

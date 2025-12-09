@@ -313,6 +313,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get schoolVideosStatusApproved => 'Схвалено';
 
   @override
+  String get schoolVideosDeleteTitle => 'Видалити відео';
+
+  @override
+  String get schoolVideosDeleteMessage => 'Видалити це відео?';
+
+  @override
   String get schoolVideosPendingTitle => 'Зачекайте на підтвердження вчителя';
 
   @override
