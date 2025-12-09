@@ -1,16 +1,20 @@
 import 'dart:async';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/app/view/toolbar_widget.dart';
+import 'package:academy_2_app/core/network/api.dart';
+import 'package:academy_2_app/core/services/student_api_service.dart';
 import 'package:academy_2_app/features/modules/dialogs/network_video_preview_dialog.dart';
 import 'package:academy_2_app/features/modules/dialogs/youtube_preview_dialog.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -45,6 +49,10 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
   final Map<String, int> _likesCount = {};
   final Set<String> _likedIds = {};
   final Map<String, VideoDetail> _videoDetails = {};
+  final List<SchoolVideo> _mainVideos = [];
+  final List<SchoolVideo> _myVideos = [];
+  int _requestId = 0;
+  bool _isLoadingMyVideos = false;
 
   final List<SchoolVideo> _videos = [];
   List<VideoSubjectFilter> _subjects = [];
@@ -82,8 +90,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       setState(() {
         _subjects = subjects;
       });
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   void _onSearchChanged() {
@@ -105,20 +112,32 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     if (reset) {
       setState(() {
         _videos.clear();
+        _mainVideos.clear();
+        _myVideos.clear();
         _videoDetails.clear();
         _currentPage = 1;
         _hasMore = true;
       });
     }
 
-    if (!_hasMore || _isLoadingMore) return;
+    if (!_hasMore || (_isLoadingMore && !reset)) return;
 
+    final requestId = ++_requestId;
     setState(() => _isLoadingMore = true);
 
     try {
       final subjectIds = ref.read(_subjectFiltersProvider);
-      final query = ref.read(_searchProvider);
+      final query = ref.read(_searchProvider).trim();
       final service = VideoService();
+
+      if (reset) {
+        await _loadMyVideos(
+          subjectIds: subjectIds,
+          query: query,
+          requestId: requestId,
+        );
+        if (requestId != _requestId) return;
+      }
 
       final response = await service.fetchVideos(
         page: _currentPage,
@@ -134,8 +153,13 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
         newVideos.add(video);
       }
 
+      if (!mounted || requestId != _requestId) return;
+
       setState(() {
-        _videos.addAll(newVideos);
+        _mainVideos.addAll(newVideos);
+        _videos
+          ..clear()
+          ..addAll(_mergeVideos());
         _hasMore = response.meta.hasMore;
         _currentPage++;
         _isLoadingMore = false;
@@ -143,6 +167,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
 
       _fetchVideoDetails(newVideos.map((v) => v.id).toList());
     } catch (e) {
+      if (requestId != _requestId) return;
       setState(() => _isLoadingMore = false);
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
@@ -153,9 +178,79 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     }
   }
 
+  Future<void> _loadMyVideos({
+    required Set<String> subjectIds,
+    required String query,
+    required int requestId,
+  }) async {
+    _isLoadingMyVideos = true;
+    final service = VideoService();
+    final List<SchoolVideo> myVideos = [];
+    var page = 1;
+    var hasMore = true;
+
+    try {
+      while (hasMore) {
+        final response = await service.fetchMyVideos(
+          page: page,
+          subjectId: subjectIds.length == 1 ? subjectIds.first : null,
+          query: query.isEmpty ? null : query,
+        );
+
+        final filtered = subjectIds.isNotEmpty
+            ? response.data
+                .where((v) => subjectIds.contains(v.subjectId))
+                .toList()
+            : response.data;
+
+        myVideos.addAll(filtered);
+        hasMore = response.meta.hasMore;
+        page++;
+      }
+
+      if (!mounted || requestId != _requestId) return;
+
+      final newIds = myVideos
+          .where((v) => !_videoDetails.containsKey(v.id))
+          .map((v) => v.id)
+          .toList();
+
+      setState(() {
+        _myVideos
+          ..clear()
+          ..addAll(myVideos);
+        _videos
+          ..clear()
+          ..addAll(_mergeVideos());
+      });
+
+      _fetchVideoDetails(newIds);
+    } catch (e) {
+      if (!mounted || requestId != _requestId) return;
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.schoolVideosError('$e'))),
+      );
+    } finally {
+      _isLoadingMyVideos = false;
+    }
+  }
+
+  List<SchoolVideo> _mergeVideos() {
+    final Map<String, SchoolVideo> merged = {};
+    for (final video in _mainVideos) {
+      merged[video.id] = video;
+    }
+    for (final video in _myVideos) {
+      merged[video.id] = video;
+    }
+    return merged.values.toList();
+  }
+
   Future<void> _fetchVideoDetails(List<String> videoIds) async {
     final service = VideoService();
-    for (final id in videoIds) {
+    final ids = videoIds.where((id) => !_videoDetails.containsKey(id)).toList();
+    for (final id in ids) {
       try {
         final detail = await service.fetchVideoById(id);
         if (mounted) {
@@ -163,8 +258,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
             _videoDetails[id] = detail;
           });
         }
-      } catch (e) {
-      }
+      } catch (e) {}
     }
   }
 
@@ -225,6 +319,53 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     }
   }
 
+  void _showRejectionDialog(String? reason) {
+    final l10n = AppLocalizations.of(context)!;
+    final description = (reason != null && reason.trim().isNotEmpty)
+        ? reason.trim()
+        : l10n.schoolVideosStatusLabel('rejected');
+
+    showDialog<void>(
+      context: context,
+      builder: (_) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.all(20.w),
+        child: Container(
+          padding: EdgeInsets.all(20.w),
+          decoration: BoxDecoration(
+            color: AppColors.surfacePrimary(context),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                l10n.schoolVideosStatusLabel('rejected'),
+                textAlign: TextAlign.center,
+                style: AppTextStyles.h3(context),
+              ),
+              SizedBox(height: 12.h),
+              Text(
+                description,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.b2(context).copyWith(
+                  color: AppColors.contentSecondary(context),
+                ),
+              ),
+              SizedBox(height: 20.h),
+              ActionButtonWidget(
+                height: 44.h,
+                onPressed: () => Navigator.of(context).pop(),
+                text: l10n.ok,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showVideoPreview(SchoolVideo video) {
     final youtubeUrl = video.youtubeUrl;
     final hasYoutube = youtubeUrl.isNotEmpty;
@@ -246,7 +387,8 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       showDialog<void>(
         context: context,
         barrierColor: Colors.black.withOpacity(0.9),
-        builder: (_) => NetworkVideoPreviewDialog(videoUrl: video.fileUrl),
+        builder: (_) => NetworkVideoPreviewDialog(
+            videoUrl: Api.baseUploadUrl + video.fileUrl),
       );
     }
   }
@@ -297,6 +439,13 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final selectedSubject = ref.watch(_subjectFiltersProvider);
+    final subjectsAsync = ref.watch(dashboardSubjectsProvider);
+    final subjectDetailsMap =
+        subjectsAsync.maybeWhen<Map<String, DashboardSubject>>(
+              data: (subjects) =>
+                  {for (final subject in subjects) subject.id: subject},
+              orElse: () => const {},
+            );
 
     ref.listen(_subjectFiltersProvider, (_, __) {
       _loadVideos(reset: true);
@@ -380,7 +529,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                   ),
                   SizedBox(height: 16.h),
                   Expanded(
-                    child: _buildVideosList(l10n),
+                    child: _buildVideosList(l10n, subjectDetailsMap),
                   ),
                 ],
               ),
@@ -410,7 +559,10 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     );
   }
 
-  Widget _buildVideosList(AppLocalizations l10n) {
+  Widget _buildVideosList(
+    AppLocalizations l10n,
+    Map<String, DashboardSubject> subjectDetails,
+  ) {
     if (_videos.isEmpty && _isLoadingMore) {
       return const Center(child: CircularProgressWidget());
     }
@@ -439,14 +591,17 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
         }
 
         final entry = groups[index];
-        final title = subjectsMap[entry.key] ?? l10n.schoolVideosGroupUnknown;
+        final detail = subjectDetails[entry.key];
+        final title =
+            subjectsMap[entry.key] ?? detail?.title ?? l10n.schoolVideosGroupUnknown;
+        final iconUrl = detail?.iconUrl ?? '';
 
         return Padding(
           padding: EdgeInsets.only(bottom: 12.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GroupTitleWidget(title: title),
+              GroupTitleWidget(title: title, iconUrl: iconUrl),
               SizedBox(height: 8.h),
               ...entry.value.map((video) {
                 final likeCount =
@@ -468,8 +623,10 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
 
   Card _getVideoCard(BuildContext context, SchoolVideo video, bool isLiked,
       int likeCount, VideoDetail? detail) {
-    final isMyPendingVideo =
-        detail != null && detail.author?.isMe == true && detail.isPending;
+    final isMyPendingVideo = (video.author?.isMe == true && video.isPending) ||
+        (detail != null && detail.author?.isMe == true && detail.isPending);
+    final canDelete = video.canDelete;
+    final isRejected = video.isRejected;
 
     return Card(
       elevation: 0,
@@ -496,10 +653,13 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
             children: [
               GestureDetector(
                 onTap: () => _onVideoTap(video),
-                child: _VideoPreview(
-                  url: video.thumbnailUrl.isNotEmpty
-                      ? video.thumbnailUrl
-                      : video.fileUrl,
+                child: Padding(
+                  padding: EdgeInsets.all(2.w),
+                  child: _VideoPreview(
+                    url: video.thumbnailUrl.isNotEmpty
+                        ? Api.baseUploadUrl + video.thumbnailUrl
+                        : video.fileUrl,
+                  ),
                 ),
               ),
               SizedBox(width: 12.w),
@@ -517,22 +677,13 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                       style: AppTextStyles.b2(context).copyWith(
                         color: AppColors.contentSecondary(context),
                       ),
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    if (video.author != null) ...[
-                      SizedBox(height: 4.h),
-                      Text(
-                        video.author!.name,
-                        style: AppTextStyles.b3(context).copyWith(
-                          color: AppColors.contentTertiary(context),
-                        ),
-                      ),
-                    ],
                   ],
                 ),
               ),
-              if (isMyPendingVideo)
+              if (canDelete)
                 IconButton(
                   padding: EdgeInsets.zero,
                   constraints: BoxConstraints(
@@ -541,7 +692,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                   ),
                   icon: Image.asset(
                     'assets/images/ic_close.png',
-                    color: AppColors.contentError(context),
+                    color: AppColors.contentPrimary(context),
                     width: 20.w,
                     height: 20.w,
                   ),
@@ -549,6 +700,21 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                     await VideoService().deleteVideo(video.id);
                     _loadVideos(reset: true);
                   },
+                )
+              else if (isRejected)
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(
+                    minWidth: 32.w,
+                    minHeight: 32.w,
+                  ),
+                  icon: Image.asset(
+                    'assets/images/ic_cancel.png',
+                    color: AppColors.contentError(context),
+                    width: 20.w,
+                    height: 20.w,
+                  ),
+                  onPressed: () => _showRejectionDialog(video.rejectionReason),
                 )
               else
                 Column(
@@ -592,12 +758,20 @@ class GroupTitleWidget extends StatelessWidget {
   const GroupTitleWidget({
     super.key,
     required this.title,
+    this.iconUrl = '',
   });
 
   final String title;
+  final String iconUrl;
 
   @override
   Widget build(BuildContext context) {
+    final hasIcon = iconUrl.isNotEmpty;
+    final resolvedUrl = iconUrl.startsWith('http')
+        ? iconUrl
+        : '${Api.baseUploadUrl}${iconUrl.startsWith('/') ? '' : '/'}$iconUrl';
+    final isSvg = iconUrl.toLowerCase().endsWith('.svg');
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
@@ -605,7 +779,25 @@ class GroupTitleWidget extends StatelessWidget {
         CircleAvatar(
           radius: 32.w / 2,
           backgroundColor: AppColors.surfaceIcon(context),
-          child: null,
+          child: hasIcon
+              ? ClipOval(
+                  child: isSvg
+                      ? SvgPicture.network(
+                          resolvedUrl,
+                          width: 32.w,
+                          height: 32.w,
+                          fit: BoxFit.cover,
+                          placeholderBuilder: (_) => const SizedBox.shrink(),
+                        )
+                      : Image.network(
+                          resolvedUrl,
+                          width: 32.w,
+                          height: 32.w,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                        ),
+                )
+              : null,
         ),
         SizedBox(width: 8.w),
         Expanded(

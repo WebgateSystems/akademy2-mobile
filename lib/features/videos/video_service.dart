@@ -13,11 +13,28 @@ class VideoService {
     String? subjectId,
     String? query,
   }) async {
+    final trimmedQuery = query?.trim();
     final resp = await _dio.get('v1/student/videos', queryParameters: {
       'page': page,
       'per_page': perPage,
       if (subjectId != null && subjectId.isNotEmpty) 'subject_id': subjectId,
-      if (query != null && query.isNotEmpty) 'q': query,
+      if (trimmedQuery != null && trimmedQuery.isNotEmpty) 'q': trimmedQuery,
+    });
+    return VideosResponse.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  Future<VideosResponse> fetchMyVideos({
+    int page = 1,
+    int perPage = 20,
+    String? subjectId,
+    String? query,
+  }) async {
+    final trimmedQuery = query?.trim();
+    final resp = await _dio.get('v1/student/videos/my', queryParameters: {
+      'page': page,
+      'per_page': perPage,
+      if (subjectId != null && subjectId.isNotEmpty) 'subject_id': subjectId,
+      if (trimmedQuery != null && trimmedQuery.isNotEmpty) 'q': trimmedQuery,
     });
     return VideosResponse.fromJson(resp.data as Map<String, dynamic>);
   }

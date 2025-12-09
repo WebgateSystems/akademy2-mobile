@@ -116,6 +116,9 @@ class SchoolVideo {
     required this.school,
     required this.createdAt,
     required this.canDelete,
+    required this.status,
+    required this.moderatedAt,
+    required this.rejectionReason,
   });
 
   final String id;
@@ -132,11 +135,17 @@ class SchoolVideo {
   final VideoSchool? school;
   final DateTime? createdAt;
   final bool canDelete;
+  final String status;
+  final DateTime? moderatedAt;
+  final String? rejectionReason;
 
   String get subjectId => subject?.id ?? '';
   String get url => fileUrl.isNotEmpty ? fileUrl : youtubeUrl;
   int? get likes => likesCount;
   bool get liked => likedByMe;
+  bool get isPending => status == 'pending';
+  bool get isRejected => status == 'rejected';
+  bool get isApproved => status == 'approved';
 
   factory SchoolVideo.fromJson(Map<String, dynamic> json) {
     return SchoolVideo(
@@ -162,6 +171,13 @@ class SchoolVideo {
           ? DateTime.tryParse(json['created_at'] as String)
           : null,
       canDelete: json['can_delete'] as bool? ?? false,
+      status: (json['status'] as String? ?? '').isNotEmpty
+          ? json['status'] as String
+          : 'approved',
+      moderatedAt: json['moderated_at'] != null
+          ? DateTime.tryParse(json['moderated_at'] as String)
+          : null,
+      rejectionReason: json['rejection_reason'] as String?,
     );
   }
 

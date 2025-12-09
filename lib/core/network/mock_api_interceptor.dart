@@ -35,6 +35,9 @@ class MockApiInterceptor extends Interceptor {
         case 'v1/videos':
           mock = await _mockVideos(options);
           break;
+        case 'v1/student/videos/my':
+          mock = await _mockVideos(options);
+          break;
         case 'v1/account/update':
           mock = await _mockAccountUpdate(options);
           break;
@@ -138,11 +141,39 @@ class MockApiInterceptor extends Interceptor {
   Future<Response?> _mockVideos(RequestOptions options) async {
     final method = options.method.toUpperCase();
     if (method == 'GET') {
-      final subjectId = options.queryParameters['subjectId'] as String?;
-      final q = options.queryParameters['q'] as String?;
+      final subjectId = options.queryParameters['subject_id'] as String? ??
+          options.queryParameters['subjectId'] as String?;
+      final q = options.queryParameters['query'] as String? ??
+          options.queryParameters['q'] as String?;
+      final page =
+          int.tryParse('${options.queryParameters['page'] ?? 1}') ?? 1;
+      var perPage =
+          int.tryParse('${options.queryParameters['per_page'] ?? 20}') ?? 20;
+
+      final response =
+          FakeBackend.mockVideos(subjectId: subjectId, query: q)['videos']
+              as List<dynamic>;
+      if (perPage <= 0) {
+        perPage = response.isEmpty ? 1 : response.length;
+      }
+
+      final start = (page - 1) * perPage;
+      final paged = response.skip(start).take(perPage).toList();
+      final totalPages =
+          response.isEmpty ? 0 : (response.length / perPage).ceil();
+
       return Response(
         requestOptions: options,
-        data: FakeBackend.mockVideos(subjectId: subjectId, query: q),
+        data: {
+          'success': true,
+          'data': paged,
+          'meta': {
+            'page': page,
+            'per_page': perPage,
+            'total': response.length,
+            'total_pages': totalPages,
+          },
+        },
         statusCode: 200,
       );
     }
