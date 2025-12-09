@@ -188,6 +188,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final onSplash = loc == '/splash';
       final onCreateAccount = loc == '/create-account';
       final onVerifyPhone = loc == '/verify-phone';
+      final onVerifyEmail = loc == '/verify-email';
       final onJoinGroup = loc == '/join-group';
       final onWaitApproval = loc == '/wait-approval';
       final onCreatePin = loc == '/create-pin';
@@ -204,6 +205,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         onTechLogin,
         onCreateAccount,
         onVerifyPhone,
+        onVerifyEmail,
         onJoinGroup,
         onWaitApproval,
         onCreatePin,
