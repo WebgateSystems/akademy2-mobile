@@ -7,6 +7,7 @@ class ActionTextButtonWidget extends StatelessWidget {
   final bool loading;
   final Color? color;
   final VoidCallback? onPressed;
+  final bool fullWidth;
 
   const ActionTextButtonWidget({
     super.key,
@@ -14,13 +15,14 @@ class ActionTextButtonWidget extends StatelessWidget {
     this.loading = false,
     this.color,
     required this.onPressed,
+    this.fullWidth = true,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 56.h,
-      width: double.infinity,
+      width: fullWidth ? double.infinity : null,
       child: Container(
         alignment: Alignment.center,
         decoration: BoxDecoration(

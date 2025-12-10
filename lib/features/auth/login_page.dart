@@ -114,20 +114,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             loading: isLoading,
           ),
           Spacer(),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                  padding: EdgeInsetsGeometry.only(left: 20.w),
-                  child: Text(l10n.loginCreateAccountPrompt)),
-              Flexible(
-                child: ActionTextButtonWidget(
+          Center(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(l10n.loginCreateAccountPrompt),
+                SizedBox(width: 12.w),
+                ActionTextButtonWidget(
                   onPressed: () => context.go('/create-account'),
                   text: l10n.loginCreateAccountCta,
+                  fullWidth: false,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
