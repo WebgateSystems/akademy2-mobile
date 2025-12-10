@@ -13,6 +13,7 @@ class BasePageWithToolbar extends StatelessWidget {
   final bool stickChildrenToBottom;
   final double? paddingBottom;
   final Widget? rightIcon;
+  final Future<void> Function()? onBack;
 
   const BasePageWithToolbar({
     super.key,
@@ -24,6 +25,7 @@ class BasePageWithToolbar extends StatelessWidget {
     this.stickChildrenToBottom = false,
     this.paddingBottom,
     this.rightIcon,
+    this.onBack,
   });
 
   @override
@@ -45,7 +47,13 @@ class BasePageWithToolbar extends StatelessWidget {
                           'assets/images/ic_chevron_left.png',
                           color: AppColors.contentPrimary(context),
                         ),
-                        onPressed: () => context.pop(),
+                        onPressed: () async {
+                          if (onBack != null) {
+                            await onBack!();
+                          } else {
+                            context.pop();
+                          }
+                        },
                       ),
                     ),
                   ),
@@ -62,7 +70,13 @@ class BasePageWithToolbar extends StatelessWidget {
                                 'assets/images/ic_chevron_left.png',
                                 color: AppColors.contentPrimary(context),
                               ),
-                              onPressed: () => context.pop(),
+                              onPressed: () async {
+                                if (onBack != null) {
+                                  await onBack!();
+                                } else {
+                                  context.pop();
+                                }
+                              },
                             )
                           : null,
                       title: title,
