@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/core/utils/orientation_utils.dart';
 import 'package:academy_2_app/features/modules/models/subtitle_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,6 +29,7 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
   @override
   void initState() {
     super.initState();
+    OrientationUtils.allowVideoOrientations();
     _controller = YoutubePlayerController(
       initialVideoId: widget.videoId,
       flags: YoutubePlayerFlags(
@@ -181,6 +183,7 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
   void dispose() {
     _controller.removeListener(_onVideoProgress);
     _controller.dispose();
+    OrientationUtils.lockPortrait();
     super.dispose();
   }
 
