@@ -194,6 +194,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       final onCreatePin = loc == '/create-pin';
       final onConfirmPin = loc == '/confirm-pin';
       final onEnableBiometric = loc == '/enable-biometric';
+      final finishingOnboarding =
+          onCreatePin || onConfirmPin || onEnableBiometric;
       final isJoinDeepLink = loc.startsWith('/join');
       if (auth.isLoading) return null;
 
@@ -229,7 +231,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         ).toString();
       }
 
-      if (auth.needsSchoolBinding && !onJoinGroup && !onWaitApproval) {
+      if (auth.needsSchoolBinding &&
+          !onJoinGroup &&
+          !onWaitApproval &&
+          !finishingOnboarding) {
         return '/join-group';
       }
 
@@ -237,7 +242,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           onboarding &&
           !onUnlock &&
           !onJoinGroup &&
-          !onWaitApproval) {
+          !onWaitApproval &&
+          !finishingOnboarding) {
         return '/home';
       }
 

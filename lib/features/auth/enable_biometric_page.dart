@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 
+import '../../core/auth/auth_provider.dart';
 import '../../core/storage/secure_storage.dart';
 
 class EnableBiometricPage extends ConsumerStatefulWidget {
@@ -77,7 +78,10 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
     await storage.write('biometricFingerprint', _fingerprint.toString());
     await storage.write('biometricFace', _face.toString());
     if (!mounted) return;
-    context.go('/join-group');
+    final auth = ref.read(authProvider);
+    final target =
+        (auth.schoolId != null && auth.schoolId!.isNotEmpty) ? '/home' : '/join-group';
+    context.go(target);
   }
 
   void _showMessage(String message) {
@@ -99,7 +103,6 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
           const Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 20.w,
             children: [
               CustomImageChip(
                 selected: _fingerprint,
@@ -107,6 +110,7 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
                 assetPath: 'assets/images/ic_fingerprint_id.png',
                 size: 64.h,
               ),
+              SizedBox(width: 20.w),
               CustomImageChip(
                 selected: _face,
                 onTap: _toggleFace,
