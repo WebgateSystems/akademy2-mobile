@@ -107,12 +107,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
       final phoneForApi = PlPhoneFormatter.toApiFormat(_phoneCtrl.text);
 
-      await dio.patch('v1/students/$userId', data: {
+      await dio.patch('/api/v1/management/students/$userId', data: {
         'student': {
           'first_name': _firstNameCtrl.text.trim(),
           'last_name': _lastNameCtrl.text.trim(),
           'email': _emailCtrl.text.trim(),
-          'school_id': schoolId,
+          'school_class_id': schoolId,
           'metadata': {
             'phone': phoneForApi,
             'birth_date': _dobCtrl.text.trim(),
@@ -286,9 +286,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ],
               onChanged: (v) {
                 setState(() => _language = v ?? 'en');
-                ref
-                    .read(settingsProvider.notifier)
-                    .setLanguageAndSync(_language);
+                ref.read(settingsProvider.notifier).setLanguage(_language);
               },
             ),
             SizedBox(height: 20.h),

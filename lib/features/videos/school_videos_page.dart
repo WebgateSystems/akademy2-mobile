@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
+import 'package:academy_2_app/app/view/action_outlinedbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
@@ -402,9 +403,9 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                   Row(
                     children: [
                       Expanded(
-                        child: TextButton(
+                        child: ActionOutlinedButtonWidget(
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: Text(cancelLabel),
+                          text: cancelLabel,
                         ),
                       ),
                       SizedBox(width: 12.w),
@@ -501,10 +502,9 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     final subjectsAsync = ref.watch(dashboardSubjectsProvider);
     final subjectDetailsMap =
         subjectsAsync.maybeWhen<Map<String, DashboardSubject>>(
-              data: (subjects) =>
-                  {for (final subject in subjects) subject.id: subject},
-              orElse: () => const {},
-            );
+      data: (subjects) => {for (final subject in subjects) subject.id: subject},
+      orElse: () => const {},
+    );
 
     ref.listen(_subjectFiltersProvider, (_, __) {
       _loadVideos(reset: true);
@@ -651,8 +651,9 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
 
         final entry = groups[index];
         final detail = subjectDetails[entry.key];
-        final title =
-            subjectsMap[entry.key] ?? detail?.title ?? l10n.schoolVideosGroupUnknown;
+        final title = subjectsMap[entry.key] ??
+            detail?.title ??
+            l10n.schoolVideosGroupUnknown;
         final iconUrl = detail?.iconUrl ?? '';
 
         return Padding(

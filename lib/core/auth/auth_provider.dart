@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/storage/secure_storage.dart';
 import '../network/dio_provider.dart';
-import '../settings/settings_provider.dart';
 
 class AuthState {
   final bool isAuthenticated;
@@ -94,10 +93,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
               email: attributes?['email'] as String?,
               phone: attributes?['phone'] as String? ?? phone,
               pin: pin);
-          final locale = attributes?['locale'] as String?;
-          if (locale != null) {
-            ref.read(settingsProvider.notifier).setLanguage(locale);
-          }
           final schoolId = attributes?['school_id'] as String?;
           state = AuthState(
             isAuthenticated: true,

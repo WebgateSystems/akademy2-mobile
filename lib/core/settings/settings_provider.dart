@@ -74,7 +74,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final dio = _ref.read(dioProvider);
       final userId = await _storage.read('userId');
       if (userId != null) {
-        await dio.patch('v1/students/$userId', data: {
+        await dio.patch('/api/v1/management/students/$userId', data: {
           'student': {'language': code},
         });
       }

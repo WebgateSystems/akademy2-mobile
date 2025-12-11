@@ -1,4 +1,4 @@
-package com.example.academy_2_app
+package pro.webgate.academy
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
