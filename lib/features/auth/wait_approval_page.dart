@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:dio/dio.dart';
 
 import '../../core/auth/auth_provider.dart';
 import '../../core/auth/join_repository.dart';
@@ -41,7 +41,10 @@ class _WaitApprovalPageState extends ConsumerState<WaitApprovalPage> {
     final id = await storage.read('pendingJoinId');
     final code = await storage.read('pendingJoinCode');
     if (id == null || id.isEmpty) {
-      if (mounted) context.go('/join-group');
+      if (mounted) {
+        ref.read(authProvider.notifier).setPendingJoin(false);
+        context.go('/join-group');
+      }
       return;
     }
     setState(() {
@@ -53,7 +56,7 @@ class _WaitApprovalPageState extends ConsumerState<WaitApprovalPage> {
 
   void _startPolling() {
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 3000), (_) => _poll());
+    _timer = Timer.periodic(const Duration(seconds: 10), (_) => _poll());
     _poll();
   }
 

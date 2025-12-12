@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:dio/dio.dart';
 
 import '../../app/theme/tokens.dart';
 import '../../app/view/action_outlinedbutton_widget.dart';
@@ -91,8 +92,12 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
       await SecureStorage().write('pendingJoinId', pendingId);
       await SecureStorage().write('pendingJoinCode', code);
       ref.read(authProvider.notifier).setPendingJoin(true);
+      await ref.read(authProvider.notifier).logout();
       if (!mounted) return;
-      context.go('/wait-approval');
+      context.go('/login');
+    } on DioException catch (e) {
+      final message = _extractServerError(e) ?? e.message ?? e.toString();
+      setState(() => _error = l10n.joinGroupSubmitError(message));
     } catch (e) {
       setState(() => _error = l10n.joinGroupSubmitError(e.toString()));
     } finally {
@@ -113,6 +118,17 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
       });
       _scannerController.stop();
     }
+  }
+
+  String? _extractServerError(DioException e) {
+    final data = e.response?.data;
+    if (data is Map<String, dynamic>) {
+      final err = data['error'] ?? data['message'];
+      if (err is String && err.isNotEmpty) return err;
+    } else if (data is String && data.isNotEmpty) {
+      return data;
+    }
+    return null;
   }
 
   Future<void> _confirmLogout() async {

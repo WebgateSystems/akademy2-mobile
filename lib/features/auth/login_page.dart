@@ -14,6 +14,8 @@ import '../../core/auth/auth_provider.dart';
 import '../../l10n/app_localizations.dart';
 import 'auth_flow_models.dart';
 import 'pin_pages.dart';
+import 'package:dio/dio.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key, this.redirect});
@@ -214,6 +216,7 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
               : '/home');
       context.go(target);
     } on DioException catch (e) {
+      final serverError = _extractServerError(e);
       if (!mounted) return;
       String message;
       if (e.response?.statusCode == 401) {
@@ -227,7 +230,7 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
         message = l10n.loginPinInvalid;
       }
       setState(() {
-        _errorMessage = message;
+        _errorMessage = serverError ?? message;
         _current = '';
       });
     } catch (e) {
@@ -252,5 +255,16 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
       showProgress: _submitting,
       errorMessage: _errorMessage,
     );
+  }
+
+  String? _extractServerError(DioException e) {
+    final data = e.response?.data;
+    if (data is Map<String, dynamic>) {
+      final err = data['error'] ?? data['message'];
+      if (err is String && err.isNotEmpty) return err;
+    } else if (data is String && data.isNotEmpty) {
+      return data;
+    }
+    return null;
   }
 }
