@@ -231,6 +231,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         ).toString();
       }
 
+      if (auth.hasPendingJoin && !onWaitApproval) {
+        return '/wait-approval';
+      }
+
       if (auth.needsSchoolBinding &&
           !onJoinGroup &&
           !onWaitApproval &&

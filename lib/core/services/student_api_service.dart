@@ -11,6 +11,16 @@ import '../db/isar_service.dart';
 import '../network/api.dart';
 import '../network/dio_provider.dart';
 
+class StudentAccessRequiredException implements Exception {
+  final String message;
+
+  const StudentAccessRequiredException(
+      [this.message = 'Student access required']);
+
+  @override
+  String toString() => message;
+}
+
 class DashboardSubject {
   final String id;
   final String title;
@@ -289,6 +299,9 @@ class StudentApiService {
     } on DioException catch (e) {
       debugPrint(
           'StudentApiService: fetchDashboardSubjects error - ${e.message}');
+      if (_isStudentAccessRequired(e)) {
+        throw const StudentAccessRequiredException();
+      }
       final cached = await _loadDashboardSubjectsFromCache();
       if (cached.isNotEmpty) {
         debugPrint(
@@ -297,6 +310,20 @@ class StudentApiService {
       }
       rethrow;
     }
+  }
+
+  bool _isStudentAccessRequired(DioException e) {
+    if (e.response?.statusCode != 403) return false;
+    final data = e.response?.data;
+    if (data is Map<String, dynamic>) {
+      final errorMessage = data['error'];
+      if (errorMessage is String &&
+          errorMessage.toLowerCase().contains('student access required')) {
+        return true;
+      }
+    }
+    final message = e.message?.toLowerCase() ?? '';
+    return message.contains('student access required');
   }
 
   Future<SubjectDetailData> fetchSubjectDetail(String subjectId) async {
@@ -310,6 +337,9 @@ class StudentApiService {
       return result;
     } on DioException catch (e) {
       debugPrint('StudentApiService: fetchSubjectDetail error - ${e.message}');
+      if (_isStudentAccessRequired(e)) {
+        throw const StudentAccessRequiredException();
+      }
       final cached = await _loadSubjectDetailFromCache(subjectId);
       if (cached != null) {
         debugPrint(
@@ -331,6 +361,9 @@ class StudentApiService {
       return result;
     } on DioException catch (e) {
       debugPrint('StudentApiService: fetchModuleDetail error - ${e.message}');
+      if (_isStudentAccessRequired(e)) {
+        throw const StudentAccessRequiredException();
+      }
       final cached = await _loadModuleDetailFromCache(moduleId);
       if (cached != null) {
         debugPrint(

@@ -23,12 +23,16 @@ class JoinGroupPage extends ConsumerStatefulWidget {
   ConsumerState<JoinGroupPage> createState() => _JoinGroupPageState();
 }
 
-class _JoinGroupPageState extends ConsumerState<JoinGroupPage> {
+class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
+    with WidgetsBindingObserver {
   final _codeCtrl = TextEditingController();
+  late final MobileScannerController _scannerController;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _scannerController = MobileScannerController(torchEnabled: false);
     _restorePending();
   }
 
@@ -36,6 +40,7 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage> {
     final storage = SecureStorage();
     final pending = await storage.read('pendingJoinId');
     if (pending != null && pending.isNotEmpty && mounted) {
+      ref.read(authProvider.notifier).setPendingJoin(true);
       context.go('/wait-approval');
     }
   }
@@ -46,8 +51,28 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _codeCtrl.dispose();
+    _scannerController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (!_scanPaused) {
+        _scannerController.start();
+      }
+    } else {
+      _scannerController.stop();
+    }
+    super.didChangeAppLifecycleState(state);
+  }
+
+  @override
+  void deactivate() {
+    _scannerController.stop();
+    super.deactivate();
   }
 
   bool get _canSubmit => _codeCtrl.text.trim().isNotEmpty && !_submitting;
@@ -65,6 +90,7 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage> {
       final pendingId = await repo.joinWithCode(code);
       await SecureStorage().write('pendingJoinId', pendingId);
       await SecureStorage().write('pendingJoinCode', code);
+      ref.read(authProvider.notifier).setPendingJoin(true);
       if (!mounted) return;
       context.go('/wait-approval');
     } catch (e) {
@@ -85,6 +111,7 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage> {
         _scanPaused = true;
         _codeCtrl.text = raw;
       });
+      _scannerController.stop();
     }
   }
 
@@ -206,8 +233,7 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage> {
                       children: [
                         MobileScanner(
                           onDetect: _onDetect,
-                          controller:
-                              MobileScannerController(torchEnabled: false),
+                          controller: _scannerController,
                         ),
                         if (_scanPaused)
                           Positioned.fill(

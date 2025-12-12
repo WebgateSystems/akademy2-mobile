@@ -136,6 +136,12 @@ abstract class AppLocalizations {
   /// **'Create account'**
   String get loginCreateAccountCta;
 
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get privacyPolicy;
+
   /// No description provided for @loginFailed.
   ///
   /// In en, this message translates to:

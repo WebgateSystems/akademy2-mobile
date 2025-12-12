@@ -441,6 +441,18 @@ File? _firstFileWithPrefix(Directory dir, String prefix) {
   return files.first;
 }
 
+Future<void> clearAllDownloads() async {
+  try {
+    final docsDir = await getApplicationDocumentsDirectory();
+    final downloadsDir = Directory('${docsDir.path}/downloads');
+    if (await downloadsDir.exists()) {
+      await downloadsDir.delete(recursive: true);
+    }
+  } catch (e, st) {
+    debugPrint('ModuleDownloadManager: failed to clear downloads - $e\n$st');
+  }
+}
+
 String? _absUrl(String? path) {
   if (path == null || path.isEmpty) return null;
   if (path.startsWith('http')) return path;

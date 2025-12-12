@@ -2,6 +2,7 @@ import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart'
     show CircularProgressWidget;
 import 'package:academy_2_app/app/view/toolbar_widget.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,6 +20,38 @@ class SubjectsPage extends ConsumerStatefulWidget {
 }
 
 class _SubjectsPageState extends ConsumerState<SubjectsPage> {
+  ProviderSubscription<AsyncValue<List<DashboardSubject>>>? _dashboardSub;
+  bool _navigatedToWaitApproval = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _dashboardSub = ref.listenManual<AsyncValue<List<DashboardSubject>>>(
+      dashboardSubjectsProvider,
+      (_, next) {
+        next.whenOrNull(
+          error: (err, _) => _handleDashboardError(err),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _dashboardSub?.close();
+    super.dispose();
+  }
+
+  void _handleDashboardError(Object error) {
+    if (error is StudentAccessRequiredException &&
+        !_navigatedToWaitApproval) {
+      _navigatedToWaitApproval = true;
+      if (mounted) {
+        context.go('/wait-approval');
+      }
+    }
+  }
+
   Future<void> _refresh() async {
     ref.invalidate(dashboardSubjectsProvider);
   }
@@ -35,7 +68,8 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
           context.push('/module/${modules.first.id}');
           return;
         }
-      } catch (_) {
+      } catch (e, st) {
+        debugPrint('SubjectsPage: failed to preload module - $e\n$st');
       }
     }
     if (mounted) {
@@ -110,9 +144,14 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
         );
       },
       loading: () => const Center(child: CircularProgressWidget()),
-      error: (error, _) => Center(
-        child: Text('${l10n.retry}: $error'),
-      ),
+      error: (error, _) {
+        if (error is StudentAccessRequiredException) {
+          return const SizedBox.shrink();
+        }
+        return Center(
+          child: Text('${l10n.retry}: $error'),
+        );
+      },
     );
   }
 }

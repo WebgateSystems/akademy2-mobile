@@ -304,7 +304,7 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
                             vertical: 8.h,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.7),
+                            color: Colors.black.withValues(alpha: 0.7),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -374,7 +374,7 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
                   width: 48.w,
                   height: 48.w,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.6),
+                    color: Colors.black.withValues(alpha: 0.6),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(Icons.close, color: Colors.white, size: 24.w),

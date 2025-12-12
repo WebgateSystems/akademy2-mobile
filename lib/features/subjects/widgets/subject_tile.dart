@@ -162,7 +162,9 @@ class _NetworkSvg extends StatelessWidget {
         try {
           await file.parent.create(recursive: true);
           await file.writeAsBytes(response.bodyBytes, flush: true);
-        } catch (_) {}
+        } catch (_) {
+          // Swallow file cache errors; we can still use in-memory bytes.
+        }
         return response.bodyBytes;
       }
     } catch (_) {

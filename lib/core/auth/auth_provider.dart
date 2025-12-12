@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/storage/secure_storage.dart';
+import '../db/isar_service.dart';
+import '../download/download_manager.dart';
 import '../network/dio_provider.dart';
 
 class AuthState {
@@ -11,6 +13,7 @@ class AuthState {
   final bool isUnlocked;
   final String? userId;
   final String? schoolId;
+  final bool hasPendingJoin;
 
   const AuthState({
     required this.isAuthenticated,
@@ -18,6 +21,7 @@ class AuthState {
     this.isUnlocked = false,
     this.userId,
     this.schoolId,
+    this.hasPendingJoin = false,
   });
 
   bool get needsSchoolBinding => isAuthenticated && schoolId == null;
@@ -29,6 +33,7 @@ class AuthState {
     String? userId,
     String? schoolId,
     bool clearSchoolId = false,
+    bool? hasPendingJoin,
   }) {
     return AuthState(
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
@@ -36,6 +41,7 @@ class AuthState {
       isUnlocked: isUnlocked ?? this.isUnlocked,
       userId: userId ?? this.userId,
       schoolId: clearSchoolId ? null : (schoolId ?? this.schoolId),
+      hasPendingJoin: hasPendingJoin ?? this.hasPendingJoin,
     );
   }
 }
@@ -51,12 +57,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true);
     final token = await _storage.read('accessToken');
     final schoolId = await _storage.read('schoolId');
+    final pendingJoinId = await _storage.read('pendingJoinId');
     state = AuthState(
       isAuthenticated: token != null,
       isLoading: false,
       isUnlocked: false,
       userId: token != null ? 'me' : null,
       schoolId: schoolId,
+      hasPendingJoin: (pendingJoinId ?? '').isNotEmpty,
     );
   }
 
@@ -82,6 +90,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
         final userId = attributes?['id'] as String? ?? data?['id'] as String?;
         final refreshToken = resp.data['refreshToken'] as String?;
         if (accessToken != null) {
+          final pendingJoinId = await _storage.read('pendingJoinId');
+          await _resetCacheIfOwnerChanged(userId ?? phone);
           await _storage.write('accessToken', accessToken);
           if (refreshToken != null) {
             await _storage.write('refreshToken', refreshToken);
@@ -89,10 +99,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
           if (userId != null) {
             await _storage.write('userId', userId);
           }
-          await saveUserProfile(attributes,
-              email: attributes?['email'] as String?,
-              phone: attributes?['phone'] as String? ?? phone,
-              pin: pin);
+          await saveUserProfile(
+            attributes,
+            email: attributes?['email'] as String?,
+            phone: attributes?['phone'] as String? ?? phone,
+            pin: pin,
+          );
           final schoolId = attributes?['school_id'] as String?;
           state = AuthState(
             isAuthenticated: true,
@@ -100,6 +112,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
             userId: userId ?? phone,
             schoolId: schoolId,
             isLoading: false,
+            hasPendingJoin: (pendingJoinId ?? '').isNotEmpty,
           );
           return;
         }
@@ -115,6 +128,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> setTokens(String accessToken,
       {String? refreshToken, String? userId, String? schoolId}) async {
+    final pendingJoinId = await _storage.read('pendingJoinId');
+    await _resetCacheIfOwnerChanged(userId);
     await _storage.write('accessToken', accessToken);
     if (refreshToken != null) {
       await _storage.write('refreshToken', refreshToken);
@@ -128,6 +143,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       isLoading: false,
       userId: userId ?? 'me',
       schoolId: schoolId,
+      hasPendingJoin: (pendingJoinId ?? '').isNotEmpty,
     );
   }
 
@@ -143,6 +159,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       isLoading: false,
       userId: userId,
       schoolId: schoolId ?? state.schoolId,
+      hasPendingJoin: state.hasPendingJoin,
     );
   }
 
@@ -151,7 +168,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
       isAuthenticated: true,
       isUnlocked: true,
       isLoading: false,
+      hasPendingJoin: state.hasPendingJoin,
     );
+  }
+
+  void setPendingJoin(bool value) {
+    state = state.copyWith(hasPendingJoin: value);
   }
 
   void requireUnlock() {
@@ -167,6 +189,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       isAuthenticated: false,
       isLoading: false,
       isUnlocked: false,
+      hasPendingJoin: false,
     );
   }
 
@@ -205,6 +228,28 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (phone != null) await storage.write('phone', phone);
     if (pin != null) await storage.write('userPin', pin);
     if (metaPin != null) await storage.write('userPin', metaPin);
+  }
+
+  Future<void> _resetCacheIfOwnerChanged(String? userId) async {
+    final existing = await _storage.read('cacheOwnerId');
+    if (userId != null && userId.isNotEmpty) {
+      if (existing == userId) return;
+      if (existing != null && existing.isNotEmpty) {
+        await IsarService().clearAll();
+        await clearAllDownloads();
+        await _storage.delete('pendingJoinId');
+        await _storage.delete('pendingJoinCode');
+      }
+      await _storage.write('cacheOwnerId', userId);
+      return;
+    }
+    if (existing != null && existing.isNotEmpty) {
+      await IsarService().clearAll();
+      await clearAllDownloads();
+      await _storage.delete('cacheOwnerId');
+      await _storage.delete('pendingJoinId');
+      await _storage.delete('pendingJoinCode');
+    }
   }
 }
 

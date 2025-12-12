@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../auth/auth_provider.dart';
+import '../../app/router.dart';
 import 'api.dart';
 import 'dio_client.dart';
 
@@ -38,24 +40,14 @@ class AuthInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     final req = err.requestOptions;
     final status = err.response?.statusCode;
-    if (status == 401 && (req.extra['retry'] != true)) {
-      final notifier = ref.read(authProvider.notifier);
-      final refreshed = await notifier.refreshAccessToken();
-      if (refreshed) {
-        final newToken = await notifier.getAccessToken();
-        if (newToken != null) {
-          final clone = req
-            ..headers['Authorization'] = 'Bearer $newToken'
-            ..extra = {...req.extra, 'retry': true}
-            ..baseUrl =
-                req.baseUrl.isEmpty ? Api.normalizedBaseUrl : req.baseUrl;
-          try {
-            final response = await DioClient().dio.fetch(clone);
-            return handler.resolve(response);
-          } catch (e) {
-          }
-        }
+    if (status == 401) {
+      try {
+        await ref.read(authProvider.notifier).logout();
+        final router = ref.read(routerProvider);
+        router.go('/login');
+      } catch (_) {
       }
+      return handler.next(err);
     }
     handler.next(err);
   }

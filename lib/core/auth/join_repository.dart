@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 
-import '../network/api.dart';
 import '../storage/secure_storage.dart';
 
 class JoinRepository {
@@ -11,12 +10,14 @@ class JoinRepository {
   final Dio _dio;
 
   Future<String> joinWithCode(String code) async {
-    final payload = _formatLink(code);
-    final resp =
-        await _dio.post('v1/student/enrollments/join', data: {'code': payload});
+    final payload = _extractJoinCode(code);
+    final resp = await _dio
+        .post('v1/student/enrollments/join', data: {'token': payload});
     final data = resp.data as Map<String, dynamic>;
-    final id = data['requestId'] as String?;
-    if (id == null) throw Exception('Invalid response');
+    final id = data['requestId'] as String? ?? data['enrollment_id'] as String?;
+    if (id == null || id.isEmpty) {
+      throw Exception('Invalid response');
+    }
     return id;
   }
 
@@ -45,21 +46,21 @@ class JoinRepository {
     await storage.delete('pendingJoinCode');
   }
 
-  String _formatLink(String raw) {
+  String _extractJoinCode(String raw) {
     final trimmed = raw.trim();
     if (trimmed.isEmpty) {
       throw Exception('Empty join code');
     }
+
     final uri = Uri.tryParse(trimmed);
-    final looksLikeUrl = uri != null &&
-        (uri.hasScheme || uri.host.isNotEmpty || trimmed.startsWith('https:'));
-    if (looksLikeUrl) {
-      return trimmed;
+
+    if (uri != null && uri.host.isNotEmpty) {
+      if (uri.pathSegments.isNotEmpty) {
+        return uri.pathSegments.last;
+      }
     }
-    final base = Api.baseUploadUrl.endsWith('/')
-        ? Api.baseUploadUrl.substring(0, Api.baseUploadUrl.length - 1)
-        : Api.baseUploadUrl;
-    return '$base/join/class/${Uri.encodeComponent(trimmed)}';
+
+    return trimmed;
   }
 }
 

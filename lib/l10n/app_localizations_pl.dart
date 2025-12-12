@@ -27,6 +27,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get loginCreateAccountCta => 'Utwórz konto';
 
   @override
+  String get privacyPolicy => 'Polityka prywatności';
+
+  @override
   String loginFailed(String error) {
     return 'Logowanie nie powiodło się: $error';
   }

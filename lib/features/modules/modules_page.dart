@@ -19,6 +19,7 @@ class ModulesPage extends ConsumerStatefulWidget {
 
 class _ModulesPageState extends ConsumerState<ModulesPage> {
   bool _offlineDialogShown = false;
+  bool _navigatedToWaitApproval = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +45,16 @@ class _ModulesPageState extends ConsumerState<ModulesPage> {
         },
         loading: () => const Center(child: CircularProgressWidget()),
         error: (error, _) {
+          if (error is StudentAccessRequiredException &&
+              !_navigatedToWaitApproval) {
+            _navigatedToWaitApproval = true;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                context.go('/wait-approval');
+              }
+            });
+            return const SizedBox();
+          }
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showOfflineDialog(context, l10n);
           });

@@ -5,6 +5,7 @@ import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dio/dio.dart';
 
 import '../../core/auth/auth_provider.dart';
 import '../../core/auth/join_repository.dart';
@@ -52,26 +53,39 @@ class _WaitApprovalPageState extends ConsumerState<WaitApprovalPage> {
 
   void _startPolling() {
     _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 3), (_) => _poll());
+    _timer = Timer.periodic(const Duration(seconds: 3000), (_) => _poll());
     _poll();
   }
 
   Future<void> _poll() async {
     if (_requestId == null) return;
     final repo = JoinRepository();
-    final status = await repo.checkStatus(_requestId!);
-    if (!mounted) return;
-    setState(() => _status = status.status);
-    if (status.status == 'approved' && status.accessToken != null) {
-      await repo.clearPending();
-      _timer?.cancel();
-      await ref.read(authProvider.notifier).setTokens(
-            status.accessToken!,
-            refreshToken: status.refreshToken,
-            schoolId: status.schoolId,
-          );
+    try {
+      final status = await repo.checkStatus(_requestId!);
       if (!mounted) return;
-      context.go('/home');
+      setState(() => _status = status.status);
+      if (status.status == 'approved' && status.accessToken != null) {
+        await repo.clearPending();
+        ref.read(authProvider.notifier).setPendingJoin(false);
+        _timer?.cancel();
+        await ref.read(authProvider.notifier).setTokens(
+              status.accessToken!,
+              refreshToken: status.refreshToken,
+              schoolId: status.schoolId,
+            );
+        if (!mounted) return;
+        context.go('/home');
+      }
+    } on DioException catch (e) {
+      final code = e.response?.statusCode;
+      if (code == 404) {
+        await repo.clearPending();
+        ref.read(authProvider.notifier).setPendingJoin(false);
+        _timer?.cancel();
+        if (mounted) {
+          context.go('/join-group');
+        }
+      }
     }
   }
 

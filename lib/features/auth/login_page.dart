@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../core/auth/auth_provider.dart';
 import '../../l10n/app_localizations.dart';
@@ -113,7 +114,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             text: l10n.loginTitle,
             loading: isLoading,
           ),
-          Spacer(),
+          SizedBox(height: 16.h),
           Center(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -127,6 +128,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   fullWidth: false,
                 ),
               ],
+            ),
+          ),
+          Spacer(),
+          Center(
+            child: ActionTextButtonWidget(
+              onPressed: () {
+                final locale = Localizations.localeOf(context).languageCode;
+                final url = locale.toLowerCase().startsWith('pl')
+                    ? 'https://cdn.akademy.edu.pl/privacy-policy-pl.html'
+                    : 'https://cdn.akademy.edu.pl/privacy-policy-en.html';
+                launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+              },
+              text: l10n.privacyPolicy,
+              fullWidth: false,
             ),
           ),
         ],
@@ -191,9 +206,12 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
       }
       await ref.read(authProvider.notifier).login(_phone, _current);
       if (!mounted) return;
-      final target = (widget.args.redirect?.isNotEmpty ?? false)
-          ? widget.args.redirect!
-          : '/home';
+      final authState = ref.read(authProvider);
+      final target = authState.hasPendingJoin
+          ? '/wait-approval'
+          : ((widget.args.redirect?.isNotEmpty ?? false)
+              ? widget.args.redirect!
+              : '/home');
       context.go(target);
     } on DioException catch (e) {
       if (!mounted) return;

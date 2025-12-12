@@ -122,6 +122,7 @@ class ModulePage extends ConsumerStatefulWidget {
 class _ModulePageState extends ConsumerState<ModulePage> {
   late final ProviderSubscription<Map<String, ModuleDownloadState>>
       _downloadSub;
+  bool _navigatedToWaitApproval = false;
 
   @override
   void initState() {
@@ -157,6 +158,16 @@ class _ModulePageState extends ConsumerState<ModulePage> {
         const Center(child: CircularProgressWidget()),
       ),
       error: (error, _) {
+        if (error is StudentAccessRequiredException &&
+            !_navigatedToWaitApproval) {
+          _navigatedToWaitApproval = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              context.go('/wait-approval');
+            }
+          });
+          return const SizedBox();
+        }
         final message = error is ModuleNotFoundException
             ? l10n.moduleNotFound(error.moduleId)
             : error.toString();
@@ -500,7 +511,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     if (hasLocalFile) {
       await showDialog<void>(
         context: context,
-        barrierColor: Colors.black.withOpacity(0.9),
+        barrierColor: Colors.black.withValues(alpha: 0.9),
         builder: (_) => NetworkVideoPreviewDialog(
           videoUrl: localFile,
           subtitlesUrl: subtitlesUrl,
@@ -531,7 +542,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
       if (videoId != null) {
         await showDialog<void>(
           context: context,
-          barrierColor: Colors.black.withOpacity(0.9),
+          barrierColor: Colors.black.withValues(alpha: 0.9),
           builder: (_) => YoutubePreviewDialog(
             videoId: videoId,
             subtitlesUrl: subtitlesUrl,
@@ -544,7 +555,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     if (hasNetworkFile) {
       await showDialog<void>(
         context: context,
-        barrierColor: Colors.black.withOpacity(0.9),
+        barrierColor: Colors.black.withValues(alpha: 0.9),
         builder: (_) => NetworkVideoPreviewDialog(
           videoUrl: networkFileUrl,
           subtitlesUrl: subtitlesUrl,
@@ -588,7 +599,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     if (url != null && _isPdf(url)) {
       await showDialog<void>(
         context: context,
-        barrierColor: Colors.black.withOpacity(0.9),
+        barrierColor: Colors.black.withValues(alpha: 0.9),
         builder: (_) => PdfPreviewDialog(title: content.title, pdfUrl: url),
       );
       return;
@@ -597,7 +608,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     final heroTag = 'content-${content.id}';
     await showDialog<void>(
       context: context,
-      barrierColor: Colors.black.withOpacity(0.9),
+      barrierColor: Colors.black.withValues(alpha: 0.9),
       builder: (_) => GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: Scaffold(

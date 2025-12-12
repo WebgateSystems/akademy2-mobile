@@ -27,6 +27,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginCreateAccountCta => 'Create account';
 
   @override
+  String get privacyPolicy => 'Privacy policy';
+
+  @override
   String loginFailed(String error) {
     return 'Login failed: $error';
   }

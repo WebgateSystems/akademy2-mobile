@@ -6,6 +6,7 @@
   "loginPhoneInvalid": "Некоректний номер телефону.",
   "loginCreateAccountPrompt": "Немає облікового запису?",
   "loginCreateAccountCta": "Створити акаунт",
+  "privacyPolicy": "Політика конфіденційності",
   "loginFailed": "Не вдалося увійти: {error}",
   "@loginFailed": {
     "placeholders": {

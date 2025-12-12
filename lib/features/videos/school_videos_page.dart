@@ -12,6 +12,7 @@ import 'package:academy_2_app/core/services/student_api_service.dart';
 import 'package:academy_2_app/features/modules/dialogs/network_video_preview_dialog.dart';
 import 'package:academy_2_app/features/modules/dialogs/youtube_preview_dialog.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -53,7 +54,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
   final List<SchoolVideo> _mainVideos = [];
   final List<SchoolVideo> _myVideos = [];
   int _requestId = 0;
-  bool _isLoadingMyVideos = false;
 
   final List<SchoolVideo> _videos = [];
   List<VideoSubjectFilter> _subjects = [];
@@ -61,6 +61,8 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
   bool _hasMore = true;
   int _currentPage = 1;
   Timer? _searchDebounce;
+  ProviderSubscription<AsyncValue<List<DashboardSubject>>>? _dashboardSub;
+  bool _navigatedToWaitApproval = false;
 
   @override
   void initState() {
@@ -69,6 +71,14 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     _searchController.addListener(_onSearchChanged);
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
+    _dashboardSub = ref.listenManual<AsyncValue<List<DashboardSubject>>>(
+      dashboardSubjectsProvider,
+      (_, next) {
+        next.whenOrNull(
+          error: (err, _) => _handleDashboardError(err),
+        );
+      },
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadSubjects();
@@ -81,6 +91,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     _searchController.dispose();
     _scrollController.dispose();
     _searchDebounce?.cancel();
+    _dashboardSub?.close();
     super.dispose();
   }
 
@@ -91,7 +102,9 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       setState(() {
         _subjects = subjects;
       });
-    } catch (e) {}
+    } catch (e, st) {
+      debugPrint('SchoolVideosPage: failed to load subjects - $e\n$st');
+    }
   }
 
   void _onSearchChanged() {
@@ -179,12 +192,21 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     }
   }
 
+  void _handleDashboardError(Object error) {
+    if (error is StudentAccessRequiredException &&
+        !_navigatedToWaitApproval) {
+      _navigatedToWaitApproval = true;
+      if (mounted) {
+        context.go('/wait-approval');
+      }
+    }
+  }
+
   Future<void> _loadMyVideos({
     required Set<String> subjectIds,
     required String query,
     required int requestId,
   }) async {
-    _isLoadingMyVideos = true;
     final service = VideoService();
     final List<SchoolVideo> myVideos = [];
     var page = 1;
@@ -232,8 +254,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.schoolVideosError('$e'))),
       );
-    } finally {
-      _isLoadingMyVideos = false;
     }
   }
 
@@ -259,7 +279,9 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
             _videoDetails[id] = detail;
           });
         }
-      } catch (e) {}
+      } catch (e, st) {
+        debugPrint('SchoolVideosPage: failed to fetch video $id - $e\n$st');
+      }
     }
   }
 
@@ -436,7 +458,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       if (videoId != null) {
         showDialog<void>(
           context: context,
-          barrierColor: Colors.black.withOpacity(0.9),
+          barrierColor: Colors.black.withValues(alpha: 0.9),
           builder: (_) => YoutubePreviewDialog(videoId: videoId),
         );
         return;
@@ -446,7 +468,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     if (hasFile) {
       showDialog<void>(
         context: context,
-        barrierColor: Colors.black.withOpacity(0.9),
+        barrierColor: Colors.black.withValues(alpha: 0.9),
         builder: (_) => NetworkVideoPreviewDialog(
             videoUrl: Api.baseUploadUrl + video.fileUrl),
       );

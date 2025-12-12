@@ -27,6 +27,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get loginCreateAccountCta => 'Створити акаунт';
 
   @override
+  String get privacyPolicy => 'Політика конфіденційності';
+
+  @override
   String loginFailed(String error) {
     return 'Не вдалося увійти: $error';
   }
