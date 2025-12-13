@@ -7,6 +7,7 @@ import '../db/isar_service.dart';
 import '../download/download_manager.dart';
 import '../network/api_endpoints.dart';
 import '../network/dio_provider.dart';
+import '../services/student_api_service.dart';
 
 class AuthState {
   final bool isAuthenticated;
@@ -58,7 +59,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true);
     final token = await _storage.read('accessToken');
     final schoolId = await _storage.read('schoolId');
-    final pendingJoinId = await _storage.read('pendingJoinId');
+    if (schoolId != null) {
+      await _clearPendingJoinStorage();
+    }
+    final pendingJoinId = schoolId == null
+        ? await _storage.read('pendingJoinId')
+        : null;
     state = AuthState(
       isAuthenticated: token != null,
       isLoading: false,
@@ -91,7 +97,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
         final userId = attributes?['id'] as String? ?? data?['id'] as String?;
         final refreshToken = resp.data['refreshToken'] as String?;
         if (accessToken != null) {
-          final pendingJoinId = await _storage.read('pendingJoinId');
+          final schoolId = attributes?['school_id'] as String?;
+          if (schoolId != null) {
+            await _clearPendingJoinStorage();
+          }
+          final pendingJoinId = schoolId == null
+              ? await _storage.read('pendingJoinId')
+              : null;
           await _resetCacheIfOwnerChanged(userId ?? phone);
           await _storage.write('accessToken', accessToken);
           if (refreshToken != null) {
@@ -106,7 +118,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
             phone: attributes?['phone'] as String? ?? phone,
             pin: pin,
           );
-          final schoolId = attributes?['school_id'] as String?;
           state = AuthState(
             isAuthenticated: true,
             isUnlocked: true,
@@ -115,6 +126,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
             isLoading: false,
             hasPendingJoin: (pendingJoinId ?? '').isNotEmpty,
           );
+          _invalidateDashboard();
           return;
         }
       }
@@ -129,7 +141,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> setTokens(String accessToken,
       {String? refreshToken, String? userId, String? schoolId}) async {
-    final pendingJoinId = await _storage.read('pendingJoinId');
+    if (schoolId != null) {
+      await _clearPendingJoinStorage();
+    }
+    final pendingJoinId =
+        schoolId == null ? await _storage.read('pendingJoinId') : null;
     await _resetCacheIfOwnerChanged(userId);
     await _storage.write('accessToken', accessToken);
     if (refreshToken != null) {
@@ -146,6 +162,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       schoolId: schoolId,
       hasPendingJoin: (pendingJoinId ?? '').isNotEmpty,
     );
+    _invalidateDashboard();
   }
 
   Future<void> updateSchoolId(String schoolId) async {
@@ -186,6 +203,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> logout() async {
     await _storage.delete('accessToken');
     await _storage.delete('refreshToken');
+    await _clearPendingJoinStorage();
+    _invalidateDashboard();
     state = const AuthState(
       isAuthenticated: false,
       isLoading: false,
@@ -229,6 +248,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (phone != null) await storage.write('phone', phone);
     if (pin != null) await storage.write('userPin', pin);
     if (metaPin != null) await storage.write('userPin', metaPin);
+  }
+
+  void _invalidateDashboard() {
+    ref.invalidate(dashboardSubjectsProvider);
+  }
+
+  Future<void> _clearPendingJoinStorage() async {
+    await _storage.delete('pendingJoinId');
+    await _storage.delete('pendingJoinCode');
   }
 
   Future<void> _resetCacheIfOwnerChanged(String? userId) async {
