@@ -2,6 +2,7 @@ import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
+import 'package:academy_2_app/core/network/api.dart';
 import 'package:academy_2_app/core/utils/phone_formatter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +15,6 @@ import '../../core/auth/auth_provider.dart';
 import '../../l10n/app_localizations.dart';
 import 'auth_flow_models.dart';
 import 'pin_pages.dart';
-import 'package:dio/dio.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key, this.redirect});
@@ -138,8 +137,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               onPressed: () {
                 final locale = Localizations.localeOf(context).languageCode;
                 final url = locale.toLowerCase().startsWith('pl')
-                    ? 'https://cdn.akademy.edu.pl/privacy-policy-pl.html'
-                    : 'https://cdn.akademy.edu.pl/privacy-policy-en.html';
+                    ? Api.privacyPolicyPlUrl
+                    : Api.privacyPolicyEnUrl;
                 launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
               },
               text: l10n.privacyPolicy,

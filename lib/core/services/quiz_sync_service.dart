@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth/join_repository.dart';
+import '../network/api_endpoints.dart';
 
 class QuizResultPayload {
   QuizResultPayload({
@@ -183,7 +184,7 @@ class QuizSyncService {
 
   Future<QuizResultResponse> _sendToServer(QuizResultPayload payload) async {
     final response = await _dio.post(
-      'v1/student/quiz_results',
+      ApiEndpoints.studentQuizResults,
       data: payload.toJson(),
     );
     return QuizResultResponse.fromJson(response.data as Map<String, dynamic>);
@@ -273,7 +274,7 @@ class QuizSyncService {
 
   Future<List<QuizResultItem>> fetchQuizResults() async {
     try {
-      final response = await _dio.get('v1/student/quiz_results');
+      final response = await _dio.get(ApiEndpoints.studentQuizResults);
       final data = response.data as Map<String, dynamic>;
       if (data['success'] != true) return [];
 

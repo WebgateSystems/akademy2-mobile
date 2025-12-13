@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../network/dio_provider.dart';
 import '../storage/secure_storage.dart';
+import '../network/api_endpoints.dart';
 
 class SettingsState {
   const SettingsState({
@@ -74,7 +75,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final dio = _ref.read(dioProvider);
       final userId = await _storage.read('userId');
       if (userId != null) {
-        await dio.patch('/api/v1/management/students/$userId', data: {
+        await dio.patch(ApiEndpoints.managementStudent(userId), data: {
           'student': {'language': code},
         });
       }

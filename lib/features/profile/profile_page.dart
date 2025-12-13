@@ -11,6 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/auth/auth_provider.dart';
+import '../../core/network/api_endpoints.dart';
 import '../../core/network/dio_provider.dart';
 import '../../core/settings/settings_provider.dart';
 import '../../core/storage/secure_storage.dart';
@@ -107,7 +108,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
       final phoneForApi = PlPhoneFormatter.toApiFormat(_phoneCtrl.text);
 
-      await dio.patch('/api/v1/management/students/$userId', data: {
+      await dio.patch(ApiEndpoints.managementStudent(userId), data: {
         'student': {
           'first_name': _firstNameCtrl.text.trim(),
           'last_name': _lastNameCtrl.text.trim(),
@@ -189,7 +190,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       if (userId == null) {
         throw Exception('User ID not found');
       }
-      await dio.delete('v1/students/$userId');
+      await dio.delete(ApiEndpoints.student(userId));
       await ref.read(authProvider.notifier).logout();
       if (mounted) context.go('/login');
     } catch (e) {

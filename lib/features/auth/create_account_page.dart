@@ -3,6 +3,7 @@ import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/checkbox_widget.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
+import 'package:academy_2_app/core/network/api_endpoints.dart';
 import 'package:academy_2_app/core/network/dio_provider.dart';
 import 'package:academy_2_app/core/utils/phone_formatter.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
@@ -159,14 +160,14 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     try {
       final dio = ref.read(dioProvider);
 
-      final flowResp = await dio.get('v1/register/flow');
+      final flowResp = await dio.get(ApiEndpoints.registerFlow);
       final flowId = (flowResp.data['data']?['id'] as String?) ?? '';
       if (flowId.isEmpty) {
         throw Exception('Flow id missing');
       }
 
       await dio.post(
-        'v1/register/profile',
+        ApiEndpoints.registerProfile,
         data: {
           'flow_id': flowId,
           'profile': {

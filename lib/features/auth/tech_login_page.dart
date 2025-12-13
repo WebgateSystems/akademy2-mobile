@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/auth/auth_provider.dart';
+import '../../core/network/api_endpoints.dart';
 import '../../core/network/dio_provider.dart';
 
 class TechLoginPage extends ConsumerStatefulWidget {
@@ -41,7 +42,7 @@ class _TechLoginPageState extends ConsumerState<TechLoginPage> {
     try {
       final dio = ref.read(dioProvider);
       final resp = await dio.post(
-        'v1/session',
+        ApiEndpoints.session,
         data: {
           'user': {'email': email, 'password': pass}
         },

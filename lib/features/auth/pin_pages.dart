@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/auth/auth_provider.dart';
+import '../../core/network/api_endpoints.dart';
 import '../../core/network/dio_provider.dart';
 import '../../core/storage/secure_storage.dart';
 import 'auth_flow_models.dart';
@@ -48,7 +49,7 @@ class _CreatePinPageState extends ConsumerState<CreatePinPage> {
     try {
       final dio = ref.read(dioProvider);
       await dio.post(
-        'v1/register/set_pin',
+        ApiEndpoints.registerSetPin,
         data: {
           'flow_id': widget.flowId,
           'pin': _current,
@@ -129,7 +130,7 @@ class _ConfirmPinPageState extends ConsumerState<ConfirmPinPage> {
     try {
       final dio = ref.read(dioProvider);
       final resp = await dio.post(
-        'v1/register/confirm_pin',
+        ApiEndpoints.registerConfirmPin,
         data: {
           'flow_id': widget.args.flowId,
           'pin': _current,

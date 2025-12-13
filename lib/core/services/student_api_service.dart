@@ -9,6 +9,7 @@ import '../db/entities/module_entity.dart';
 import '../db/entities/subject_entity.dart';
 import '../db/isar_service.dart';
 import '../network/api.dart';
+import '../network/api_endpoints.dart';
 import '../network/dio_provider.dart';
 
 class StudentAccessRequiredException implements Exception {
@@ -287,7 +288,7 @@ class StudentApiService {
 
   Future<List<DashboardSubject>> fetchDashboardSubjects() async {
     try {
-      final response = await _dio.get('v1/student/dashboard');
+      final response = await _dio.get(ApiEndpoints.studentDashboard);
       final data = response.data['data'] as Map<String, dynamic>? ?? {};
       final subjects = (data['subjects'] as List?)
               ?.map((e) => DashboardSubject.fromJson(e as Map<String, dynamic>))
@@ -328,7 +329,7 @@ class StudentApiService {
 
   Future<SubjectDetailData> fetchSubjectDetail(String subjectId) async {
     try {
-      final response = await _dio.get('v1/student/subjects/$subjectId');
+      final response = await _dio.get(ApiEndpoints.studentSubject(subjectId));
       final result =
           SubjectDetailData.fromJson(response.data as Map<String, dynamic>);
       debugPrint(
@@ -352,7 +353,8 @@ class StudentApiService {
 
   Future<ModuleDetailData> fetchModuleDetail(String moduleId) async {
     try {
-      final response = await _dio.get('v1/student/learning_modules/$moduleId');
+      final response =
+          await _dio.get(ApiEndpoints.studentLearningModule(moduleId));
       final result =
           ModuleDetailData.fromJson(response.data as Map<String, dynamic>);
       debugPrint(

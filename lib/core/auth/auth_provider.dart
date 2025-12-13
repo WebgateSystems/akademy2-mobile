@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/storage/secure_storage.dart';
 import '../db/isar_service.dart';
 import '../download/download_manager.dart';
+import '../network/api_endpoints.dart';
 import '../network/dio_provider.dart';
 
 class AuthState {
@@ -73,7 +74,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       final dio = ref.read(dioProvider);
       final resp = await dio.post(
-        'v1/session',
+        ApiEndpoints.session,
         data: {
           'user': {
             'phone': phone,

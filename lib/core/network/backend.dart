@@ -1,5 +1,5 @@
-class FakeBackend {
-  static Map<String, dynamic> mockLogin(String phone, String pin) {
+class Backend {
+  static Map<String, dynamic> login(String phone, String pin) {
     return {
       'access_token': 'access_token_${DateTime.now().millisecondsSinceEpoch}',
       'data': {
@@ -16,7 +16,7 @@ class FakeBackend {
     };
   }
 
-  static Map<String, dynamic> mockRefresh(String oldRefreshToken) {
+  static Map<String, dynamic> refresh(String oldRefreshToken) {
     return {
       'accessToken': 'access_token_${DateTime.now().millisecondsSinceEpoch}',
       'refreshToken': 'refresh_token_${DateTime.now().millisecondsSinceEpoch}',
@@ -38,9 +38,9 @@ class FakeBackend {
   static final Map<String, List<Map<String, dynamic>>> _modulesBySubject = {};
   static final Map<String, List<Map<String, dynamic>>> _contentsByModule = {};
 
-  static Map<String, dynamic> mockSubjects({String? updatedSince}) {
+  static Map<String, dynamic> getSubjects({String? updatedSince}) {
     final subjects = _subjects.map((subject) {
-      final modules = mockModules(subject['id'] as String)['modules'] as List;
+      final modules = getModules(subject['id'] as String)['modules'] as List;
       return {
         ...subject,
         'moduleCount': modules.length,
@@ -50,7 +50,7 @@ class FakeBackend {
     return {'subjects': subjects};
   }
 
-  static Map<String, dynamic> mockModules(String subjectId) {
+  static Map<String, dynamic> getModules(String subjectId) {
     final modules = _modulesBySubject.putIfAbsent(
       subjectId,
       () {
@@ -72,7 +72,7 @@ class FakeBackend {
     return {'modules': modules};
   }
 
-  static Map<String, dynamic> mockContents(String moduleId) {
+  static Map<String, dynamic> getContents(String moduleId) {
     final contents = _contentsByModule.putIfAbsent(
       moduleId,
       () {
@@ -94,15 +94,15 @@ class FakeBackend {
     return {'contents': contents};
   }
 
-  static Map<String, dynamic> mockLogout() {
+  static Map<String, dynamic> logout() {
     return {'success': true};
   }
 
-  static Map<String, dynamic> mockAccountUpdate() {
+  static Map<String, dynamic> accountUpdate() {
     return {'success': true};
   }
 
-  static Map<String, dynamic> mockAccountDelete() {
+  static Map<String, dynamic> accountDelete() {
     return {'success': true};
   }
 
@@ -117,7 +117,7 @@ class FakeBackend {
     };
   });
 
-  static Map<String, dynamic> mockVideos({String? subjectId, String? query}) {
+  static Map<String, dynamic> getVideos({String? subjectId, String? query}) {
     Iterable<Map<String, dynamic>> list = _videos;
     if (subjectId != null && subjectId.isNotEmpty) {
       list = list.where((v) => v['subjectId'] == subjectId);
@@ -129,7 +129,7 @@ class FakeBackend {
     return {'videos': list.toList()};
   }
 
-  static Map<String, dynamic> mockAddVideo(Map<String, dynamic> body) {
+  static Map<String, dynamic> addVideo(Map<String, dynamic> body) {
     final id = 'video-${DateTime.now().millisecondsSinceEpoch}';
     final video = {
       'id': id,
@@ -143,14 +143,14 @@ class FakeBackend {
     return {'video': video};
   }
 
-  static Map<String, dynamic> mockDeleteVideo(String id) {
+  static Map<String, dynamic> deleteVideo(String id) {
     _videos.removeWhere((v) => v['id'] == id);
     return {'success': true};
   }
 
   static final Map<String, _JoinRequest> _joinRequests = {};
 
-  static Map<String, dynamic> mockJoin(String code) {
+  static Map<String, dynamic> join(String code) {
     final id = 'join-${DateTime.now().millisecondsSinceEpoch}';
     _joinRequests[id] = _JoinRequest(code: code, createdAt: DateTime.now());
     return {
@@ -159,7 +159,7 @@ class FakeBackend {
     };
   }
 
-  static Map<String, dynamic> mockJoinStatus(String id) {
+  static Map<String, dynamic> joinStatus(String id) {
     final req = _joinRequests[id];
     if (req == null) return {'status': 'rejected'};
     final elapsed = DateTime.now().difference(req.createdAt).inSeconds;

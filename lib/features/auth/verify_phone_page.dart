@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/network/api_endpoints.dart';
 import '../../core/network/dio_provider.dart';
 import 'auth_flow_models.dart';
 
@@ -85,7 +86,7 @@ class _VerifyPhonePageState extends ConsumerState<VerifyPhonePage> {
     try {
       final dio = ref.read(dioProvider);
       await dio.post(
-        'v1/register/verify_phone',
+        ApiEndpoints.registerVerifyPhone,
         data: {
           'flow_id': widget.args.flowId,
           'code': _code,

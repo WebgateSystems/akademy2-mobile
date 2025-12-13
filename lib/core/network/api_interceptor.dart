@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 
-import 'fake_backend.dart';
+import 'api_endpoints.dart';
+import 'backend.dart';
 
-class MockApiInterceptor extends Interceptor {
+class ApiInterceptor extends Interceptor {
   @override
   void onRequest(
     RequestOptions options,
@@ -11,54 +12,56 @@ class MockApiInterceptor extends Interceptor {
     final path = _normalizePath(options.path);
 
     if (path.startsWith('v1/')) {
-      Response? mock;
+      Response? resp;
 
       switch (path) {
-        case 'v1/session':
-          mock = await _mockSessionLogin(options);
+        case ApiEndpoints.session:
+          resp = await _sessionLogin(options);
           break;
-        case 'v1/auth/refresh':
-          mock = await _mockAuthRefresh(options);
+        case ApiEndpoints.authRefresh:
+          resp = await _authRefresh(options);
           break;
-        case 'v1/auth/logout':
-          mock = await _mockAuthLogout(options);
+        case ApiEndpoints.authLogout:
+          resp = await _authLogout(options);
           break;
-        case 'v1/subjects':
-          mock = await _mockGetSubjects(options);
+        case ApiEndpoints.subjects:
+          resp = await _getSubjects(options);
           break;
-        case 'v1/modules':
-          mock = await _mockGetModules(options);
+        case ApiEndpoints.modules:
+          resp = await _getModules(options);
           break;
-        case 'v1/contents':
-          mock = await _mockGetContents(options);
+        case ApiEndpoints.contents:
+          resp = await _getContents(options);
           break;
-        case 'v1/videos':
-          mock = await _mockVideos(options);
+        case ApiEndpoints.videos:
+        case ApiEndpoints.studentVideos:
+          resp = await _videos(options);
           break;
-        case 'v1/student/videos/my':
-          mock = await _mockVideos(options);
+        case ApiEndpoints.studentVideosMy:
+          resp = await _videos(options);
           break;
-        case 'v1/account/update':
-          mock = await _mockAccountUpdate(options);
+        case ApiEndpoints.accountUpdate:
+          resp = await _accountUpdate(options);
           break;
-        case 'v1/account/delete':
-          mock = await _mockAccountDelete(options);
+        case ApiEndpoints.accountDelete:
+          resp = await _accountDelete(options);
           break;
-        case 'v1/classes/join':
-          mock = await _mockJoin(options);
+        case ApiEndpoints.classesJoin:
+          resp = await _join(options);
           break;
         default:
-          if (path.startsWith('v1/classes/join/') && path.endsWith('/status')) {
-            mock = await _mockJoinStatus(options);
-          } else if (path.startsWith('v1/videos/') &&
+          if (path.startsWith('${ApiEndpoints.classesJoin}/') &&
+              path.endsWith('/status')) {
+            resp = await _joinStatus(options);
+          } else if (path.startsWith('${ApiEndpoints.videos}/') &&
               options.method.toUpperCase() == 'DELETE') {
-            mock = await _mockDeleteVideo(options);
+            resp = await _deleteVideo(options);
           }
           break;
       }
 
-      if (mock != null) {
-        return handler.resolve(mock);
+      if (resp != null) {
+        return handler.resolve(resp);
       }
     }
 
@@ -75,7 +78,7 @@ class MockApiInterceptor extends Interceptor {
     handler.next(response);
   }
 
-  Future<Response?> _mockSessionLogin(RequestOptions options) async {
+  Future<Response?> _sessionLogin(RequestOptions options) async {
     if (options.method.toUpperCase() != 'POST') return null;
 
     final body = options.data as Map<String, dynamic>?;
@@ -85,12 +88,12 @@ class MockApiInterceptor extends Interceptor {
 
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockLogin(phone, pin),
+      data: Backend.login(phone, pin),
       statusCode: 200,
     );
   }
 
-  Future<Response?> _mockAuthRefresh(RequestOptions options) async {
+  Future<Response?> _authRefresh(RequestOptions options) async {
     if (options.method.toUpperCase() != 'POST') return null;
 
     final body = options.data as Map<String, dynamic>?;
@@ -98,60 +101,59 @@ class MockApiInterceptor extends Interceptor {
 
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockRefresh(refreshToken),
+      data: Backend.refresh(refreshToken),
       statusCode: 200,
     );
   }
 
-  Future<Response?> _mockGetSubjects(RequestOptions options) async {
+  Future<Response?> _getSubjects(RequestOptions options) async {
     if (options.method.toUpperCase() != 'GET') return null;
 
     final updatedSince = options.queryParameters['updated_since'] as String?;
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockSubjects(updatedSince: updatedSince),
+      data: Backend.getSubjects(updatedSince: updatedSince),
       statusCode: 200,
     );
   }
 
-  Future<Response?> _mockGetModules(RequestOptions options) async {
+  Future<Response?> _getModules(RequestOptions options) async {
     if (options.method.toUpperCase() != 'GET') return null;
 
     final subjectId =
         options.queryParameters['subjectId'] as String? ?? 'subject-1';
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockModules(subjectId),
+      data: Backend.getModules(subjectId),
       statusCode: 200,
     );
   }
 
-  Future<Response?> _mockGetContents(RequestOptions options) async {
+  Future<Response?> _getContents(RequestOptions options) async {
     if (options.method.toUpperCase() != 'GET') return null;
 
     final moduleId =
         options.queryParameters['moduleId'] as String? ?? 'module-subject-1-1';
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockContents(moduleId),
+      data: Backend.getContents(moduleId),
       statusCode: 200,
     );
   }
 
-  Future<Response?> _mockVideos(RequestOptions options) async {
+  Future<Response?> _videos(RequestOptions options) async {
     final method = options.method.toUpperCase();
     if (method == 'GET') {
       final subjectId = options.queryParameters['subject_id'] as String? ??
           options.queryParameters['subjectId'] as String?;
       final q = options.queryParameters['query'] as String? ??
           options.queryParameters['q'] as String?;
-      final page =
-          int.tryParse('${options.queryParameters['page'] ?? 1}') ?? 1;
+      final page = int.tryParse('${options.queryParameters['page'] ?? 1}') ?? 1;
       var perPage =
           int.tryParse('${options.queryParameters['per_page'] ?? 20}') ?? 20;
 
       final response =
-          FakeBackend.mockVideos(subjectId: subjectId, query: q)['videos']
+          Backend.getVideos(subjectId: subjectId, query: q)['videos']
               as List<dynamic>;
       if (perPage <= 0) {
         perPage = response.isEmpty ? 1 : response.length;
@@ -180,35 +182,35 @@ class MockApiInterceptor extends Interceptor {
     if (method == 'POST') {
       return Response(
         requestOptions: options,
-        data: FakeBackend.mockAddVideo(options.data as Map<String, dynamic>),
+        data: Backend.addVideo(options.data as Map<String, dynamic>),
         statusCode: 200,
       );
     }
     return null;
   }
 
-  Future<Response?> _mockAuthLogout(RequestOptions options) async {
+  Future<Response?> _authLogout(RequestOptions options) async {
     if (options.method.toUpperCase() != 'POST') return null;
 
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockLogout(),
+      data: Backend.logout(),
       statusCode: 200,
     );
   }
 
-  Future<Response?> _mockJoin(RequestOptions options) async {
+  Future<Response?> _join(RequestOptions options) async {
     if (options.method.toUpperCase() != 'POST') return null;
     final code =
         (options.data as Map<String, dynamic>?)?['code'] as String? ?? '';
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockJoin(code),
+      data: Backend.join(code),
       statusCode: 200,
     );
   }
 
-  Future<Response?> _mockJoinStatus(RequestOptions options) async {
+  Future<Response?> _joinStatus(RequestOptions options) async {
     if (options.method.toUpperCase() != 'GET') return null;
     final parts = _normalizePath(options.path)
         .split('/')
@@ -217,30 +219,30 @@ class MockApiInterceptor extends Interceptor {
     final id = parts.length >= 4 ? parts[3] : '';
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockJoinStatus(id),
+      data: Backend.joinStatus(id),
       statusCode: 200,
     );
   }
 
-  Future<Response?> _mockAccountUpdate(RequestOptions options) async {
+  Future<Response?> _accountUpdate(RequestOptions options) async {
     if (options.method.toUpperCase() != 'POST') return null;
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockAccountUpdate(),
+      data: Backend.accountUpdate(),
       statusCode: 200,
     );
   }
 
-  Future<Response?> _mockAccountDelete(RequestOptions options) async {
+  Future<Response?> _accountDelete(RequestOptions options) async {
     if (options.method.toUpperCase() != 'DELETE') return null;
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockAccountDelete(),
+      data: Backend.accountDelete(),
       statusCode: 200,
     );
   }
 
-  Future<Response?> _mockDeleteVideo(RequestOptions options) async {
+  Future<Response?> _deleteVideo(RequestOptions options) async {
     final parts = _normalizePath(options.path)
         .split('/')
         .where((segment) => segment.isNotEmpty)
@@ -248,7 +250,7 @@ class MockApiInterceptor extends Interceptor {
     final id = parts.isNotEmpty ? parts.last : '';
     return Response(
       requestOptions: options,
-      data: FakeBackend.mockDeleteVideo(id),
+      data: Backend.deleteVideo(id),
       statusCode: 200,
     );
   }

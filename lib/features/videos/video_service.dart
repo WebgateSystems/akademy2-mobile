@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../../core/auth/join_repository.dart';
+import '../../core/network/api_endpoints.dart';
 import 'video_models.dart';
 
 class VideoService {
@@ -14,7 +15,8 @@ class VideoService {
     String? query,
   }) async {
     final trimmedQuery = query?.trim();
-    final resp = await _dio.get('v1/student/videos', queryParameters: {
+    final resp =
+        await _dio.get(ApiEndpoints.studentVideos, queryParameters: {
       'page': page,
       'per_page': perPage,
       if (subjectId != null && subjectId.isNotEmpty) 'subject_id': subjectId,
@@ -30,7 +32,8 @@ class VideoService {
     String? query,
   }) async {
     final trimmedQuery = query?.trim();
-    final resp = await _dio.get('v1/student/videos/my', queryParameters: {
+    final resp =
+        await _dio.get(ApiEndpoints.studentVideosMy, queryParameters: {
       'page': page,
       'per_page': perPage,
       if (subjectId != null && subjectId.isNotEmpty) 'subject_id': subjectId,
@@ -57,28 +60,28 @@ class VideoService {
     });
 
     await _dio.post(
-      'v1/student/videos',
+      ApiEndpoints.studentVideos,
       data: formData,
     );
   }
 
   Future<void> deleteVideo(String id) async {
-    await _dio.delete('v1/student/videos/$id');
+    await _dio.delete(ApiEndpoints.studentVideo(id));
   }
 
   Future<void> toggleLike(String id) async {
-    await _dio.post('v1/student/videos/$id/like');
+    await _dio.post(ApiEndpoints.studentVideoLike(id));
   }
 
   Future<List<VideoSubjectFilter>> fetchSubjects() async {
-    final resp = await _dio.get('v1/student/videos/subjects');
+    final resp = await _dio.get(ApiEndpoints.studentVideoSubjects);
     final response =
         SubjectsResponse.fromJson(resp.data as Map<String, dynamic>);
     return response.data;
   }
 
   Future<VideoDetail> fetchVideoById(String id) async {
-    final resp = await _dio.get('v1/student/videos/$id');
+    final resp = await _dio.get(ApiEndpoints.studentVideo(id));
     final response =
         VideoDetailResponse.fromJson(resp.data as Map<String, dynamic>);
     return response.data;
@@ -90,7 +93,7 @@ class VideoService {
     String? description,
   }) async {
     await _dio.patch(
-      'v1/student/videos/$id',
+      ApiEndpoints.studentVideo(id),
       data: {
         'video': {
           'title': title,

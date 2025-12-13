@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 
+import '../network/api_endpoints.dart';
 import '../storage/secure_storage.dart';
 
 class JoinRepository {
@@ -11,8 +12,10 @@ class JoinRepository {
 
   Future<String> joinWithCode(String code) async {
     final payload = _extractJoinCode(code);
-    final resp = await _dio
-        .post('v1/student/enrollments/join', data: {'token': payload});
+    final resp = await _dio.post(
+      ApiEndpoints.studentEnrollmentsJoin,
+      data: {'token': payload},
+    );
     final data = resp.data as Map<String, dynamic>;
     final id = data['requestId'] as String? ?? data['enrollment_id'] as String?;
     if (id == null || id.isEmpty) {
@@ -23,7 +26,7 @@ class JoinRepository {
 
   Future<JoinStatus> checkStatus(String requestId) async {
     final resp =
-        await _dio.get('v1/student/enrollments/join/$requestId/status');
+        await _dio.get(ApiEndpoints.studentEnrollmentStatus(requestId));
     final data = resp.data as Map<String, dynamic>;
     final status = data['status'] as String? ?? 'pending';
     final token =
