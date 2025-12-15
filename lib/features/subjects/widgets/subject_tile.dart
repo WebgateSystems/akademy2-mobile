@@ -23,7 +23,7 @@ class SubjectTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final completed = subject.averageScore > 0;
+    final completed = subject.completionRate > 0 && subject.averageScore > 0;
     final cardColor = AppColors.subjectCardColor(context, subject, completed);
     final rezultCardColor = AppColors.subjectCardColor(context, subject, false);
 
@@ -66,7 +66,7 @@ class SubjectTile extends StatelessWidget {
               top: 0,
               child: ResultQuizWidget(
                 bgColor: rezultCardColor,
-                bestScore: subject.averageScore,
+                bestScore: subject.completionRate,
               ),
             ),
         ],

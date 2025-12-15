@@ -13,7 +13,9 @@ import '../../core/auth/auth_provider.dart';
 import '../../core/storage/secure_storage.dart';
 
 class EnableBiometricPage extends ConsumerStatefulWidget {
-  const EnableBiometricPage({super.key});
+  const EnableBiometricPage({super.key, this.redirect});
+
+  final String? redirect;
 
   @override
   ConsumerState<EnableBiometricPage> createState() =>
@@ -79,12 +81,16 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
     await storage.write('biometricFace', _face.toString());
     if (!mounted) return;
     final auth = ref.read(authProvider);
-    final target =
-        (auth.schoolId != null && auth.schoolId!.isNotEmpty) ? '/home' : '/join-group';
+    final target = (widget.redirect?.isNotEmpty ?? false)
+        ? widget.redirect!
+        : (auth.schoolId != null && auth.schoolId!.isNotEmpty
+            ? '/home'
+            : '/join-group');
     context.go(target);
   }
 
   void _showMessage(String message) {
+    debugPrint('EnableBiometricPage: $message');
     if (!mounted) return;
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(message)));

@@ -12,7 +12,7 @@ import 'package:academy_2_app/core/services/student_api_service.dart';
 import 'package:academy_2_app/features/modules/dialogs/network_video_preview_dialog.dart';
 import 'package:academy_2_app/features/modules/dialogs/youtube_preview_dialog.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
-import 'package:flutter/foundation.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -142,7 +142,9 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     try {
       final subjectIds = ref.read(_subjectFiltersProvider);
       final query = ref.read(_searchProvider).trim();
+      final search = query.toLowerCase();
       final service = VideoService();
+      var applyLocalSearch = false;
 
       if (reset) {
         await _loadMyVideos(
@@ -153,15 +155,36 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
         if (requestId != _requestId) return;
       }
 
-      final response = await service.fetchVideos(
-        page: _currentPage,
-        subjectId: subjectIds.length == 1 ? subjectIds.first : null,
-        query: query.isEmpty ? null : query,
-      );
+      VideosResponse response;
+      try {
+        response = await service.fetchVideos(
+          page: _currentPage,
+          subjectId: subjectIds.length == 1 ? subjectIds.first : null,
+          query: query.isEmpty ? null : query,
+        );
+      } on DioException catch (e) {
+        final status = e.response?.statusCode ?? 0;
+        if (query.isNotEmpty && status >= 500) {
+          applyLocalSearch = true;
+          response = await service.fetchVideos(
+            page: _currentPage,
+            subjectId: subjectIds.length == 1 ? subjectIds.first : null,
+            query: null,
+          );
+        } else {
+          rethrow;
+        }
+      }
 
       final newVideos = <SchoolVideo>[];
       for (final video in response.data) {
         if (subjectIds.isNotEmpty && !subjectIds.contains(video.subjectId)) {
+          continue;
+        }
+        if (applyLocalSearch &&
+            search.isNotEmpty &&
+            !video.title.toLowerCase().contains(search) &&
+            !video.description.toLowerCase().contains(search)) {
           continue;
         }
         newVideos.add(video);
@@ -181,6 +204,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
 
       _fetchVideoDetails(newVideos.map((v) => v.id).toList());
     } catch (e) {
+      debugPrint('SchoolVideosPage: failed to load my videos - $e');
       if (requestId != _requestId) return;
       setState(() => _isLoadingMore = false);
       if (mounted) {
@@ -193,8 +217,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
   }
 
   void _handleDashboardError(Object error) {
-    if (error is StudentAccessRequiredException &&
-        !_navigatedToWaitApproval) {
+    if (error is StudentAccessRequiredException && !_navigatedToWaitApproval) {
       _navigatedToWaitApproval = true;
       if (mounted) {
         context.go('/wait-approval');
@@ -208,6 +231,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     required int requestId,
   }) async {
     final service = VideoService();
+    final search = query.trim().toLowerCase();
     final List<SchoolVideo> myVideos = [];
     var page = 1;
     var hasMore = true;
@@ -217,14 +241,23 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
         final response = await service.fetchMyVideos(
           page: page,
           subjectId: subjectIds.length == 1 ? subjectIds.first : null,
-          query: query.isEmpty ? null : query,
+          // Backend on /videos/my fails with q param, so omit it and filter locally.
+          query: null,
         );
 
-        final filtered = subjectIds.isNotEmpty
+        var filtered = subjectIds.isNotEmpty
             ? response.data
                 .where((v) => subjectIds.contains(v.subjectId))
                 .toList()
             : response.data;
+
+        if (search.isNotEmpty) {
+          filtered = filtered
+              .where((v) =>
+                  v.title.toLowerCase().contains(search) ||
+                  v.description.toLowerCase().contains(search))
+              .toList();
+        }
 
         myVideos.addAll(filtered);
         hasMore = response.meta.hasMore;
@@ -249,6 +282,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
 
       _fetchVideoDetails(newIds);
     } catch (e) {
+      debugPrint('SchoolVideosPage: failed to load my videos - $e');
       if (!mounted || requestId != _requestId) return;
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(

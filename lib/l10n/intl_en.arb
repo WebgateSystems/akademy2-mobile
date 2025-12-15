@@ -214,7 +214,7 @@
   "quizResultTryBody": "No worries — you can try again! Review the materials, revisit the questions, and show what you’ve got. Fingers crossed for your next score! 💪📚",
   "quizResultSkip": "Skip",
   "quizResultDownload": "Download",
-  "quizScoreLabel": "{score} pts",
+  "quizScoreLabel": "{score} %",
   "editVideoTitle": "Edit video",
   "editVideoTitleLabel": "Title",
   "editVideoDescriptionLabel": "Description",

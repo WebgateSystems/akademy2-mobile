@@ -214,7 +214,7 @@
   "quizResultTryBody": "Nic nie szkodzi — możesz spróbować jeszcze raz! Obejrzyj materiały, wróć do pytań i pokaż, na co Cię stać. Trzymamy kciuki za Twój kolejny wynik! 💪📚",
   "quizResultSkip": "Pomiń",
   "quizResultDownload": "Pobierz",
-  "quizScoreLabel": "{score} pkt",
+  "quizScoreLabel": "{score} %",
   "editVideoTitle": "Edytuj wideo",
   "editVideoTitleLabel": "Tytuł",
   "editVideoDescriptionLabel": "Opis",

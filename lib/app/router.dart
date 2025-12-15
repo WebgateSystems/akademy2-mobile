@@ -124,7 +124,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(
         path: '/enable-biometric',
-        builder: (context, state) => const EnableBiometricPage(),
+        builder: (context, state) {
+          final extra = state.extra;
+          final redirect =
+              extra is String ? extra : state.uri.queryParameters['redirect'];
+          return EnableBiometricPage(redirect: redirect);
+        },
       ),
       GoRoute(path: '/home', builder: (context, state) => const HomeShell()),
       GoRoute(
@@ -223,7 +228,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       final needsUnlock = auth.isAuthenticated && !auth.isUnlocked;
-      if (needsUnlock && !onUnlock) {
+      if (needsUnlock && !onUnlock && !onEnableBiometric) {
         final redirectTo = loc == '/splash' ? '/home' : state.uri.toString();
         return Uri(
           path: '/unlock',
@@ -231,7 +236,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ).toString();
       }
 
-      if (auth.hasPendingJoin && !onWaitApproval) {
+      if (auth.hasPendingJoin && !onWaitApproval && !onEnableBiometric) {
         return '/wait-approval';
       }
 

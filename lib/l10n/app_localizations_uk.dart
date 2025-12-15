@@ -464,7 +464,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String quizScoreLabel(Object score) {
-    return '$score бал(ів)';
+    return '$score %';
   }
 
   @override

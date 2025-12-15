@@ -919,7 +919,7 @@ abstract class AppLocalizations {
   /// No description provided for @quizScoreLabel.
   ///
   /// In en, this message translates to:
-  /// **'{score} pts'**
+  /// **'{score} %'**
   String quizScoreLabel(Object score);
 
   /// No description provided for @editVideoTitle.

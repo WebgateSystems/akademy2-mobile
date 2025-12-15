@@ -15,8 +15,7 @@ class VideoService {
     String? query,
   }) async {
     final trimmedQuery = query?.trim();
-    final resp =
-        await _dio.get(ApiEndpoints.studentVideos, queryParameters: {
+    final resp = await _dio.get(ApiEndpoints.studentVideos, queryParameters: {
       'page': page,
       'per_page': perPage,
       if (subjectId != null && subjectId.isNotEmpty) 'subject_id': subjectId,
@@ -32,8 +31,7 @@ class VideoService {
     String? query,
   }) async {
     final trimmedQuery = query?.trim();
-    final resp =
-        await _dio.get(ApiEndpoints.studentVideosMy, queryParameters: {
+    final resp = await _dio.get(ApiEndpoints.studentVideosMy, queryParameters: {
       'page': page,
       'per_page': perPage,
       if (subjectId != null && subjectId.isNotEmpty) 'subject_id': subjectId,

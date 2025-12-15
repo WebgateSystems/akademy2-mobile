@@ -18,7 +18,8 @@ class UnlockPage extends ConsumerStatefulWidget {
   ConsumerState<UnlockPage> createState() => _UnlockPageState();
 }
 
-class _UnlockPageState extends ConsumerState<UnlockPage> {
+class _UnlockPageState extends ConsumerState<UnlockPage>
+    with WidgetsBindingObserver {
   final _localAuth = LocalAuthentication();
   String _current = '';
   String? _storedPin;
@@ -27,12 +28,20 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
   bool _submitting = false;
   bool _biometricEnabled = false;
   bool _biometricAttempted = false;
+  bool _appWasPaused = false;
   bool _ready = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadPreferences();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
   Future<void> _loadPreferences() async {
@@ -57,10 +66,7 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
         context.go(target);
         return;
       }
-
-      if (biometricFlag) {
-        await _tryBiometric();
-      }
+      _scheduleBiometricAttempt();
     } catch (_) {
       if (mounted) {
         setState(() => _ready = true);
@@ -68,8 +74,16 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
     }
   }
 
-  Future<void> _tryBiometric() async {
-    if (_biometricAttempted || !_biometricEnabled) return;
+  void _scheduleBiometricAttempt() {
+    if (!_biometricEnabled || _biometricAttempted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_biometricEnabled || _biometricAttempted) return;
+      _tryBiometric();
+    });
+  }
+
+  Future<void> _tryBiometric({bool fromButton = false}) async {
+    if ((!fromButton && _biometricAttempted) || !_biometricEnabled) return;
     _biometricAttempted = true;
     try {
       final supported = await _localAuth.isDeviceSupported();
@@ -81,8 +95,40 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
       if (success && mounted) {
         await _finishUnlock();
       }
-    } catch (_) {
+    } catch (_) {}
+  }
+
+  void _handleBiometricTap() async {
+    if (_submitting || !_ready) return;
+    if (!_biometricEnabled) {
+      if (!mounted) return;
+      context.go('/enable-biometric', extra: _redirectTarget());
+      return;
     }
+    await _tryBiometric(fromButton: true);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _appWasPaused = true;
+      return;
+    }
+    if (state == AppLifecycleState.resumed &&
+        _appWasPaused &&
+        _biometricEnabled &&
+        mounted &&
+        !_submitting) {
+      _appWasPaused = false;
+      _biometricAttempted = false;
+      _scheduleBiometricAttempt();
+    }
+  }
+
+  String _redirectTarget() {
+    final targetRaw =
+        (widget.redirect?.isNotEmpty ?? false) ? widget.redirect! : '/home';
+    return targetRaw == '/unlock' || targetRaw.isEmpty ? '/home' : targetRaw;
   }
 
   void _handleKey(String value) async {
@@ -132,11 +178,7 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
   Future<void> _finishUnlock() async {
     ref.read(authProvider.notifier).markUnlocked();
     if (!mounted) return;
-    final targetRaw =
-        (widget.redirect?.isNotEmpty ?? false) ? widget.redirect! : '/home';
-    final target =
-        targetRaw == '/unlock' || targetRaw.isEmpty ? '/home' : targetRaw;
-    context.go(target);
+    context.go(_redirectTarget());
   }
 
   Future<void> _logout() async {
@@ -162,6 +204,8 @@ class _UnlockPageState extends ConsumerState<UnlockPage> {
       mismatch: _mismatch,
       showProgress: _submitting,
       showBackButton: false,
+      showBiometricKey: true,
+      onBiometricTap: _handleBiometricTap,
       footer: Column(
         children: [
           ActionTextButtonWidget(

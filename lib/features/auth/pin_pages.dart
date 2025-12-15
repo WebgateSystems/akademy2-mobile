@@ -149,7 +149,13 @@ class _ConfirmPinPageState extends ConsumerState<ConfirmPinPage> {
             .read(authProvider.notifier)
             .setTokens(accessToken, userId: userId);
         if (!mounted) return;
-        context.go('/enable-biometric');
+        final authState = ref.read(authProvider);
+        final redirectTarget = authState.hasPendingJoin
+            ? '/wait-approval'
+            : ((authState.schoolId != null && authState.schoolId!.isNotEmpty)
+                ? '/home'
+                : '/join-group');
+        context.go('/enable-biometric', extra: redirectTarget);
         return;
       }
       throw Exception('No access token');
@@ -193,6 +199,8 @@ class PinScaffold extends StatelessWidget {
     this.showBackButton = true,
     this.footer,
     this.errorMessage,
+    this.showBiometricKey = false,
+    this.onBiometricTap,
   });
 
   final String title;
@@ -204,6 +212,8 @@ class PinScaffold extends StatelessWidget {
   final bool showBackButton;
   final Widget? footer;
   final String? errorMessage;
+  final bool showBiometricKey;
+  final VoidCallback? onBiometricTap;
 
   @override
   Widget build(BuildContext context) {
@@ -242,7 +252,11 @@ class PinScaffold extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _PinKeypad(onKey: onKey),
+                _PinKeypad(
+                  onKey: onKey,
+                  showBiometricKey: showBiometricKey,
+                  onBiometricTap: onBiometricTap,
+                ),
               ],
             ),
           if (footer != null) SizedBox(height: 24.h),
@@ -283,9 +297,15 @@ class DotsWidget extends StatelessWidget {
 }
 
 class _PinKeypad extends StatelessWidget {
-  const _PinKeypad({required this.onKey});
+  const _PinKeypad({
+    required this.onKey,
+    this.showBiometricKey = false,
+    this.onBiometricTap,
+  });
 
   final void Function(String value) onKey;
+  final bool showBiometricKey;
+  final VoidCallback? onBiometricTap;
 
   @override
   Widget build(BuildContext context) {
@@ -299,7 +319,7 @@ class _PinKeypad extends StatelessWidget {
       '7',
       '8',
       '9',
-      '',
+      showBiometricKey ? 'biometric' : '',
       '0',
       'back',
     ];
@@ -320,26 +340,37 @@ class _PinKeypad extends StatelessWidget {
           if (key.isEmpty) {
             return const SizedBox.shrink();
           }
-          return key == 'back'
-              ? RoundButton.image(
-                  size: 72.r,
-                  onTap: () => onKey('back'),
-                  backgroundColor: Colors.transparent,
-                  splashColor: AppColors.surfaceAccent(context),
-                  assetImage: Theme.of(context).brightness == Brightness.dark
-                      ? 'assets/images/ic_back_button_dark.png'
-                      : 'assets/images/ic_back_button.png',
-                  pressedImageOpacity: 0.5,
-                )
-              : RoundButton.text(
-                  size: 72.r,
-                  onTap: () => onKey(key),
-                  backgroundColor: AppColors.surfaceActive(context),
-                  splashColor: AppColors.surfaceAccent(context),
-                  textColor: AppColors.contentPrimary(context),
-                  pressedTextColor: AppColors.background(context),
-                  text: key,
-                );
+          if (key == 'back') {
+            return RoundButton.image(
+              size: 72.r,
+              onTap: () => onKey('back'),
+              backgroundColor: Colors.transparent,
+              splashColor: AppColors.surfaceAccent(context),
+              assetImage: Theme.of(context).brightness == Brightness.dark
+                  ? 'assets/images/ic_back_button_dark.png'
+                  : 'assets/images/ic_back_button.png',
+              pressedImageOpacity: 0.5,
+            );
+          }
+          if (key == 'biometric') {
+            return RoundButton.image(
+              size: 72.r,
+              onTap: onBiometricTap ?? () {},
+              backgroundColor: Colors.transparent,
+              splashColor: AppColors.surfaceAccent(context),
+              assetImage: 'assets/images/ic_face_id.png',
+              pressedImageOpacity: 0.5,
+            );
+          }
+          return RoundButton.text(
+            size: 72.r,
+            onTap: () => onKey(key),
+            backgroundColor: AppColors.surfaceActive(context),
+            splashColor: AppColors.surfaceAccent(context),
+            textColor: AppColors.contentPrimary(context),
+            pressedTextColor: AppColors.background(context),
+            text: key,
+          );
         },
       ),
     );
