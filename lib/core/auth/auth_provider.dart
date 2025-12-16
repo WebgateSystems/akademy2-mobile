@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/storage/secure_storage.dart';
@@ -9,6 +10,13 @@ import '../network/api_endpoints.dart';
 import '../network/dio_provider.dart';
 import '../services/student_api_service.dart';
 
+enum StudentEnrollmentStatusType {
+  unknown,
+  needsSchool,
+  waitingForClasses,
+  ready,
+}
+
 class AuthState {
   final bool isAuthenticated;
   final bool isLoading;
@@ -16,6 +24,7 @@ class AuthState {
   final String? userId;
   final String? schoolId;
   final bool hasPendingJoin;
+  final StudentEnrollmentStatusType studentStatus;
 
   const AuthState({
     required this.isAuthenticated,
@@ -24,9 +33,14 @@ class AuthState {
     this.userId,
     this.schoolId,
     this.hasPendingJoin = false,
+    this.studentStatus = StudentEnrollmentStatusType.unknown,
   });
 
-  bool get needsSchoolBinding => isAuthenticated && schoolId == null;
+  bool get needsSchoolBinding =>
+      studentStatus == StudentEnrollmentStatusType.needsSchool;
+
+  bool get isWaitingForApproval =>
+      studentStatus == StudentEnrollmentStatusType.waitingForClasses;
 
   AuthState copyWith({
     bool? isAuthenticated,
@@ -36,6 +50,7 @@ class AuthState {
     String? schoolId,
     bool clearSchoolId = false,
     bool? hasPendingJoin,
+    StudentEnrollmentStatusType? studentStatus,
   }) {
     return AuthState(
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
@@ -44,6 +59,7 @@ class AuthState {
       userId: userId ?? this.userId,
       schoolId: clearSchoolId ? null : (schoolId ?? this.schoolId),
       hasPendingJoin: hasPendingJoin ?? this.hasPendingJoin,
+      studentStatus: studentStatus ?? this.studentStatus,
     );
   }
 }
@@ -65,6 +81,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
     final pendingJoinId = schoolId == null
         ? await _storage.read('pendingJoinId')
         : null;
+    final fallbackStatus = schoolId != null
+        ? StudentEnrollmentStatusType.ready
+        : StudentEnrollmentStatusType.needsSchool;
+    final enrollmentStatus = token != null
+        ? await _determineEnrollmentStatus(fallback: fallbackStatus)
+        : StudentEnrollmentStatusType.unknown;
     state = AuthState(
       isAuthenticated: token != null,
       isLoading: false,
@@ -72,6 +94,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       userId: token != null ? 'me' : null,
       schoolId: schoolId,
       hasPendingJoin: (pendingJoinId ?? '').isNotEmpty,
+      studentStatus: enrollmentStatus,
     );
   }
 
@@ -118,6 +141,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
             phone: attributes?['phone'] as String? ?? phone,
             pin: pin,
           );
+          final fallbackStatus = schoolId != null
+              ? StudentEnrollmentStatusType.ready
+              : StudentEnrollmentStatusType.needsSchool;
+          final enrollmentStatus =
+              await _determineEnrollmentStatus(fallback: fallbackStatus);
           state = AuthState(
             isAuthenticated: true,
             isUnlocked: true,
@@ -125,6 +153,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
             schoolId: schoolId,
             isLoading: false,
             hasPendingJoin: (pendingJoinId ?? '').isNotEmpty,
+            studentStatus: enrollmentStatus,
           );
           _invalidateDashboard();
           return;
@@ -154,6 +183,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (schoolId != null) {
       await _storage.write('schoolId', schoolId);
     }
+    final fallbackStatus = schoolId != null
+        ? StudentEnrollmentStatusType.ready
+        : StudentEnrollmentStatusType.needsSchool;
+    final enrollmentStatus =
+        await _determineEnrollmentStatus(fallback: fallbackStatus);
     state = AuthState(
       isAuthenticated: true,
       isUnlocked: true,
@@ -161,6 +195,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       userId: userId ?? 'me',
       schoolId: schoolId,
       hasPendingJoin: (pendingJoinId ?? '').isNotEmpty,
+      studentStatus: enrollmentStatus,
     );
     _invalidateDashboard();
   }
@@ -178,6 +213,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       userId: userId,
       schoolId: schoolId ?? state.schoolId,
       hasPendingJoin: state.hasPendingJoin,
+      studentStatus: state.studentStatus,
     );
   }
 
@@ -210,6 +246,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       isLoading: false,
       isUnlocked: false,
       hasPendingJoin: false,
+      studentStatus: StudentEnrollmentStatusType.unknown,
     );
   }
 
@@ -248,6 +285,30 @@ class AuthNotifier extends StateNotifier<AuthState> {
     if (phone != null) await storage.write('phone', phone);
     if (pin != null) await storage.write('userPin', pin);
     if (metaPin != null) await storage.write('userPin', metaPin);
+  }
+
+  Future<StudentEnrollmentStatusType> _determineEnrollmentStatus({
+    StudentEnrollmentStatusType? fallback,
+  }) async {
+    try {
+      final status = await ref
+          .read(studentApiServiceProvider)
+          .fetchDashboardStatus();
+      if (!status.hasSchoolToken) {
+        return StudentEnrollmentStatusType.needsSchool;
+      }
+      if (!status.hasClasses) {
+        return StudentEnrollmentStatusType.waitingForClasses;
+      }
+      return StudentEnrollmentStatusType.ready;
+    } catch (e, stack) {
+      debugPrint('AuthNotifier: Failed to fetch dashboard status: $e\n$stack');
+      if (fallback != null) return fallback;
+      if (state.schoolId == null) {
+        return StudentEnrollmentStatusType.needsSchool;
+      }
+      return StudentEnrollmentStatusType.ready;
+    }
   }
 
   void _invalidateDashboard() {

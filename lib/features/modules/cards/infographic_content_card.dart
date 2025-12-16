@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class InfographicContentCard extends StatelessWidget {
   const InfographicContentCard({
+    super.key,
     required this.content,
     required this.moduleId,
     required this.l10n,

@@ -1,12 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-import '../auth/auth_provider.dart';
 import '../../app/router.dart';
-import 'api.dart';
-import 'dio_client.dart';
+import '../auth/auth_provider.dart';
 
 class AuthInterceptor extends Interceptor {
   final Ref ref;
@@ -45,8 +42,7 @@ class AuthInterceptor extends Interceptor {
         await ref.read(authProvider.notifier).logout();
         final router = ref.read(routerProvider);
         router.go('/login');
-      } catch (_) {
-      }
+      } catch (_) {}
       return handler.next(err);
     }
     handler.next(err);

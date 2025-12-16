@@ -7,7 +7,7 @@ class ToolbarWidget extends StatelessWidget {
   final String title;
   final TextStyle? titleTextStyle;
 
-  ToolbarWidget({
+  const ToolbarWidget({
     super.key,
     this.leftIcon,
     this.rightIcon,

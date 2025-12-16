@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PreviewCard extends StatelessWidget {
   const PreviewCard({
+    super.key,
     required this.thumbnail,
     required this.title,
     required this.subtitle,

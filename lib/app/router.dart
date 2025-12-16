@@ -133,11 +133,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/home', builder: (context, state) => const HomeShell()),
       GoRoute(
-        path: '/join/:token',
-        builder: (context, state) =>
-            JoinPage(token: state.pathParameters['token'] ?? ''),
-      ),
-      GoRoute(
         path: '/subject/:id',
         builder: (context, state) =>
             ModulesPage(subjectId: state.pathParameters['id'] ?? ''),
@@ -235,12 +230,15 @@ final routerProvider = Provider<GoRouter>((ref) {
           queryParameters: {'redirect': redirectTo},
         ).toString();
       }
-
-      if (auth.hasPendingJoin && !onWaitApproval && !onEnableBiometric) {
+ 
+      final needsWaitApproval =
+          auth.hasPendingJoin || auth.isWaitingForApproval;
+      if (needsWaitApproval && !onWaitApproval && !onEnableBiometric) {
         return '/wait-approval';
       }
 
       if (auth.needsSchoolBinding &&
+          !needsWaitApproval &&
           !onJoinGroup &&
           !onWaitApproval &&
           !finishingOnboarding) {

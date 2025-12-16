@@ -2,7 +2,6 @@ import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart'
     show CircularProgressWidget;
 import 'package:academy_2_app/app/view/toolbar_widget.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,8 +42,7 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
   }
 
   void _handleDashboardError(Object error) {
-    if (error is StudentAccessRequiredException &&
-        !_navigatedToWaitApproval) {
+    if (error is StudentAccessRequiredException && !_navigatedToWaitApproval) {
       _navigatedToWaitApproval = true;
       if (mounted) {
         context.go('/wait-approval');

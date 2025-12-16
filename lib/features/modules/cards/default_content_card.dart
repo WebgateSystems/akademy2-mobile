@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 class DefaultContentCard extends StatelessWidget {
   const DefaultContentCard({
+    super.key,
     required this.content,
     required this.moduleId,
     required this.l10n,

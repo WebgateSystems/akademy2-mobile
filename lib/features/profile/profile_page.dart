@@ -350,7 +350,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           ),
           SizedBox(height: 4.h),
           DropdownButtonFormField<T>(
-            value: value,
+            initialValue: value,
             items: items,
             onChanged: enabled ? onChanged : null,
             isExpanded: true,

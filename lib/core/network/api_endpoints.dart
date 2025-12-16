@@ -8,7 +8,7 @@ class ApiEndpoints {
 
   // Registration
   static const registerFlow = 'v1/register/flow';
-  static const registerProfile = 'v1/register/student';
+  static const registerProfile = 'v1/register/profile';
   static const registerVerifyPhone = 'v1/register/verify_phone';
   static const registerSetPin = 'v1/register/set_pin';
   static const registerConfirmPin = 'v1/register/confirm_pin';

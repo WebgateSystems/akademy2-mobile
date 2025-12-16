@@ -126,7 +126,7 @@ class _SubjectIcon extends StatelessWidget {
           child: fullUrl == null
               ? const Icon(Icons.book)
               : _NetworkSvg(
-                  url: fullUrl!,
+                  url: fullUrl,
                   placeholder: const CircularProgressWidget(),
                 ),
         ),

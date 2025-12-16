@@ -183,7 +183,7 @@ class _AddVideoPageState extends State<AddVideoPage> {
           ),
           SizedBox(height: 4.h),
           DropdownButtonFormField<T>(
-            value: value,
+            initialValue: value,
             items: items,
             onChanged: enabled ? onChanged : null,
             isExpanded: true,

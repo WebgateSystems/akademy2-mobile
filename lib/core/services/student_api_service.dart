@@ -313,6 +313,20 @@ class StudentApiService {
     }
   }
 
+  Future<DashboardStatus> fetchDashboardStatus() async {
+    final response = await _dio.get(ApiEndpoints.studentDashboard);
+    final data = response.data['data'] as Map<String, dynamic>? ?? {};
+    final schoolRaw = data['school'];
+    final classesRaw = data['classes'];
+    final hasSchoolToken = _extractSchoolToken(schoolRaw) != null;
+    final hasClasses =
+        classesRaw is List && classesRaw.isNotEmpty;
+    return DashboardStatus(
+      hasSchoolToken: hasSchoolToken,
+      hasClasses: hasClasses,
+    );
+  }
+
   bool _isStudentAccessRequired(DioException e) {
     if (e.response?.statusCode != 403) return false;
     final data = e.response?.data;
@@ -642,4 +656,24 @@ String? _resolveUrl(String? path) {
       ? Api.baseUploadUrl.substring(0, Api.baseUploadUrl.length - 1)
       : Api.baseUploadUrl;
   return path.startsWith('/') ? '$base$path' : '$base/$path';
+}
+
+String? _extractSchoolToken(dynamic school) {
+  if (school is String && school.isNotEmpty) return school;
+  if (school is Map<String, dynamic>) {
+    return (school['token'] as String?) ??
+        (school['school_token'] as String?) ??
+        (school['id'] as String?);
+  }
+  return null;
+}
+
+class DashboardStatus {
+  final bool hasSchoolToken;
+  final bool hasClasses;
+
+  const DashboardStatus({
+    required this.hasSchoolToken,
+    required this.hasClasses,
+  });
 }

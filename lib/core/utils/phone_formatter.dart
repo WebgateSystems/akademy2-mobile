@@ -3,46 +3,49 @@ import 'package:flutter/services.dart';
 class PlPhoneFormatter {
   PlPhoneFormatter._();
 
+  static final _polandConfig = _PhoneFormatConfig('48', [3, 3, 3]);
+  static final _ukraineConfig = _PhoneFormatConfig('380', [2, 3, 2, 2]);
+
   static String format(String input, {String? previousValue}) {
     var digits = input.replaceAll(RegExp(r'\D'), '');
 
-    if (digits.startsWith('48')) {
-      digits = digits.substring(2);
-    }
-
-    if (digits.isEmpty) {
-      return '';
-    }
-
+    final prevDigits =
+        previousValue?.replaceAll(RegExp(r'\D'), '') ?? '';
     final isDeleting =
         previousValue != null && previousValue.length > input.length;
 
     if (isDeleting) {
-      final prevDigits = previousValue.replaceAll(RegExp(r'\D'), '');
-      if (prevDigits.startsWith('48')) {
-        final prevDigitsWithout48 = prevDigits.substring(2);
-        if (prevDigitsWithout48 == digits && digits.isNotEmpty) {
-          digits = digits.substring(0, digits.length - 1);
-        }
-      } else if (prevDigits == digits && digits.isNotEmpty) {
-        digits = digits.substring(0, digits.length - 1);
-      }
+      digits = _handleDeletion(digits, prevDigits);
     }
 
     if (digits.isEmpty) {
       return '';
     }
 
-    if (digits.length > 9) {
-      digits = digits.substring(0, 9);
+    final config = _isUkrainian(digits) ? _ukraineConfig : _polandConfig;
+    var localDigits = _stripCountryCode(digits, config);
+
+    if (localDigits.isEmpty) {
+      return '';
     }
 
-    final buffer = StringBuffer('+48 ');
+    if (localDigits.length > config.maxLocalDigits) {
+      localDigits = localDigits.substring(0, config.maxLocalDigits);
+    }
 
-    for (var i = 0; i < digits.length; i++) {
-      buffer.write(digits[i]);
-      if ((i == 2 || i == 5) && i < digits.length - 1) {
+    final buffer = StringBuffer('+${config.countryCode} ');
+    final boundaries = config.groupBoundaries;
+    var digitsProcessed = 0;
+    var boundaryIndex = 0;
+
+    for (var i = 0; i < localDigits.length; i++) {
+      buffer.write(localDigits[i]);
+      digitsProcessed++;
+      if (boundaryIndex < boundaries.length &&
+          digitsProcessed == boundaries[boundaryIndex] &&
+          digitsProcessed < localDigits.length) {
         buffer.write(' ');
+        boundaryIndex++;
       }
     }
 
@@ -50,8 +53,36 @@ class PlPhoneFormatter {
   }
 
   static bool isValid(String text) {
-    final regex = RegExp(r'^\+48 [0-9]{3} [0-9]{3} [0-9]{3}$');
-    return regex.hasMatch(text);
+    final polish = RegExp(r'^\+48 [0-9]{3} [0-9]{3} [0-9]{3}$');
+    final ukrainian = RegExp(r'^\+380 [0-9]{2} [0-9]{3} [0-9]{2} [0-9]{2}$');
+    return polish.hasMatch(text) || ukrainian.hasMatch(text);
+  }
+
+  static bool _isUkrainian(String digits) => digits.startsWith('38');
+
+  static String _stripCountryCode(String digits, _PhoneFormatConfig config) {
+    return digits.startsWith(config.countryCode)
+        ? digits.substring(config.countryCode.length)
+        : digits;
+  }
+
+  static String _handleDeletion(String digits, String prevDigits) {
+    const prefixes = ['48', '380'];
+
+    for (final prefix in prefixes) {
+      if (prevDigits.startsWith(prefix)) {
+        final withoutPrefix = prevDigits.substring(prefix.length);
+        if (withoutPrefix == digits && digits.isNotEmpty) {
+          return digits.substring(0, digits.length - 1);
+        }
+      }
+    }
+
+    if (prevDigits == digits && digits.isNotEmpty) {
+      return digits.substring(0, digits.length - 1);
+    }
+
+    return digits;
   }
 
   static String toApiFormat(String formatted) {
@@ -77,5 +108,25 @@ class PlPhoneInputFormatter extends TextInputFormatter {
       text: formatted,
       selection: TextSelection.collapsed(offset: formatted.length),
     );
+  }
+}
+
+class _PhoneFormatConfig {
+  final String countryCode;
+  final List<int> groupSizes;
+
+  const _PhoneFormatConfig(this.countryCode, this.groupSizes);
+
+  int get maxLocalDigits =>
+      groupSizes.fold(0, (previous, size) => previous + size);
+
+  List<int> get groupBoundaries {
+    var sum = 0;
+    final boundaries = <int>[];
+    for (final size in groupSizes) {
+      sum += size;
+      boundaries.add(sum);
+    }
+    return boundaries;
   }
 }

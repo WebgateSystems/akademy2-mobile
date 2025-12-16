@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 class VideoContentCard extends StatelessWidget {
   const VideoContentCard({
+    super.key,
     required this.content,
     required this.moduleId,
     required this.l10n,

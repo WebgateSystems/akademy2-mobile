@@ -89,7 +89,7 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
       _videoThumbError = false;
     });
 
-    final path = url!.startsWith('file://') ? Uri.parse(url).path : url;
+    final path = url.startsWith('file://') ? Uri.parse(url).path : url;
     try {
       final bytes = await VideoThumbnail.thumbnailData(
         video: path,

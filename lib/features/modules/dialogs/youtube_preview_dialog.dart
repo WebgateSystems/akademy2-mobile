@@ -10,6 +10,7 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YoutubePreviewDialog extends StatefulWidget {
   const YoutubePreviewDialog({
+    super.key,
     required this.videoId,
     this.subtitlesUrl,
   });
