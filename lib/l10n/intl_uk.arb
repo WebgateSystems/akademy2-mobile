@@ -126,6 +126,21 @@
   "waitApprovalTitle": "Зачекайте на підтвердження вчителя",
   "waitApprovalSubtitle": "Ваш учитель незабаром розгляне ваш запит — трошки зачекайте!",
   "waitApprovalRetryButton": "Надіслати ще раз",
+  "waitApprovalCancelButton": "Скасувати заявку",
+  "waitApprovalCancelDialogTitle": "Скасувати приєднання",
+  "waitApprovalCancelDialogMessage": "Ви справді хочете скасувати заявку на приєднання?",
+  "waitApprovalCancelDialogCancel": "Залишити заявку",
+  "waitApprovalCancelDialogConfirm": "Так, скасувати",
+  "waitApprovalCancelSuccess": "Заявку скасовано.",
+  "waitApprovalCancelFailed": "Не вдалося скасувати заявку: {error}",
+  "@waitApprovalCancelFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "networkVideoLoadErrorTitle": "Не вдалося завантажити відео",
   "bottomNavCourses": "Курси",
   "bottomNavSchoolVideos": "Шкільні відео",
   "bottomNavAccount": "Акаунт",
@@ -214,6 +229,28 @@
   "quizResultTryBody": "Нічого страшного — спробуй ще раз! Передивись матеріали, повернись до запитань і покажи, на що здатен(на). Тиснемо кулаки за твій наступний результат! 💪📚",
   "quizResultSkip": "Пропустити",
   "quizResultDownload": "Завантажити",
+  "quizResultDownloadMissing": "Сертифікат ще не готовий. Спробуйте пізніше.",
+  "quizResultDownloadSuccess": "Сертифікат збережено у {path}.",
+  "quizResultDownloadFailed": "Не вдалося завантажити сертифікат: {error}",
+  "quizResultDownloadPermissionDenied":
+      "Потрібен доступ до пам’яті для збереження сертифікату.",
+  "quizResultDownloadPermissionPermanentlyDenied":
+      "Дозвіл остаточно відхилено. Увімкніть доступ до пам’яті в налаштуваннях.",
+  "quizResultDownloadOpenSettings": "Відкрити налаштування",
+  "@quizResultDownloadSuccess": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@quizResultDownloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "quizScoreLabel": "{score} %",
   "editVideoTitle": "Редагувати відео",
   "editVideoTitleLabel": "Назва",

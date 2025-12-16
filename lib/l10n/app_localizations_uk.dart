@@ -270,6 +270,33 @@ class AppLocalizationsUk extends AppLocalizations {
   String get waitApprovalRetryButton => 'Надіслати ще раз';
 
   @override
+  String get waitApprovalCancelButton => 'Скасувати заявку';
+
+  @override
+  String get waitApprovalCancelDialogTitle => 'Скасувати приєднання';
+
+  @override
+  String get waitApprovalCancelDialogMessage =>
+      'Ви справді хочете скасувати заявку на приєднання?';
+
+  @override
+  String get waitApprovalCancelDialogCancel => 'Залишити заявку';
+
+  @override
+  String get waitApprovalCancelDialogConfirm => 'Так, скасувати';
+
+  @override
+  String get waitApprovalCancelSuccess => 'Заявку скасовано.';
+
+  @override
+  String waitApprovalCancelFailed(String error) {
+    return 'Не вдалося скасувати заявку: $error';
+  }
+
+  @override
+  String get networkVideoLoadErrorTitle => 'Не вдалося завантажити відео';
+
+  @override
   String get bottomNavCourses => 'Курси';
 
   @override
@@ -461,6 +488,31 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get quizResultDownload => 'Завантажити';
+
+  @override
+  String get quizResultDownloadMissing =>
+      'Сертифікат ще не готовий. Спробуйте пізніше.';
+
+  @override
+  String quizResultDownloadSuccess(String path) {
+    return 'Сертифікат збережено у $path.';
+  }
+
+  @override
+  String quizResultDownloadFailed(String error) {
+    return 'Не вдалося завантажити сертифікат: $error';
+  }
+
+  @override
+  String get quizResultDownloadPermissionDenied =>
+      'Потрібен доступ до пам’яті для збереження сертифікату.';
+
+  @override
+  String get quizResultDownloadPermissionPermanentlyDenied =>
+      'Дозвіл остаточно відхилено. Увімкніть доступ до пам’яті в налаштуваннях.';
+
+  @override
+  String get quizResultDownloadOpenSettings => 'Відкрити налаштування';
 
   @override
   String quizScoreLabel(Object score) {

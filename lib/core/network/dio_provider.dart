@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../auth/join_repository.dart';
 import 'auth_interceptor.dart';
 import 'dio_client.dart';
 
@@ -16,3 +15,7 @@ final dioProvider = Provider<Dio>((ref) {
   DioProviderSingleton.dio = client;
   return client;
 });
+
+class DioProviderSingleton {
+  static late Dio dio;
+}

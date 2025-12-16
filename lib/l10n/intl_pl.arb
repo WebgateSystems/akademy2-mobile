@@ -126,6 +126,21 @@
   "waitApprovalTitle": "Poczekaj na zatwierdzenie nauczyciela",
   "waitApprovalSubtitle": "Twój nauczyciel wkrótce rozpatrzy Twoje zgłoszenie – chwilę poczekaj!",
   "waitApprovalRetryButton": "Wyślij ponownie",
+  "waitApprovalCancelButton": "Anuluj zgłoszenie",
+  "waitApprovalCancelDialogTitle": "Anuluj zgłoszenie",
+  "waitApprovalCancelDialogMessage": "Czy na pewno chcesz anulować zgłoszenie do klasy?",
+  "waitApprovalCancelDialogCancel": "Pozostaw zgłoszenie",
+  "waitApprovalCancelDialogConfirm": "Anuluj",
+  "waitApprovalCancelSuccess": "Zgłoszenie zostało anulowane.",
+  "waitApprovalCancelFailed": "Nie udało się anulować zgłoszenia: {error}",
+  "@waitApprovalCancelFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "networkVideoLoadErrorTitle": "Nie udało się załadować wideo",
   "bottomNavCourses": "Kursy",
   "bottomNavSchoolVideos": "Filmy szkolne",
   "bottomNavAccount": "Konto",
@@ -214,6 +229,28 @@
   "quizResultTryBody": "Nic nie szkodzi — możesz spróbować jeszcze raz! Obejrzyj materiały, wróć do pytań i pokaż, na co Cię stać. Trzymamy kciuki za Twój kolejny wynik! 💪📚",
   "quizResultSkip": "Pomiń",
   "quizResultDownload": "Pobierz",
+  "quizResultDownloadMissing": "Certyfikat nie jest jeszcze gotowy. Spróbuj później.",
+  "quizResultDownloadSuccess": "Certyfikat zapisano w {path}.",
+  "quizResultDownloadFailed": "Nie udało się pobrać certyfikatu: {error}",
+  "quizResultDownloadPermissionDenied":
+      "Aby zapisać certyfikat potrzebny jest dostęp do pamięci.",
+  "quizResultDownloadPermissionPermanentlyDenied":
+      "Zezwolenie zostało trwale odrzucone. Włącz dostęp do pamięci w ustawieniach.",
+  "quizResultDownloadOpenSettings": "Otwórz ustawienia",
+  "@quizResultDownloadSuccess": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@quizResultDownloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "quizScoreLabel": "{score} %",
   "editVideoTitle": "Edytuj wideo",
   "editVideoTitleLabel": "Tytuł",

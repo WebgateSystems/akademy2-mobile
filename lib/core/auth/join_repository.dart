@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 
 import '../network/api_endpoints.dart';
+import '../network/dio_provider.dart';
 import '../storage/secure_storage.dart';
 
 class JoinRepository {
@@ -49,6 +50,17 @@ class JoinRepository {
     await storage.delete('pendingJoinCode');
   }
 
+  Future<void> cancelEnrollment() async {
+    final storage = SecureStorage();
+    final requestId = await storage.read('pendingJoinId');
+    if (requestId == null || requestId.isEmpty) {
+      throw Exception('No pending enrollment to cancel');
+    }
+    await _dio
+        .delete(ApiEndpoints.studentEnrollmentCancel(requestId));
+    await clearPending();
+  }
+
   String _extractJoinCode(String raw) {
     final trimmed = raw.trim();
     if (trimmed.isEmpty) {
@@ -78,8 +90,4 @@ class JoinStatus {
   final String? accessToken;
   final String? refreshToken;
   final String? schoolId;
-}
-
-class DioProviderSingleton {
-  static late Dio dio;
 }

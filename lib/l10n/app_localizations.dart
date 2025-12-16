@@ -562,6 +562,54 @@ abstract class AppLocalizations {
   /// **'Submit again'**
   String get waitApprovalRetryButton;
 
+  /// No description provided for @waitApprovalCancelButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel pending enrollment'**
+  String get waitApprovalCancelButton;
+
+  /// No description provided for @waitApprovalCancelDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel enrollment request'**
+  String get waitApprovalCancelDialogTitle;
+
+  /// No description provided for @waitApprovalCancelDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to cancel your pending enrollment?'**
+  String get waitApprovalCancelDialogMessage;
+
+  /// No description provided for @waitApprovalCancelDialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep enrollment'**
+  String get waitApprovalCancelDialogCancel;
+
+  /// No description provided for @waitApprovalCancelDialogConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get waitApprovalCancelDialogConfirm;
+
+  /// No description provided for @waitApprovalCancelSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Enrollment request canceled.'**
+  String get waitApprovalCancelSuccess;
+
+  /// No description provided for @waitApprovalCancelFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not cancel enrollment: {error}'**
+  String waitApprovalCancelFailed(String error);
+
+  /// No description provided for @networkVideoLoadErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load video'**
+  String get networkVideoLoadErrorTitle;
+
   /// No description provided for @bottomNavCourses.
   ///
   /// In en, this message translates to:
@@ -915,6 +963,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Download'**
   String get quizResultDownload;
+
+  /// No description provided for @quizResultDownloadMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate is not ready yet. Try again later.'**
+  String get quizResultDownloadMissing;
+
+  /// No description provided for @quizResultDownloadSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Certificate saved to {path}'**
+  String quizResultDownloadSuccess(String path);
+
+  /// No description provided for @quizResultDownloadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to download certificate: {error}'**
+  String quizResultDownloadFailed(String error);
+
+  /// No description provided for @quizResultDownloadPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage permission is required to save the certificate.'**
+  String get quizResultDownloadPermissionDenied;
+
+  /// No description provided for @quizResultDownloadPermissionPermanentlyDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission was permanently denied. Enable storage access in settings.'**
+  String get quizResultDownloadPermissionPermanentlyDenied;
+
+  /// No description provided for @quizResultDownloadOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get quizResultDownloadOpenSettings;
 
   /// No description provided for @quizScoreLabel.
   ///

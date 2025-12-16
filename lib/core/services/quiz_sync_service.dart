@@ -6,8 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../auth/join_repository.dart';
 import '../network/api_endpoints.dart';
+import '../network/dio_provider.dart';
 
 class QuizResultPayload {
   QuizResultPayload({

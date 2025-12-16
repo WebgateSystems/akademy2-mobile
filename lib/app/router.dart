@@ -16,7 +16,6 @@ import '../features/auth/verify_email_page.dart';
 import '../features/auth/verify_phone_page.dart';
 import '../features/auth/wait_approval_page.dart';
 import '../features/home/home_shell.dart';
-import '../features/join/join_page.dart';
 import '../features/modules/content_pages.dart';
 import '../features/modules/module_page.dart';
 import '../features/modules/modules_page.dart';
@@ -165,7 +164,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           final extra = state.extra;
           final args = extra is QuizResultArgs
               ? extra
-              : const QuizResultArgs(score: 0, totalPoints: 0);
+              : const QuizResultArgs(
+                  score: 0,
+                  totalPoints: 0,
+                  moduleId: '',
+                );
           return ResultPage(args: args);
         },
       ),
@@ -230,7 +233,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           queryParameters: {'redirect': redirectTo},
         ).toString();
       }
- 
+
       final needsWaitApproval =
           auth.hasPendingJoin || auth.isWaitingForApproval;
       if (needsWaitApproval && !onWaitApproval && !onEnableBiometric) {

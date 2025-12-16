@@ -126,6 +126,21 @@
   "waitApprovalTitle": "Wait for teacher's approval",
   "waitApprovalSubtitle": "Your teacher will review your request soon - hang tight!",
   "waitApprovalRetryButton": "Submit again",
+  "waitApprovalCancelButton": "Cancel pending enrollment",
+  "waitApprovalCancelDialogTitle": "Cancel enrollment request",
+  "waitApprovalCancelDialogMessage": "Are you sure you want to cancel your pending enrollment?",
+  "waitApprovalCancelDialogCancel": "Keep enrollment",
+  "waitApprovalCancelDialogConfirm": "Cancel",
+  "waitApprovalCancelSuccess": "Enrollment request canceled.",
+  "waitApprovalCancelFailed": "Could not cancel enrollment: {error}",
+  "@waitApprovalCancelFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "networkVideoLoadErrorTitle": "Failed to load video",
   "bottomNavCourses": "Courses",
   "bottomNavSchoolVideos": "School videos",
   "bottomNavAccount": "Account",
@@ -214,6 +229,27 @@
   "quizResultTryBody": "No worries — you can try again! Review the materials, revisit the questions, and show what you’ve got. Fingers crossed for your next score! 💪📚",
   "quizResultSkip": "Skip",
   "quizResultDownload": "Download",
+  "quizResultDownloadMissing": "Certificate is not ready yet. Try again later.",
+  "quizResultDownloadSuccess": "Certificate saved to {path}",
+  "quizResultDownloadFailed": "Unable to download certificate: {error}",
+  "quizResultDownloadPermissionDenied": "Storage permission is required to save the certificate.",
+  "quizResultDownloadPermissionPermanentlyDenied":
+      "Permission was permanently denied. Enable storage access in settings.",
+  "quizResultDownloadOpenSettings": "Open settings",
+  "@quizResultDownloadSuccess": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "@quizResultDownloadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "quizScoreLabel": "{score} %",
   "editVideoTitle": "Edit video",
   "editVideoTitleLabel": "Title",

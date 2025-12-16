@@ -270,6 +270,33 @@ class AppLocalizationsPl extends AppLocalizations {
   String get waitApprovalRetryButton => 'Wyślij ponownie';
 
   @override
+  String get waitApprovalCancelButton => 'Anuluj zgłoszenie';
+
+  @override
+  String get waitApprovalCancelDialogTitle => 'Anuluj zgłoszenie';
+
+  @override
+  String get waitApprovalCancelDialogMessage =>
+      'Czy na pewno chcesz anulować zgłoszenie do klasy?';
+
+  @override
+  String get waitApprovalCancelDialogCancel => 'Pozostaw zgłoszenie';
+
+  @override
+  String get waitApprovalCancelDialogConfirm => 'Anuluj';
+
+  @override
+  String get waitApprovalCancelSuccess => 'Zgłoszenie zostało anulowane.';
+
+  @override
+  String waitApprovalCancelFailed(String error) {
+    return 'Nie udało się anulować zgłoszenia: $error';
+  }
+
+  @override
+  String get networkVideoLoadErrorTitle => 'Nie udało się załadować wideo';
+
+  @override
   String get bottomNavCourses => 'Kursy';
 
   @override
@@ -463,6 +490,31 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get quizResultDownload => 'Pobierz';
+
+  @override
+  String get quizResultDownloadMissing =>
+      'Certyfikat nie jest jeszcze gotowy. Spróbuj później.';
+
+  @override
+  String quizResultDownloadSuccess(String path) {
+    return 'Certyfikat zapisano w $path.';
+  }
+
+  @override
+  String quizResultDownloadFailed(String error) {
+    return 'Nie udało się pobrać certyfikatu: $error';
+  }
+
+  @override
+  String get quizResultDownloadPermissionDenied =>
+      'Aby zapisać certyfikat potrzebny jest dostęp do pamięci.';
+
+  @override
+  String get quizResultDownloadPermissionPermanentlyDenied =>
+      'Zezwolenie zostało trwale odrzucone. Włącz dostęp do pamięci w ustawieniach.';
+
+  @override
+  String get quizResultDownloadOpenSettings => 'Otwórz ustawienia';
 
   @override
   String quizScoreLabel(Object score) {

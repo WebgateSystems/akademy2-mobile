@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 
-import '../../core/auth/join_repository.dart';
 import '../../core/network/api_endpoints.dart';
+import '../../core/network/dio_provider.dart';
 import 'video_models.dart';
 
 class VideoService {

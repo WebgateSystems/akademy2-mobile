@@ -49,6 +49,8 @@
 	<string>Allow Academy 2.0 to use your camera for QR scanning and capturing media.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow Academy 2.0 to access your photo library to pick and upload media.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Allow Academy 2.0 to save your certificates and downloads to the photo library.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allow Academy 2.0 to record audio when capturing videos.</string>
 	<key>NSFaceIDUsageDescription</key>

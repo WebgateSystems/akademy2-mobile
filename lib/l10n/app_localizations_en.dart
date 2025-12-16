@@ -269,6 +269,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get waitApprovalRetryButton => 'Submit again';
 
   @override
+  String get waitApprovalCancelButton => 'Cancel pending enrollment';
+
+  @override
+  String get waitApprovalCancelDialogTitle => 'Cancel enrollment request';
+
+  @override
+  String get waitApprovalCancelDialogMessage =>
+      'Are you sure you want to cancel your pending enrollment?';
+
+  @override
+  String get waitApprovalCancelDialogCancel => 'Keep enrollment';
+
+  @override
+  String get waitApprovalCancelDialogConfirm => 'Cancel';
+
+  @override
+  String get waitApprovalCancelSuccess => 'Enrollment request canceled.';
+
+  @override
+  String waitApprovalCancelFailed(String error) {
+    return 'Could not cancel enrollment: $error';
+  }
+
+  @override
+  String get networkVideoLoadErrorTitle => 'Failed to load video';
+
+  @override
   String get bottomNavCourses => 'Courses';
 
   @override
@@ -460,6 +487,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get quizResultDownload => 'Download';
+
+  @override
+  String get quizResultDownloadMissing =>
+      'Certificate is not ready yet. Try again later.';
+
+  @override
+  String quizResultDownloadSuccess(String path) {
+    return 'Certificate saved to $path';
+  }
+
+  @override
+  String quizResultDownloadFailed(String error) {
+    return 'Unable to download certificate: $error';
+  }
+
+  @override
+  String get quizResultDownloadPermissionDenied =>
+      'Storage permission is required to save the certificate.';
+
+  @override
+  String get quizResultDownloadPermissionPermanentlyDenied =>
+      'Permission was permanently denied. Enable storage access in settings.';
+
+  @override
+  String get quizResultDownloadOpenSettings => 'Open settings';
 
   @override
   String quizScoreLabel(Object score) {

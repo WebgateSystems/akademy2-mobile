@@ -104,7 +104,9 @@ class ResultQuizWidget extends StatelessWidget {
 }
 
 class _SubjectIcon extends StatelessWidget {
-  const _SubjectIcon({this.url});
+  const _SubjectIcon({
+    this.url,
+  });
 
   final String? url;
 
@@ -114,21 +116,32 @@ class _SubjectIcon extends StatelessWidget {
     final bg = AppColors.surfaceIcon(context);
     final fullUrl = (url == null || url!.isEmpty) ? null : url;
 
-    return SizedBox(
-      width: size,
-      height: size,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: bg,
-          shape: BoxShape.circle,
-        ),
-        child: ClipOval(
-          child: fullUrl == null
-              ? const Icon(Icons.book)
-              : _NetworkSvg(
-                  url: fullUrl,
-                  placeholder: const CircularProgressWidget(),
-                ),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: bg,
+        shape: BoxShape.circle,
+      ),
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: Center(
+          child: Padding(
+            padding: EdgeInsets.all(4.w),
+            child: fullUrl == null
+                ? Icon(
+                    Icons.book,
+                    size: size * 0.5,
+                    color: AppColors.contentSecondary(context),
+                  )
+                : Padding(
+                    padding: EdgeInsets.only(top: size * 0.2),
+                    child: _NetworkSvg(
+                      url: fullUrl,
+                      placeholder: const CircularProgressWidget(),
+                      size: size,
+                    ),
+                  ),
+          ),
         ),
       ),
     );
@@ -139,10 +152,12 @@ class _NetworkSvg extends StatelessWidget {
   const _NetworkSvg({
     required this.url,
     required this.placeholder,
+    required this.size,
   });
 
   final String url;
   final Widget placeholder;
+  final double size;
 
   static final _memoryCache = <String, Uint8List?>{};
 
@@ -186,21 +201,34 @@ class _NetworkSvg extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Uint8List?>(
-      future: _loadBytes(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return placeholder;
-        }
-        final bytes = snapshot.data;
-        if (bytes == null) {
-          return const Icon(Icons.book);
-        }
-        return SvgPicture.memory(
-          bytes,
-          fit: BoxFit.contain,
-        );
-      },
+    return SizedBox(
+      width: size,
+      height: size,
+      child: FutureBuilder<Uint8List?>(
+        future: _loadBytes(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+                child:
+                    SizedBox.square(dimension: size * 0.5, child: placeholder));
+          }
+          final bytes = snapshot.data;
+          if (bytes == null) {
+            return Center(
+              child: Icon(
+                Icons.book,
+                size: size * 0.6,
+                color: AppColors.contentSecondary(context),
+              ),
+            );
+          }
+          return SvgPicture.memory(
+            bytes,
+            fit: BoxFit.contain,
+            alignment: Alignment.center,
+          );
+        },
+      ),
     );
   }
 }

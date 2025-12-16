@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
@@ -8,11 +9,13 @@ import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/core/db/entities/content_entity.dart';
 import 'package:academy_2_app/core/db/isar_service.dart';
+import 'package:academy_2_app/core/services/certificate_service.dart';
 import 'package:academy_2_app/core/services/quiz_sync_service.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key, required this.moduleId});
@@ -203,12 +206,17 @@ class _QuizPageState extends State<QuizPage> {
         'answers': _selected.map((k, v) => MapEntry(k, v.toList())),
       },
     );
-    QuizSyncService.instance.submitResult(payload);
+    final response = await QuizSyncService.instance.submitResult(payload);
 
     if (!mounted) return;
     context.go(
       '/quiz-result',
-      extra: QuizResultArgs(score: score, totalPoints: totalPoints),
+      extra: QuizResultArgs(
+        score: score,
+        totalPoints: totalPoints,
+        moduleId: widget.moduleId,
+        certificateId: response?.id,
+      ),
     );
   }
 
@@ -349,10 +357,17 @@ class _SelectionIcon extends StatelessWidget {
 }
 
 class QuizResultArgs {
-  const QuizResultArgs({required this.score, required this.totalPoints});
+  const QuizResultArgs({
+    required this.score,
+    required this.totalPoints,
+    required this.moduleId,
+    this.certificateId,
+  });
 
   final int score;
   final int totalPoints;
+  final String moduleId;
+  final String? certificateId;
 }
 
 class ResultPage extends StatefulWidget {
@@ -370,6 +385,97 @@ class _ResultPageState extends State<ResultPage> {
   String? subtitle;
 
   String? body;
+  bool _downloading = false;
+
+  Future<String?> _resolveCertificateId() async {
+    if (widget.args.certificateId?.isNotEmpty == true) {
+      return widget.args.certificateId;
+    }
+    if (widget.args.moduleId.isEmpty) return null;
+    final results = await QuizSyncService.instance.fetchQuizResults();
+    for (final item in results) {
+      if (item.learningModuleId == widget.args.moduleId && item.id.isNotEmpty) {
+        return item.id;
+      }
+    }
+    return null;
+  }
+
+  Future<void> _downloadCertificate(BuildContext context) async {
+    if (_downloading) return;
+
+    final permissionStatus = await _requestPermission(context);
+    if (!permissionStatus.isGranted) {
+      _handlePermissionDenied(permissionStatus, context);
+      return;
+    }
+
+    setState(() => _downloading = true);
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    try {
+      final certificateId = await _resolveCertificateId();
+      if (certificateId == null || certificateId.isEmpty) {
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.quizResultDownloadMissing)),
+        );
+        return;
+      }
+      final file =
+          await CertificateService().downloadCertificate(certificateId);
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.quizResultDownloadSuccess(file.path))),
+      );
+    } on CertificateDownloadException catch (e) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.quizResultDownloadFailed(e.message))),
+      );
+    } catch (e) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.quizResultDownloadFailed(e.toString()))),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _downloading = false);
+      }
+    }
+  }
+
+  Future<PermissionStatus> _requestPermission(BuildContext context) async {
+    if (Platform.isAndroid) {
+      final storage = await Permission.storage.request();
+      if (storage.isGranted) return storage;
+      final media = await Permission.photos.request();
+      return media.isGranted ? media : storage;
+    } else if (Platform.isIOS) {
+      return Permission.photosAddOnly.request();
+    }
+    return PermissionStatus.granted;
+  }
+
+  void _handlePermissionDenied(
+    PermissionStatus status,
+    BuildContext context,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    final messenger = ScaffoldMessenger.of(context);
+    final isPermanent = status.isPermanentlyDenied || status.isRestricted;
+    final message = isPermanent
+        ? l10n.quizResultDownloadPermissionPermanentlyDenied
+        : l10n.quizResultDownloadPermissionDenied;
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        action: isPermanent
+            ? SnackBarAction(
+                label: l10n.quizResultDownloadOpenSettings,
+                onPressed: openAppSettings,
+              )
+            : null,
+      ),
+    );
+  }
 
   void _calculateInterest(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -420,7 +526,8 @@ class _ResultPageState extends State<ResultPage> {
             ),
             ActionButtonWidget(
               text: l10n.quizResultDownload,
-              onPressed: () => context.go('/home'),
+              loading: _downloading,
+              onPressed: () => _downloadCertificate(context),
             ),
           ],
         ),

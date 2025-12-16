@@ -4,6 +4,7 @@ import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/core/utils/orientation_utils.dart';
 import 'package:academy_2_app/features/modules/models/subtitle_entry.dart';
+import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
@@ -31,6 +32,7 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
   List<SubtitleEntry> _subtitles = [];
   String _currentSubtitle = '';
   bool _showControls = true;
+  String? _errorMessage;
 
   @override
   void initState() {
@@ -98,6 +100,7 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
       if (!mounted) return;
       setState(() {
         _error = true;
+        _errorMessage = e.toString();
         _loading = false;
       });
     }
@@ -262,7 +265,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-
           Positioned.fill(
             child: GestureDetector(
               onTap: _toggleControls,
@@ -273,25 +275,40 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
                     child: _loading
                         ? const CircularProgressWidget()
                         : _error || _controller == null
-                            ? Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.error,
-                                      color: Colors.white, size: 48),
-                                  SizedBox(height: 16.h),
-                                  Text(
-                                    'Помилка завантаження відео',
-                                    style: TextStyle(
-                                        color: Colors.white70, fontSize: 14.sp),
-                                  ),
-                                ],
-                              )
+                            ? Builder(builder: (context) {
+                                final loc = AppLocalizations.of(context)!;
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.error,
+                                        color: AppColors.contentError(context),
+                                        size: 48),
+                                    SizedBox(height: 16.h),
+                                    Text(
+                                      loc.networkVideoLoadErrorTitle,
+                                      style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 14.sp),
+                                    ),
+                                    if (_errorMessage != null &&
+                                        _errorMessage!.isNotEmpty) ...[
+                                      SizedBox(height: 8.h),
+                                      Text(
+                                        _errorMessage!,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: Colors.white60,
+                                            fontSize: 12.sp),
+                                      ),
+                                    ],
+                                  ],
+                                );
+                              })
                             : AspectRatio(
                                 aspectRatio: _controller!.value.aspectRatio,
                                 child: VideoPlayer(_controller!),
                               ),
                   ),
-
                   if (_currentSubtitle.isNotEmpty)
                     Positioned(
                       bottom: 80.h,
@@ -317,7 +334,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
                         ),
                       ),
                     ),
-
                   if (_showControls &&
                       !_loading &&
                       !_error &&
@@ -341,7 +357,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
                         ),
                       ),
                     ),
-
                     Positioned(
                       bottom: 20.h,
                       left: 16.w,
@@ -361,7 +376,6 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
               ),
             ),
           ),
-
           Positioned(
             top: MediaQuery.of(context).padding.top + 24.h,
             right: 8.w,
