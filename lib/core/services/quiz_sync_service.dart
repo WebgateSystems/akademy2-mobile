@@ -43,6 +43,7 @@ class QuizResultResponse {
     this.passed,
     this.completedAt,
     this.message,
+    this.certificateId,
   });
 
   final bool success;
@@ -51,6 +52,7 @@ class QuizResultResponse {
   final bool? passed;
   final DateTime? completedAt;
   final String? message;
+  final String? certificateId;
 
   factory QuizResultResponse.fromJson(Map<String, dynamic> json) {
     final data = json['data'] as Map<String, dynamic>?;
@@ -63,6 +65,7 @@ class QuizResultResponse {
           ? DateTime.tryParse(data!['completed_at'] as String)
           : null,
       message: data?['message'] as String?,
+      certificateId: data?['certificate_id'] as String?,
     );
   }
 }
@@ -75,6 +78,7 @@ class QuizResultItem {
     this.completedAt,
     required this.learningModuleId,
     required this.subjectId,
+    this.certificateId,
   });
 
   final String id;
@@ -83,6 +87,7 @@ class QuizResultItem {
   final DateTime? completedAt;
   final String learningModuleId;
   final String subjectId;
+  final String? certificateId;
 
   factory QuizResultItem.fromJson(Map<String, dynamic> json) {
     final learningModule = json['learning_module'] as Map<String, dynamic>?;
@@ -96,6 +101,7 @@ class QuizResultItem {
           : null,
       learningModuleId: learningModule?['id'] as String? ?? '',
       subjectId: subject?['id'] as String? ?? '',
+      certificateId: json['certificate_id'] as String?,
     );
   }
 }

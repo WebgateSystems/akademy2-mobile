@@ -168,6 +168,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   score: 0,
                   totalPoints: 0,
                   moduleId: '',
+                  certificateId: '',
                 );
           return ResultPage(args: args);
         },

@@ -215,7 +215,7 @@ class _QuizPageState extends State<QuizPage> {
         score: score,
         totalPoints: totalPoints,
         moduleId: widget.moduleId,
-        certificateId: response?.id,
+        certificateId: response?.certificateId,
       ),
     );
   }
@@ -361,7 +361,7 @@ class QuizResultArgs {
     required this.score,
     required this.totalPoints,
     required this.moduleId,
-    this.certificateId,
+    required this.certificateId,
   });
 
   final int score;

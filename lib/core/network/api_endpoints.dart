@@ -26,7 +26,7 @@ class ApiEndpoints {
   static String studentEnrollmentCancel(String requestId) =>
       'v1/student/enrollments/join/$requestId/cancel';
   static String quizCertificates(String requestId) =>
-      '/api/v1/certificates/$requestId/download';
+      'v1/certificates/$requestId/download';
 
   // Videos
   static const studentVideos = 'v1/student/videos';
