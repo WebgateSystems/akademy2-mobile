@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
@@ -19,6 +20,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'edit_video_page.dart';
 import 'video_models.dart';
@@ -509,6 +511,15 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     }
   }
 
+  String _resolvePreviewUrl(SchoolVideo video) {
+    final candidate =
+        video.thumbnailUrl.isNotEmpty ? video.thumbnailUrl : video.fileUrl;
+    if (candidate.isEmpty) return '';
+    if (candidate.startsWith('http')) return candidate;
+    final normalized = candidate.startsWith('/') ? candidate : '/$candidate';
+    return '${Api.baseUploadUrl}$normalized';
+  }
+
   String? _youtubeVideoId(String url) {
     final patterns = [
       RegExp(r'youtu\.be/([a-zA-Z0-9_-]+)'),
@@ -772,9 +783,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                 child: Padding(
                   padding: EdgeInsets.all(2.w),
                   child: _VideoPreview(
-                    url: video.thumbnailUrl.isNotEmpty
-                        ? Api.baseUploadUrl + video.thumbnailUrl
-                        : video.fileUrl,
+                    url: _resolvePreviewUrl(video),
                   ),
                 ),
               ),
@@ -930,14 +939,54 @@ class GroupTitleWidget extends StatelessWidget {
   }
 }
 
-class _VideoPreview extends StatelessWidget {
+class _VideoPreview extends StatefulWidget {
   const _VideoPreview({required this.url});
 
   final String url;
 
   @override
-  Widget build(BuildContext context) {
-    final placeholder = Container(
+  State<_VideoPreview> createState() => _VideoPreviewState();
+}
+
+class _VideoPreviewState extends State<_VideoPreview> {
+  late Future<Uint8List?> _thumbnailFuture;
+
+  bool get _looksLikeVideo {
+    final lower = widget.url.toLowerCase();
+    return lower.endsWith('.mp4') ||
+        lower.endsWith('.mov') ||
+        lower.endsWith('.m4v') ||
+        lower.endsWith('.webm');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _thumbnailFuture = _loadThumbnail();
+  }
+
+  @override
+  void didUpdateWidget(covariant _VideoPreview oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.url != widget.url) {
+      _thumbnailFuture = _loadThumbnail();
+    }
+  }
+
+  Future<Uint8List?> _loadThumbnail() {
+    if (!_looksLikeVideo || widget.url.isEmpty) {
+      return Future.value(null);
+    }
+    return VideoThumbnail.thumbnailData(
+      video: widget.url,
+      imageFormat: ImageFormat.PNG,
+      maxWidth: 240,
+      quality: 75,
+    );
+  }
+
+  Widget _placeholder(Widget child) {
+    return Container(
       width: 56.w,
       height: 56.w,
       decoration: BoxDecoration(
@@ -947,14 +996,55 @@ class _VideoPreview extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(4.r),
       ),
-      child: Image.asset(
+      child: Center(child: child),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final placeholder = _placeholder(
+      Image.asset(
         'assets/images/ic_play_arrow.png',
         width: 20.w,
         height: 20.w,
       ),
     );
 
-    if (url.isEmpty) return placeholder;
+    if (widget.url.isEmpty) return placeholder;
+
+    if (_looksLikeVideo) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(4.r),
+        child: SizedBox(
+          width: 56.w,
+          height: 56.w,
+          child: FutureBuilder<Uint8List?>(
+            future: _thumbnailFuture,
+            builder: (context, snapshot) {
+              final data = snapshot.data;
+              if (data != null) {
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.memory(data, fit: BoxFit.cover),
+                    Container(
+                      alignment: Alignment.center,
+                      color: Colors.black.withValues(alpha: 0.15),
+                      child: Image.asset(
+                        'assets/images/ic_play_arrow.png',
+                        width: 20.w,
+                        height: 20.w,
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return placeholder;
+            },
+          ),
+        ),
+      );
+    }
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(4.r),
@@ -962,7 +1052,7 @@ class _VideoPreview extends StatelessWidget {
         width: 56.w,
         height: 56.w,
         child: Image.network(
-          url,
+          widget.url,
           fit: BoxFit.cover,
           errorBuilder: (_, __, ___) => placeholder,
         ),
