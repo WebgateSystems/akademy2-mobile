@@ -398,6 +398,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profilePin => 'PIN code';
 
   @override
+  String get profilePinDialogTitle => 'Change PIN';
+
+  @override
+  String get profilePinDialogMessage =>
+      'Enter a new 4-digit PIN and confirm it to keep your account secure.';
+
+  @override
+  String get profilePinDialogStepNewPin => 'Enter new PIN';
+
+  @override
+  String get profilePinDialogStepConfirmPin => 'Confirm PIN';
+
+  @override
+  String get profilePinDialogReady => 'PIN ready - tap Save to continue.';
+
+  @override
+  String get profilePinDialogMismatch => 'PINs do not match. Try again.';
+
+  @override
+  String get profilePinDialogCancel => 'Cancel';
+
+  @override
+  String get profilePinDialogSave => 'Save PIN';
+
+  @override
+  String get profilePinDialogReset => 'Start over';
+
+  @override
   String get profileTheme => 'Theme';
 
   @override

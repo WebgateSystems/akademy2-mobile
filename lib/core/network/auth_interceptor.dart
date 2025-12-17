@@ -35,7 +35,6 @@ class AuthInterceptor extends Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    final req = err.requestOptions;
     final status = err.response?.statusCode;
     if (status == 401) {
       try {

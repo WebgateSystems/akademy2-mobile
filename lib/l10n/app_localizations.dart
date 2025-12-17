@@ -796,6 +796,60 @@ abstract class AppLocalizations {
   /// **'PIN code'**
   String get profilePin;
 
+  /// No description provided for @profilePinDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change PIN'**
+  String get profilePinDialogTitle;
+
+  /// No description provided for @profilePinDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a new 4-digit PIN and confirm it to keep your account secure.'**
+  String get profilePinDialogMessage;
+
+  /// No description provided for @profilePinDialogStepNewPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter new PIN'**
+  String get profilePinDialogStepNewPin;
+
+  /// No description provided for @profilePinDialogStepConfirmPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm PIN'**
+  String get profilePinDialogStepConfirmPin;
+
+  /// No description provided for @profilePinDialogReady.
+  ///
+  /// In en, this message translates to:
+  /// **'PIN ready - tap Save to continue.'**
+  String get profilePinDialogReady;
+
+  /// No description provided for @profilePinDialogMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'PINs do not match. Try again.'**
+  String get profilePinDialogMismatch;
+
+  /// No description provided for @profilePinDialogCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get profilePinDialogCancel;
+
+  /// No description provided for @profilePinDialogSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save PIN'**
+  String get profilePinDialogSave;
+
+  /// No description provided for @profilePinDialogReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Start over'**
+  String get profilePinDialogReset;
+
   /// No description provided for @profileTheme.
   ///
   /// In en, this message translates to:

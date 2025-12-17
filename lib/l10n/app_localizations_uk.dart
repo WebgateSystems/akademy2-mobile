@@ -399,6 +399,36 @@ class AppLocalizationsUk extends AppLocalizations {
   String get profilePin => 'PIN код';
 
   @override
+  String get profilePinDialogTitle => 'Змінити PIN';
+
+  @override
+  String get profilePinDialogMessage =>
+      'Введіть новий 4-значний код PIN і підтвердіть його, щоб захистити акаунт.';
+
+  @override
+  String get profilePinDialogStepNewPin => 'Введіть новий PIN';
+
+  @override
+  String get profilePinDialogStepConfirmPin => 'Підтвердіть PIN';
+
+  @override
+  String get profilePinDialogReady =>
+      'PIN готовий - натисніть Зберегти, щоб продовжити.';
+
+  @override
+  String get profilePinDialogMismatch =>
+      'PIN не співпадають. Спробуйте ще раз.';
+
+  @override
+  String get profilePinDialogCancel => 'Скасувати';
+
+  @override
+  String get profilePinDialogSave => 'Зберегти PIN';
+
+  @override
+  String get profilePinDialogReset => 'Почати заново';
+
+  @override
   String get profileTheme => 'Тема';
 
   @override

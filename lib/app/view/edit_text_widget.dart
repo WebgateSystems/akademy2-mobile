@@ -12,6 +12,7 @@ class EditTextWidget extends StatelessWidget {
   final bool readOnly;
   final bool obscureText;
   final Widget? suffixIcon;
+  final VoidCallback? onTap;
   final Function(String)? onChanged;
   final int? maxLength;
   final int? maxLines;
@@ -32,6 +33,7 @@ class EditTextWidget extends StatelessWidget {
     this.onChanged,
     this.readOnly = false,
     this.obscureText = false,
+    this.onTap,
     this.maxLength,
     this.maxLines,
     this.focusNode,
@@ -62,6 +64,7 @@ class EditTextWidget extends StatelessWidget {
             focusNode: focusNode,
             readOnly: readOnly,
             onChanged: onChanged,
+            onTap: onTap,
             maxLength: maxLength,
             maxLines: maxLines ?? 1,
             obscureText: obscureText,

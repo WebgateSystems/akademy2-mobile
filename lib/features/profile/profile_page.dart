@@ -4,6 +4,7 @@ import 'package:academy_2_app/app/view/action_outlinedbutton_widget.dart';
 import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
+import 'package:academy_2_app/features/auth/pin_pages.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -102,6 +103,20 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       _appVersion = info.version +
           (info.buildNumber.isNotEmpty ? '+${info.buildNumber}' : '');
     });
+  }
+
+  Future<void> _editPin() async {
+    final newPin = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return const ProfilePinDialog();
+      },
+    );
+
+    if (newPin != null && newPin.isNotEmpty) {
+      _pinCtrl.text = newPin;
+    }
   }
 
   Future<void> _saveProfile() async {
@@ -262,11 +277,12 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             SizedBox(height: 8.h),
             EditTextWidget(
               label: l10n.profilePin,
-              readOnly: false,
+              readOnly: true,
               keyboard: TextInputType.number,
               controller: _pinCtrl,
               obscureText: true,
               maxLength: 4,
+              onTap: _editPin,
             ),
             SizedBox(height: 8.h),
             _dropdown<String>(
@@ -460,6 +476,244 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     if (dirtyNow != _dirty && mounted) {
       setState(() => _dirty = dirtyNow);
     }
+  }
+}
+
+class ProfilePinDialog extends StatefulWidget {
+  const ProfilePinDialog({
+    super.key,
+  });
+
+  @override
+  State<ProfilePinDialog> createState() => _ProfilePinDialogState();
+}
+
+class _ProfilePinDialogState extends State<ProfilePinDialog> {
+  String _current = '';
+  String? _firstPin;
+  String? _finalPin;
+  bool _confirmStage = false;
+  bool _mismatch = false;
+
+  bool get _isReady => _finalPin != null;
+
+  void _handleKey(String value) {
+    if (_isReady) return;
+    if (value == 'back') {
+      if (_current.isNotEmpty) {
+        setState(() => _current = _current.substring(0, _current.length - 1));
+        return;
+      }
+      if (_confirmStage) {
+        setState(() {
+          _confirmStage = false;
+          _firstPin = null;
+          _mismatch = false;
+        });
+      }
+      return;
+    }
+
+    if (_current.length >= 4) return;
+
+    setState(() => _current += value);
+    if (_current.length < 4) return;
+
+    if (!_confirmStage) {
+      setState(() {
+        _firstPin = _current;
+        _confirmStage = true;
+        _current = '';
+        _mismatch = false;
+      });
+      return;
+    }
+
+    if (_current != (_firstPin ?? '')) {
+      setState(() {
+        _mismatch = true;
+        _current = '';
+      });
+      return;
+    }
+
+    setState(() {
+      _finalPin = _current;
+      _mismatch = false;
+    });
+  }
+
+  void _reset() {
+    setState(() {
+      _current = '';
+      _firstPin = null;
+      _finalPin = null;
+      _confirmStage = false;
+      _mismatch = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final stageLabel = _isReady
+        ? l10n.profilePinDialogReady
+        : _confirmStage
+            ? l10n.profilePinDialogStepConfirmPin
+            : l10n.profilePinDialogStepNewPin;
+    final showReset =
+        _current.isNotEmpty || _firstPin != null || _finalPin != null;
+
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.all(20.w),
+      child: Container(
+        padding: EdgeInsets.all(20.w),
+        decoration: BoxDecoration(
+          color: AppColors.surfacePrimary(context),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              l10n.profilePinDialogTitle,
+              style: AppTextStyles.h3(context),
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              l10n.profilePinDialogMessage,
+              textAlign: TextAlign.center,
+              style: AppTextStyles.b1(context)
+                  .copyWith(color: AppColors.contentSecondary(context)),
+            ),
+            SizedBox(height: 10.h),
+            Text(
+              stageLabel,
+              style: AppTextStyles.b2(context).copyWith(
+                color: AppColors.contentPrimary(context),
+              ),
+            ),
+            SizedBox(height: 12.h),
+            DotsWidget(pin: _finalPin ?? _current),
+            if (_mismatch) SizedBox(height: 12.h),
+            if (_mismatch)
+              Text(
+                l10n.profilePinDialogMismatch,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.b3(context).copyWith(
+                  color: AppColors.contentError(context),
+                ),
+              ),
+            if (showReset) SizedBox(height: 12.h),
+            if (showReset)
+              TextButton(
+                onPressed: _reset,
+                child: Text(
+                  l10n.profilePinDialogReset,
+                  style: AppTextStyles.b3(context).copyWith(
+                    color: AppColors.contentPrimary(context),
+                  ),
+                ),
+              ),
+            SizedBox(height: 20.h),
+            _ProfilePinKeypad(onKey: _handleKey),
+            SizedBox(height: 40.h),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: ActionOutlinedButtonWidget(
+                    height: 48.h,
+                    onPressed: () => Navigator.pop(context, null),
+                    text: l10n.profilePinDialogCancel,
+                  ),
+                ),
+                SizedBox(width: 20.w),
+                Flexible(
+                  flex: 1,
+                  child: ActionButtonWidget(
+                    height: 48.h,
+                    onPressed: _isReady
+                        ? () => Navigator.pop(context, _finalPin)
+                        : null,
+                    text: l10n.profilePinDialogSave,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfilePinKeypad extends StatelessWidget {
+  const _ProfilePinKeypad({
+    required this.onKey,
+  });
+
+  final void Function(String) onKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final keys = [
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '',
+      '0',
+      'back',
+    ];
+    return SizedBox(
+      width: 260.w,
+      height: 352.h,
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: keys.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 1.15,
+        ),
+        itemBuilder: (context, index) {
+          final key = keys[index];
+          if (key.isEmpty) {
+            return const SizedBox.shrink();
+          }
+          if (key == 'back') {
+            return RoundButton.image(
+              size: 70.r,
+              onTap: () => onKey('back'),
+              backgroundColor: Colors.transparent,
+              splashColor: AppColors.surfaceAccent(context),
+              assetImage: Theme.of(context).brightness == Brightness.dark
+                  ? 'assets/images/ic_back_button_dark.png'
+                  : 'assets/images/ic_back_button.png',
+              pressedImageOpacity: 0.5,
+            );
+          }
+          return RoundButton.text(
+            size: 70.r,
+            onTap: () => onKey(key),
+            backgroundColor: AppColors.surfaceActive(context),
+            splashColor: AppColors.surfaceAccent(context),
+            textColor: AppColors.contentPrimary(context),
+            pressedTextColor: AppColors.background(context),
+            text: key,
+          );
+        },
+      ),
+    );
   }
 }
 
