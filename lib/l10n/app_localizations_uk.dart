@@ -39,7 +39,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get loginPinSubtitle =>
-      'Введіть свій 4-значний PIN, щоб продовжити в застосунку Academy 2.0.';
+      'Введіть свій 4-значний PIN, щоб продовжити в застосунку AKAdemy2.0.';
 
   @override
   String get unlockPinTitle => 'Введіть свій PIN';
@@ -201,7 +201,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get pinCreateSubtitle =>
-      'Цей код буде потрібен для входу в застосунок Academy 2.0.';
+      'Цей код буде потрібен для входу в застосунок AKAdemy2.0.';
 
   @override
   String get pinConfirmTitle => 'Повторіть 4-значний код';
@@ -354,6 +354,26 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get schoolVideosPendingMessage =>
       'Ваш учитель незабаром розгляне ваш запит — трошки зачекайте!';
+
+  @override
+  String get addVideoPageTitle => 'Додати відео';
+
+  @override
+  String get addVideoPageTopicLabel => 'Оберіть тему';
+
+  @override
+  String get addVideoPageTitleFieldLabel => 'Назва';
+
+  @override
+  String get addVideoPageDescriptionFieldLabel => 'Опис';
+
+  @override
+  String get addVideoPageSubmitButton => 'Додати';
+
+  @override
+  String addVideoUploadFailed(String error) {
+    return 'Не вдалося завантажити відео: $error';
+  }
 
   @override
   String schoolVideosError(String error) {

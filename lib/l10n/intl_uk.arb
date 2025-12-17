@@ -16,7 +16,7 @@
     }
   },
   "loginPinTitle": "Увійдіть за 4-значним кодом",
-  "loginPinSubtitle": "Введіть свій 4-значний PIN, щоб продовжити в застосунку Academy 2.0.",
+  "loginPinSubtitle": "Введіть свій 4-значний PIN, щоб продовжити в застосунку AKAdemy2.0.",
   "unlockPinTitle": "Введіть свій PIN",
   "unlockPinSubtitle": "Підтвердіть свій 4-значний PIN для\n{phone}.",
   "@unlockPinSubtitle": {
@@ -92,7 +92,7 @@
   "checkSpam": "Не знайшли? Перевірте папку «Спам».",
   "next": "Далі",
   "pinCreateTitle": "Придумайте 4-значний код",
-  "pinCreateSubtitle": "Цей код буде потрібен для входу в застосунок Academy 2.0.",
+  "pinCreateSubtitle": "Цей код буде потрібен для входу в застосунок AKAdemy2.0.",
   "pinConfirmTitle": "Повторіть 4-значний код",
   "pinConfirmSubtitle": "Підтвердіть свій код.",
   "pinConfirmMismatchSubtitle": "Коди не збігаються. Спробуйте ще раз.",
@@ -166,6 +166,19 @@
   "schoolVideosDeleteMessage": "Видалити це відео?",
   "schoolVideosPendingTitle": "Зачекайте на підтвердження вчителя",
   "schoolVideosPendingMessage": "Ваш учитель незабаром розгляне ваш запит — трошки зачекайте!",
+  "addVideoPageTitle": "Додати відео",
+  "addVideoPageTopicLabel": "Оберіть тему",
+  "addVideoPageTitleFieldLabel": "Назва",
+  "addVideoPageDescriptionFieldLabel": "Опис",
+  "addVideoPageSubmitButton": "Додати",
+  "addVideoUploadFailed": "Не вдалося завантажити відео: {error}",
+  "@addVideoUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "schoolVideosError": "Помилка: {error}",
   "@schoolVideosError": {
     "placeholders": {

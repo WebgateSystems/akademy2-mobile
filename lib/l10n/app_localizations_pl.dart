@@ -39,7 +39,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get loginPinSubtitle =>
-      'Wpisz swój 4-cyfrowy PIN, aby kontynuować w aplikacji Academy 2.0.';
+      'Wpisz swój 4-cyfrowy PIN, aby kontynuować w aplikacji AKAdemy2.0.';
 
   @override
   String get unlockPinTitle => 'Wprowadź swój PIN';
@@ -201,7 +201,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get pinCreateSubtitle =>
-      'Ten kod będzie potrzebny do logowania w aplikacji Academy 2.0.';
+      'Ten kod będzie potrzebny do logowania w aplikacji AKAdemy2.0.';
 
   @override
   String get pinConfirmTitle => 'Powtórz 4-cyfrowy kod';
@@ -355,6 +355,26 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get schoolVideosPendingMessage =>
       'Twój nauczyciel wkrótce rozpatrzy Twoje zgłoszenie – chwilę poczekaj!';
+
+  @override
+  String get addVideoPageTitle => 'Dodaj wideo';
+
+  @override
+  String get addVideoPageTopicLabel => 'Wybierz temat';
+
+  @override
+  String get addVideoPageTitleFieldLabel => 'Tytuł';
+
+  @override
+  String get addVideoPageDescriptionFieldLabel => 'Opis';
+
+  @override
+  String get addVideoPageSubmitButton => 'Dodaj';
+
+  @override
+  String addVideoUploadFailed(String error) {
+    return 'Nie udało się przesłać wideo: $error';
+  }
 
   @override
   String schoolVideosError(String error) {

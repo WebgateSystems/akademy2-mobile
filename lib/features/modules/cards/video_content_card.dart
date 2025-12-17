@@ -3,6 +3,7 @@ import 'package:academy_2_app/features/modules/cards/preview_card.dart';
 import 'package:academy_2_app/features/modules/cards/preview_image.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class VideoContentCard extends StatelessWidget {
   const VideoContentCard({
@@ -22,16 +23,33 @@ class VideoContentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PreviewCard(
-      thumbnail: PreviewImage(
-        imagePath: 'assets/images/placeholder.png',
-        networkUrl: previewUrl,
-        heroTag: 'content-${content.id}',
-        onTapOverride: onPreviewTap,
-      ),
-      title: content.title,
-      subtitle: l10n.videoTitle,
-      onTap: onPreviewTap,
+    return Stack(
+      children: [
+        PreviewCard(
+          thumbnail: PreviewImage(
+            imagePath: 'assets/images/placeholder.png',
+            networkUrl: previewUrl,
+            heroTag: 'content-${content.id}',
+            onTapOverride: onPreviewTap,
+          ),
+          title: content.title,
+          subtitle: l10n.videoTitle,
+          onTap: onPreviewTap,
+        ),
+        Positioned(
+          top: 76.h,
+          left: MediaQuery.of(context).size.width / 2 - 48.w,
+          child: InkWell(
+            onTap: onPreviewTap,
+            child: Image.asset(
+              'assets/images/ic_play_arrow_48.png',
+              fit: BoxFit.contain,
+              width: 48.w,
+              height: 48.w,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

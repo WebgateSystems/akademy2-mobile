@@ -93,8 +93,12 @@ class _AddVideoPageState extends State<AddVideoPage> {
       Navigator.of(context).pop(true);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Failed to upload: $e')));
+        final l10n = AppLocalizations.of(context)!;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.addVideoUploadFailed(e.toString())),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -106,9 +110,11 @@ class _AddVideoPageState extends State<AddVideoPage> {
     final canSubmit = _file != null &&
         _subjectId != null &&
         _titleCtrl.text.trim().isNotEmpty;
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: BasePageWithToolbar(
-        title: 'Add video',
+        title: l10n.addVideoPageTitle,
         showBackButton: true,
         stickChildrenToBottom: true,
         children: [
@@ -128,7 +134,7 @@ class _AddVideoPageState extends State<AddVideoPage> {
           ),
           SizedBox(height: 16.h),
           _dropdown<String>(
-            label: 'Choose the topic',
+            label: l10n.addVideoPageTopicLabel,
             value: _subjectId,
             items: _subjects
                 .map((s) => DropdownMenuItem(value: s.id, child: Text(s.title)))
@@ -138,20 +144,20 @@ class _AddVideoPageState extends State<AddVideoPage> {
           SizedBox(height: 8.h),
           EditTextWidget(
             controller: _titleCtrl,
-            label: 'Title',
+            label: l10n.addVideoPageTitleFieldLabel,
             onChanged: (_) => setState(() {}),
           ),
           SizedBox(height: 8.h),
           EditTextWidget(
             controller: _descCtrl,
             maxLines: 3,
-            label: 'Description',
+            label: l10n.addVideoPageDescriptionFieldLabel,
           ),
           Spacer(),
           ActionButtonWidget(
             onPressed: canSubmit && !_saving ? _submit : null,
             loading: _saving,
-            text: 'Add',
+            text: l10n.addVideoPageSubmitButton,
           ),
         ],
       ),
@@ -312,8 +318,8 @@ class _PreviewPicker extends StatelessWidget {
               ),
             if (hasVideo)
               Positioned(
-                bottom: 12,
-                right: 12,
+                bottom: 80.h,
+                right: MediaQuery.of(context).size.width / 2 - 40.w,
                 child: _PlayPauseButton(
                   isPlaying: controller!.value.isPlaying,
                   onPressed: onTogglePlayback,

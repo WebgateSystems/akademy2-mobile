@@ -16,7 +16,7 @@
     }
   },
   "loginPinTitle": "Zaloguj się 4-cyfrowym kodem",
-  "loginPinSubtitle": "Wpisz swój 4-cyfrowy PIN, aby kontynuować w aplikacji Academy 2.0.",
+  "loginPinSubtitle": "Wpisz swój 4-cyfrowy PIN, aby kontynuować w aplikacji AKAdemy2.0.",
   "unlockPinTitle": "Wprowadź swój PIN",
   "unlockPinSubtitle": "Potwierdź swój 4-cyfrowy PIN dla\n{phone}.",
   "@unlockPinSubtitle": {
@@ -92,7 +92,7 @@
   "checkSpam": "Nie widzisz go? Sprawdź folder spam.",
   "next": "Dalej",
   "pinCreateTitle": "Wymyśl 4-cyfrowy kod",
-  "pinCreateSubtitle": "Ten kod będzie potrzebny do logowania w aplikacji Academy 2.0.",
+  "pinCreateSubtitle": "Ten kod będzie potrzebny do logowania w aplikacji AKAdemy2.0.",
   "pinConfirmTitle": "Powtórz 4-cyfrowy kod",
   "pinConfirmSubtitle": "Potwierdź swój kod.",
   "pinConfirmMismatchSubtitle": "Kody nie są jednakowe. Spróbuj ponownie.",
@@ -166,6 +166,19 @@
   "schoolVideosDeleteMessage": "Usunąć to wideo?",
   "schoolVideosPendingTitle": "Poczekaj na zatwierdzenie nauczyciela",
   "schoolVideosPendingMessage": "Twój nauczyciel wkrótce rozpatrzy Twoje zgłoszenie – chwilę poczekaj!",
+  "addVideoPageTitle": "Dodaj wideo",
+  "addVideoPageTopicLabel": "Wybierz temat",
+  "addVideoPageTitleFieldLabel": "Tytuł",
+  "addVideoPageDescriptionFieldLabel": "Opis",
+  "addVideoPageSubmitButton": "Dodaj",
+  "addVideoUploadFailed": "Nie udało się przesłać wideo: {error}",
+  "@addVideoUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "schoolVideosError": "Błąd: {error}",
   "@schoolVideosError": {
     "placeholders": {

@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
     <application
-        android:label="Academy 2.0"
+        android:label="AKAdemy2.0"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

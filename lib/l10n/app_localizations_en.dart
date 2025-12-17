@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Academy 2.0';
+  String get appTitle => 'AKAdemy2.0';
 
   @override
   String get loginTitle => 'Log in';
@@ -39,7 +39,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginPinSubtitle =>
-      'Please enter your 4-digit PIN to continue to the Academy 2.0 application.';
+      'Please enter your 4-digit PIN to continue to the AKAdemy2.0 application.';
 
   @override
   String get unlockPinTitle => 'Enter your PIN';
@@ -154,7 +154,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get iAgreeToReceive =>
-      'By providing my email I agree to receive communications from Academy 2.0 I understand I can opt out at any time.';
+      'By providing my email I agree to receive communications from AKAdemy2.0 I understand I can opt out at any time.';
 
   @override
   String get createAccountButton => 'Create account';
@@ -201,7 +201,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pinCreateSubtitle =>
-      'This code will be needed to log in to the Academy 2.0 application.';
+      'This code will be needed to log in to the AKAdemy2.0 application.';
 
   @override
   String get pinConfirmTitle => 'Repeat a 4-digit code';
@@ -353,6 +353,26 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get schoolVideosPendingMessage =>
       'Your teacher will review your request soon - hang tight!';
+
+  @override
+  String get addVideoPageTitle => 'Add video';
+
+  @override
+  String get addVideoPageTopicLabel => 'Choose the topic';
+
+  @override
+  String get addVideoPageTitleFieldLabel => 'Title';
+
+  @override
+  String get addVideoPageDescriptionFieldLabel => 'Description';
+
+  @override
+  String get addVideoPageSubmitButton => 'Add';
+
+  @override
+  String addVideoUploadFailed(String error) {
+    return 'Failed to upload: $error';
+  }
 
   @override
   String schoolVideosError(String error) {

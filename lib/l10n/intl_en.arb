@@ -1,6 +1,6 @@
 {
   "@@locale": "en",
-  "appTitle": "Academy 2.0",
+  "appTitle": "AKAdemy2.0",
   "loginTitle": "Log in",
   "loginPhoneRequired": "Please enter your phone number",
   "loginPhoneInvalid": "Invalid phone number.",
@@ -16,7 +16,7 @@
     }
   },
   "loginPinTitle": "Log in with your 4-digit code",
-  "loginPinSubtitle": "Please enter your 4-digit PIN to continue to the Academy 2.0 application.",
+  "loginPinSubtitle": "Please enter your 4-digit PIN to continue to the AKAdemy2.0 application.",
   "unlockPinTitle": "Enter your PIN",
   "unlockPinSubtitle": "Confirm your 4-digit PIN for\n{phone}.",
   "@unlockPinSubtitle": {
@@ -65,7 +65,7 @@
   "dateOfBirthHintField": "DD.MM.YYYY",
   "emailHintField": "emily.corner@gmail.com",
   "phoneHintField": "+48 XXX XXX XXX",
-  "iAgreeToReceive": "By providing my email I agree to receive communications from Academy 2.0 I understand I can opt out at any time.",
+  "iAgreeToReceive": "By providing my email I agree to receive communications from AKAdemy2.0 I understand I can opt out at any time.",
   "createAccountButton": "Create account",
   "verifyPhoneTitle": "Verify your phone number",
   "verifyPhoneSubtitle": "We sent a 4-digit code to your phone\n{phone}.",
@@ -92,7 +92,7 @@
   "checkSpam": "Don't see it? Check your spam folder.",
   "next": "Next",
   "pinCreateTitle": "Come up with a 4-digit code",
-  "pinCreateSubtitle": "This code will be needed to log in to the Academy 2.0 application.",
+  "pinCreateSubtitle": "This code will be needed to log in to the AKAdemy2.0 application.",
   "pinConfirmTitle": "Repeat a 4-digit code",
   "pinConfirmSubtitle": "Confirm your code.",
   "pinConfirmMismatchSubtitle": "Pins do not match. Try again.",
@@ -166,6 +166,19 @@
   "schoolVideosDeleteMessage": "Delete this video?",
   "schoolVideosPendingTitle": "Wait for teacher's approval",
   "schoolVideosPendingMessage": "Your teacher will review your request soon - hang tight!",
+  "addVideoPageTitle": "Add video",
+  "addVideoPageTopicLabel": "Choose the topic",
+  "addVideoPageTitleFieldLabel": "Title",
+  "addVideoPageDescriptionFieldLabel": "Description",
+  "addVideoPageSubmitButton": "Add",
+  "addVideoUploadFailed": "Failed to upload: {error}",
+  "@addVideoUploadFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
   "schoolVideosError": "Error: {error}",
   "@schoolVideosError": {
     "placeholders": {

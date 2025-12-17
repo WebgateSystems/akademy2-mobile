@@ -1,4 +1,4 @@
-# Academy 2.0 (Flutter)
+# AKAdemy2.0 (Flutter)
 
 Języki: Polski (domyślny) · [English](README.en.md) · [Українська](README.uk.md)
 

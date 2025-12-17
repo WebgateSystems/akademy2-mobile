@@ -103,7 +103,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Academy 2.0'**
+  /// **'AKAdemy2.0'**
   String get appTitle;
 
   /// No description provided for @loginTitle.
@@ -157,7 +157,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginPinSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Please enter your 4-digit PIN to continue to the Academy 2.0 application.'**
+  /// **'Please enter your 4-digit PIN to continue to the AKAdemy2.0 application.'**
   String get loginPinSubtitle;
 
   /// No description provided for @unlockPinTitle.
@@ -367,7 +367,7 @@ abstract class AppLocalizations {
   /// No description provided for @iAgreeToReceive.
   ///
   /// In en, this message translates to:
-  /// **'By providing my email I agree to receive communications from Academy 2.0 I understand I can opt out at any time.'**
+  /// **'By providing my email I agree to receive communications from AKAdemy2.0 I understand I can opt out at any time.'**
   String get iAgreeToReceive;
 
   /// No description provided for @createAccountButton.
@@ -445,7 +445,7 @@ abstract class AppLocalizations {
   /// No description provided for @pinCreateSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'This code will be needed to log in to the Academy 2.0 application.'**
+  /// **'This code will be needed to log in to the AKAdemy2.0 application.'**
   String get pinCreateSubtitle;
 
   /// No description provided for @pinConfirmTitle.
@@ -717,6 +717,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your teacher will review your request soon - hang tight!'**
   String get schoolVideosPendingMessage;
+
+  /// No description provided for @addVideoPageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add video'**
+  String get addVideoPageTitle;
+
+  /// No description provided for @addVideoPageTopicLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the topic'**
+  String get addVideoPageTopicLabel;
+
+  /// No description provided for @addVideoPageTitleFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get addVideoPageTitleFieldLabel;
+
+  /// No description provided for @addVideoPageDescriptionFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get addVideoPageDescriptionFieldLabel;
+
+  /// No description provided for @addVideoPageSubmitButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get addVideoPageSubmitButton;
+
+  /// No description provided for @addVideoUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload: {error}'**
+  String addVideoUploadFailed(String error);
 
   /// No description provided for @schoolVideosError.
   ///

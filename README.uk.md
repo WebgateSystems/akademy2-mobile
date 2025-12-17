@@ -1,4 +1,4 @@
-# Academy 2.0 (Flutter)
+# AKAdemy2.0 (Flutter)
 
 Мови: [Polski](README.md) · [English](README.en.md) · Українська
 

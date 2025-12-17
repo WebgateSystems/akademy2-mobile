@@ -107,14 +107,14 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
             child: MediaQuery.withNoTextScaling(
               child: MaterialApp.router(
                 debugShowCheckedModeBanner: false,
-                title: 'Academy 2.0',
+                title: 'AKAdemy2.0',
                 theme: AppTheme.light,
                 darkTheme: AppTheme.dark,
                 themeMode: settings.themeMode,
                 locale: settings.locale,
                 routerConfig: router,
                 onGenerateTitle: (context) =>
-                    AppLocalizations.of(context)?.appTitle ?? 'Academy 2.0',
+                    AppLocalizations.of(context)?.appTitle ?? 'AKAdemy2.0',
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
               ),
