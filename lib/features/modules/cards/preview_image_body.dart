@@ -71,9 +71,9 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
 
   Future<void> _loadVideoThumbIfNeeded() async {
     final url = widget.networkUrl;
-    final isLocalVideo = url != null && _isLocalVideo(url);
+    final isVideo = url != null && _isVideo(url);
 
-    if (!isLocalVideo) {
+    if (!isVideo) {
       if (_videoThumb != null || _isLoadingVideoThumb || _videoThumbError) {
         setState(() {
           _videoThumb = null;
@@ -180,7 +180,7 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
       return Image.asset(widget.imagePath, fit: widget.fit);
     }
 
-    if (_isLoadingVideoThumb && url != null && _isLocalVideo(url)) {
+    if (_isLoadingVideoThumb && url != null && _isVideo(url)) {
       return Container(
         color: AppColors.surfacePrimary(context),
         child: const Center(child: CircularProgressWidget()),
@@ -259,5 +259,9 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
         lower.endsWith('.avi') ||
         lower.endsWith('.m4v');
     return hasVideoExt && url.startsWith('http');
+  }
+
+  bool _isVideo(String url) {
+    return _isLocalVideo(url) || _isRemoteVideo(url);
   }
 }

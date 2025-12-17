@@ -410,7 +410,8 @@ class _ModulePageState extends ConsumerState<ModulePage> {
         final url = localPoster ??
             localFile ??
             _youtubeThumbnail(content.youtubeUrl) ??
-            _absUrl(content.posterUrl);
+            _absUrl(content.posterUrl) ??
+            _absUrl(content.fileUrl);
         if (url == null) {
           debugPrint(
               'ModulePage: missing preview for video id=${content.id} youtube=${content.youtubeUrl} poster=${content.posterUrl} file=${content.fileUrl}');
