@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../core/auth/auth_provider.dart';
 import '../../core/network/api_endpoints.dart';
@@ -38,6 +39,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   bool _loading = false;
   bool _deleting = false;
   bool _dirty = false;
+  String? _appVersion;
   Map<String, String> _initial = {};
 
   @override
@@ -54,6 +56,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     }
     _phoneCtrl.addListener(_onPhoneChanged);
     _loadProfile();
+    _loadAppVersion();
   }
 
   @override
@@ -91,6 +94,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         _dirty = false;
       });
     }
+  }
+
+  Future<void> _loadAppVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _appVersion = info.version +
+          (info.buildNumber.isNotEmpty ? '+${info.buildNumber}' : '');
+    });
   }
 
   Future<void> _saveProfile() async {
@@ -319,6 +330,19 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
               ],
             ),
+            if (_appVersion != null) ...[
+              SizedBox(height: 8.h),
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'v$_appVersion',
+                  style: AppTextStyles.b3(context).copyWith(
+                    color: AppColors.contentSecondary(context),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
           ],
         ),
       ),
