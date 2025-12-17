@@ -12,12 +12,12 @@ import 'package:academy_2_app/core/network/api.dart';
 import 'package:academy_2_app/core/services/student_api_service.dart';
 import 'package:academy_2_app/features/modules/dialogs/network_video_preview_dialog.dart';
 import 'package:academy_2_app/features/modules/dialogs/youtube_preview_dialog.dart';
+import 'package:academy_2_app/features/shared/centered_icon.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
@@ -898,7 +898,6 @@ class GroupTitleWidget extends StatelessWidget {
     final resolvedUrl = iconUrl.startsWith('http')
         ? iconUrl
         : '${Api.baseUploadUrl}${iconUrl.startsWith('/') ? '' : '/'}$iconUrl';
-    final isSvg = iconUrl.toLowerCase().endsWith('.svg');
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -909,21 +908,12 @@ class GroupTitleWidget extends StatelessWidget {
           backgroundColor: AppColors.surfaceIcon(context),
           child: hasIcon
               ? ClipOval(
-                  child: isSvg
-                      ? SvgPicture.network(
-                          resolvedUrl,
-                          width: 32.w,
-                          height: 32.w,
-                          fit: BoxFit.cover,
-                          placeholderBuilder: (_) => const SizedBox.shrink(),
-                        )
-                      : Image.network(
-                          resolvedUrl,
-                          width: 32.w,
-                          height: 32.w,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => const SizedBox.shrink(),
-                        ),
+                  child: CenteredIcon(
+                    url: resolvedUrl,
+                    size: 20.w,
+                    placeholder: const CircularProgressWidget(),
+                    fallbackColor: AppColors.contentSecondary(context),
+                  ),
                 )
               : null,
         ),
