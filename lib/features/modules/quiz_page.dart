@@ -13,6 +13,7 @@ import 'package:academy_2_app/core/services/certificate_service.dart';
 import 'package:academy_2_app/core/services/quiz_sync_service.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -404,7 +405,7 @@ class _ResultPageState extends State<ResultPage> {
   Future<void> _downloadCertificate(BuildContext context) async {
     if (_downloading) return;
 
-    final permissionStatus = await _requestPermission(context);
+    final permissionStatus = await _requestPermission();
     if (!permissionStatus.isGranted) {
       _handlePermissionDenied(permissionStatus, context);
       return;
@@ -442,16 +443,28 @@ class _ResultPageState extends State<ResultPage> {
     }
   }
 
-  Future<PermissionStatus> _requestPermission(BuildContext context) async {
-    if (Platform.isAndroid) {
-      final storage = await Permission.storage.request();
-      if (storage.isGranted) return storage;
-      final media = await Permission.photos.request();
-      return media.isGranted ? media : storage;
-    } else if (Platform.isIOS) {
-      return Permission.photosAddOnly.request();
+  Future<PermissionStatus> _requestPermission() async {
+    if (await _requiresLegacyStoragePermission()) {
+      return Permission.storage.request();
     }
     return PermissionStatus.granted;
+  }
+
+  Future<bool> _requiresLegacyStoragePermission() async {
+    if (!Platform.isAndroid) return false;
+    final version = await _androidSdkVersion();
+    return version > 0 && version < 29;
+  }
+
+  Future<int> _androidSdkVersion() async {
+    if (!Platform.isAndroid) return 0;
+    const channel = MethodChannel('downloadsfolder');
+    try {
+      final value = await channel.invokeMethod<int>('getCurrentSdkVersion');
+      return value ?? 0;
+    } on PlatformException {
+      return 0;
+    }
   }
 
   void _handlePermissionDenied(

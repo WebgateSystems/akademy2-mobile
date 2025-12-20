@@ -172,6 +172,12 @@ abstract class AppLocalizations {
   /// **'Confirm your 4-digit PIN for\n{phone}.'**
   String unlockPinSubtitle(String phone);
 
+  /// Text shown while biometric authentication is in progress.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for biometric confirmation...'**
+  String get unlockBiometricWaiting;
+
   /// No description provided for @passwordField.
   ///
   /// In en, this message translates to:

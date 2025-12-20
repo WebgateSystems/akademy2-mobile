@@ -26,6 +26,10 @@
       }
     }
   },
+  "unlockBiometricWaiting": "Waiting for biometric confirmation...",
+  "@unlockBiometricWaiting": {
+    "description": "Text shown while biometric authentication is in progress."
+  },
   "passwordField": "Password",
   "subjectsTitle": "Subjects",
   "joinTitle": "Join class",

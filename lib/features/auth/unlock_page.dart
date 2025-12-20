@@ -1,6 +1,9 @@
+import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
+import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -28,6 +31,7 @@ class _UnlockPageState extends ConsumerState<UnlockPage>
   bool _submitting = false;
   bool _biometricEnabled = false;
   bool _biometricAttempted = false;
+  bool _biometricInProgress = false;
   bool _appWasPaused = false;
   bool _ready = false;
 
@@ -85,6 +89,9 @@ class _UnlockPageState extends ConsumerState<UnlockPage>
   Future<void> _tryBiometric({bool fromButton = false}) async {
     if ((!fromButton && _biometricAttempted) || !_biometricEnabled) return;
     _biometricAttempted = true;
+    if (mounted) {
+      setState(() => _biometricInProgress = true);
+    }
     try {
       final supported = await _localAuth.isDeviceSupported();
       final canCheck = await _localAuth.canCheckBiometrics;
@@ -95,7 +102,12 @@ class _UnlockPageState extends ConsumerState<UnlockPage>
       if (success && mounted) {
         await _finishUnlock();
       }
-    } catch (_) {}
+    } catch (_) {
+    } finally {
+      if (mounted) {
+        setState(() => _biometricInProgress = false);
+      }
+    }
   }
 
   void _handleBiometricTap() async {
@@ -191,29 +203,69 @@ class _UnlockPageState extends ConsumerState<UnlockPage>
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final phoneLabel = _phone ?? '';
+    final maxBiometricLabelWidth = MediaQuery.of(context).size.width - 80.w;
     if (!_ready) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
-    return PinScaffold(
-      title: l10n.unlockPinTitle,
-      subtitle: l10n.unlockPinSubtitle(phoneLabel),
-      pin: _current,
-      onKey: _handleKey,
-      mismatch: _mismatch,
-      showProgress: _submitting,
-      showBackButton: false,
-      showBiometricKey: true,
-      onBiometricTap: _handleBiometricTap,
-      footer: Column(
-        children: [
-          ActionTextButtonWidget(
-            onPressed: _submitting ? null : _logout,
-            text: l10n.useAnotherAccount,
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        PinScaffold(
+          title: l10n.unlockPinTitle,
+          subtitle: l10n.unlockPinSubtitle(phoneLabel),
+          pin: _current,
+          onKey: _handleKey,
+          mismatch: _mismatch,
+          showProgress: _submitting,
+          showBackButton: false,
+          showBiometricKey: true,
+          onBiometricTap: _handleBiometricTap,
+          footer: Column(
+            children: [
+              ActionTextButtonWidget(
+                onPressed: _submitting ? null : _logout,
+                text: l10n.useAnotherAccount,
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        if (_biometricInProgress)
+          Positioned.fill(
+            child: AbsorbPointer(
+              absorbing: true,
+              child: Container(
+                color: Colors.black54,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const CircularProgressWidget(),
+                      SizedBox(height: 12.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 24.w),
+                        child: ConstrainedBox(
+                          constraints:
+                              BoxConstraints(maxWidth: maxBiometricLabelWidth),
+                          child: Text(
+                            l10n.unlockBiometricWaiting,
+                            textAlign: TextAlign.center,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: AppTextStyles.b2(context).copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

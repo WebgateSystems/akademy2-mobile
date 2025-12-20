@@ -26,6 +26,10 @@
       }
     }
   },
+  "unlockBiometricWaiting": "Oczekiwanie na potwierdzenie biometryczne...",
+  "@unlockBiometricWaiting": {
+    "description": "Text shown while biometric authentication is in progress."
+  },
   "passwordField": "Hasło",
   "subjectsTitle": "Przedmioty",
   "joinTitle": "Dołącz do klasy",

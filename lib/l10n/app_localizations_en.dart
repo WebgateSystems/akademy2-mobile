@@ -50,6 +50,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get unlockBiometricWaiting => 'Waiting for biometric confirmation...';
+
+  @override
   String get passwordField => 'Password';
 
   @override

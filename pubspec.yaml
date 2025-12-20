@@ -1,7 +1,7 @@
 name: academy_2_app
 description: "A new Flutter project."
 publish_to: 'none'
-version: 0.1.2+6
+version: 0.1.2+8
 
 environment:
   sdk: ">=3.4.0 <4.0.0"
@@ -17,7 +17,7 @@ dependencies:
   vector_graphics_compiler: ^1.1.19
   intl: ^0.20.2
   flutter_riverpod: ^2.6.1
-  go_router: ^17.0.0
+  go_router: ^17.0.1
   dio: ^5.9.0
   pretty_dio_logger: ^1.4.0
   dio_smart_retry: ^7.0.1
@@ -26,7 +26,7 @@ dependencies:
   url_launcher: ^6.3.2
   permission_handler: ^12.0.1
   mobile_scanner: ^7.1.4
-  file_picker: ^10.3.7
+  file_picker: ^10.3.8
   video_player: ^2.10.1
   video_thumbnail: ^0.5.6
   isar_plus: ^1.2.0
@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   local_auth: ^3.0.0
   youtube_player_flutter: ^9.1.3
-  http: ^1.1.0
+  http: ^1.6.0
   flutter_pdfview: ^1.4.3
   connectivity_plus: ^7.0.0
   shared_preferences: ^2.5.4
@@ -49,7 +49,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   flutter_launcher_icons: ^0.14.4
-  build_runner: ^2.4.0
+  build_runner: ^2.10.4
 
 flutter_launcher_icons:
   image_path: "assets/images/logo.png"

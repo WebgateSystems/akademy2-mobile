@@ -26,6 +26,10 @@
       }
     }
   },
+  "unlockBiometricWaiting": "Очікування підтвердження біометрії...",
+  "@unlockBiometricWaiting": {
+    "description": "Text shown while biometric authentication is in progress."
+  },
   "passwordField": "Пароль",
   "subjectsTitle": "Предмети",
   "joinTitle": "Приєднання до класу",

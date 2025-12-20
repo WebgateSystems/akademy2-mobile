@@ -148,8 +148,8 @@ class CustomBottomBar extends StatelessWidget {
               children: [
                 Image.asset(
                   item.icon,
-                  width: 24.w,
-                  height: 24.w,
+                  width: 22.w,
+                  height: 22.w,
                   color: selected
                       ? AppColors.contentAccent(context)
                       : AppColors.contentSecondary(context),

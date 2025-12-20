@@ -50,6 +50,10 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
+  String get unlockBiometricWaiting =>
+      'Oczekiwanie na potwierdzenie biometryczne...';
+
+  @override
   String get passwordField => 'Hasło';
 
   @override

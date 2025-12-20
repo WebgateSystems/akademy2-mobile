@@ -50,6 +50,9 @@ class AppLocalizationsUk extends AppLocalizations {
   }
 
   @override
+  String get unlockBiometricWaiting => 'Очікування підтвердження біометрії...';
+
+  @override
   String get passwordField => 'Пароль';
 
   @override
