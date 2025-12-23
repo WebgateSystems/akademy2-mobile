@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'edit_video_page.dart';
@@ -324,10 +323,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
   Future<void> _loadMoreVideos() async {
     if (!_hasMore || _isLoadingMore) return;
     await _loadVideos();
-  }
-
-  Future<void> _ensurePermissions() async {
-    await [Permission.camera, Permission.photos, Permission.storage].request();
   }
 
   Future<void> _onEditVideo(SchoolVideo video) async {
@@ -668,8 +663,6 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
         foregroundColor: AppColors.contentOnAccentPrimary(context),
         shape: CircleBorder(),
         onPressed: () async {
-          await _ensurePermissions();
-          if (!context.mounted) return;
           final result = await context.push('/videos/add');
           if (result == true) {
             _loadVideos(reset: true);

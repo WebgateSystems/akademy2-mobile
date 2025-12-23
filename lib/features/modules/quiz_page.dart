@@ -428,6 +428,7 @@ class _ResultPageState extends State<ResultPage> {
       messenger.showSnackBar(
         SnackBar(content: Text(l10n.quizResultDownloadSuccess(file.path))),
       );
+      context.go('/home');
     } on CertificateDownloadException catch (e) {
       messenger.showSnackBar(
         SnackBar(content: Text(l10n.quizResultDownloadFailed(e.message))),
