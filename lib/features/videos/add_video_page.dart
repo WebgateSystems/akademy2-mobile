@@ -263,7 +263,7 @@ class _PreviewPicker extends StatelessWidget {
     return GestureDetector(
       onTap: onPick,
       child: Container(
-        height: 200.h,
+        height: 192.h,
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),

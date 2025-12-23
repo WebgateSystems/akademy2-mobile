@@ -37,6 +37,7 @@ class CertificateService {
       throw CertificateDownloadException('Certificate id is missing');
     }
 
+    // Download into a temp file first so we can handle platform-specific flows.
     final response = await _dio.get<Uint8List>(
       ApiEndpoints.quizCertificates(certificateId),
       options: Options(responseType: ResponseType.bytes),
@@ -48,6 +49,13 @@ class CertificateService {
       final tempDir = await getTemporaryDirectory();
       final tempFile = File('${tempDir.path}/certificate_$certificateId.pdf');
       await tempFile.writeAsBytes(data, flush: true);
+
+      // On iOS we keep the file in temp storage and let the caller decide how to export it
+      // (e.g. via share sheet into Files/iCloud). This avoids locking the file inside the app sandbox.
+      if (Platform.isIOS) {
+        return tempFile;
+      }
+
       final fileName = 'certificate_$certificateId.pdf';
       final copied = await copyFileIntoDownloadFolder(tempFile.path, fileName);
       if (copied != true) {

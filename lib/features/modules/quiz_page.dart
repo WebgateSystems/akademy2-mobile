@@ -17,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key, required this.moduleId});
@@ -425,10 +426,19 @@ class _ResultPageState extends State<ResultPage> {
       final file =
           await CertificateService().downloadCertificate(certificateId);
       if (!mounted) return;
-      messenger.showSnackBar(
-        SnackBar(content: Text(l10n.quizResultDownloadSuccess(file.path))),
-      );
-      context.go('/home');
+
+      if (Platform.isIOS) {
+        // Offer a share/save dialog so the user can place the PDF in Files or iCloud.
+        await Share.shareXFiles(
+          [XFile(file.path, mimeType: 'application/pdf')],
+          sharePositionOrigin: _shareOrigin(context),
+        );
+      } else {
+        messenger.showSnackBar(
+          SnackBar(content: Text(l10n.quizResultDownloadSuccess(file.path))),
+        );
+      }
+      if (mounted) context.go('/home');
     } on CertificateDownloadException catch (e) {
       messenger.showSnackBar(
         SnackBar(content: Text(l10n.quizResultDownloadFailed(e.message))),
@@ -507,6 +517,15 @@ class _ResultPageState extends State<ResultPage> {
           l10n.quizResultScore(widget.args.score, widget.args.totalPoints);
       body = l10n.quizResultTryBody;
     }
+  }
+
+  Rect _shareOrigin(BuildContext context) {
+    final box = context.findRenderObject() as RenderBox?;
+    if (box == null) {
+      return const Rect.fromLTWH(0, 0, 1, 1);
+    }
+    final offset = box.localToGlobal(Offset.zero);
+    return Rect.fromLTWH(offset.dx, offset.dy, box.size.width, box.size.height);
   }
 
   @override
