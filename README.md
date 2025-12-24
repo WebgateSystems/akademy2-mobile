@@ -27,7 +27,7 @@ flutter pub get
 ```
 2) Uruchom (podaj API):
 ```bash
-flutter run --dart-define=API_BASE_URL=https://test.akademy.edu.pl
+flutter run --dart-define=API_BASE_URL=https://akademy.edu.pl
 ```
 3) Zbuduj wersję produkcyjną:
 ```bash

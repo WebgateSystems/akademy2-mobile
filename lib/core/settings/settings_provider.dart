@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../network/api_endpoints.dart';
 import '../network/dio_provider.dart';
 import '../storage/secure_storage.dart';
-import '../network/api_endpoints.dart';
 
 class SettingsState {
   const SettingsState({
@@ -48,7 +48,7 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   Future<void> _load() async {
     state = state.copyWith(loading: true);
     final themeStr = await _storage.read('theme') ?? 'light';
-    final lang = await _storage.read('language') ?? 'en';
+    final lang = await _storage.read('language') ?? 'pl';
     state = SettingsState(
       themeMode: themeStr == 'dark' ? ThemeMode.dark : ThemeMode.light,
       languageCode: lang,

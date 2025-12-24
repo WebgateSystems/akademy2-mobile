@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -24,38 +26,31 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Allow AKAdemy2.0 to use your camera for QR scanning and capturing media.</string>
+	<key>NSDocumentsUsageDescription</key>
+	<string>Allow AKAdemy2.0 to access documents for viewing PDFs and educational materials.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Allow Face ID to quickly unlock your AKAdemy2.0 account.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Allow AKAdemy2.0 to record audio when capturing videos.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Allow AKAdemy2.0 to save your certificates and downloads to the photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow AKAdemy2.0 to access your photo library to pick and upload media.</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>UIStatusBarStyle</key>
+	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string>Allow AKAdemy2.0 to use your camera for QR scanning and capturing media.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow AKAdemy2.0 to access your photo library to pick and upload media.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Allow AKAdemy2.0 to save your certificates and downloads to the photo library.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow AKAdemy2.0 to record audio when capturing videos.</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Allow Face ID to quickly unlock your AKAdemy2.0 account.</string>
-	<key>NSDocumentsUsageDescription</key>
-	<string>Allow AKAdemy2.0 to access documents for viewing PDFs and educational materials.</string>
 </dict>
 </plist>

@@ -1,13 +1,7 @@
 class Api {
-  static const String baseUploadUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'https://test.akademy.edu.pl',
-  );
+  static const String baseUploadUrl = 'https://test.akademy.edu.pl';
 
-  static const String baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'https://test.akademy.edu.pl/api',
-  );
+  static const String baseUrl = '$baseUploadUrl/api';
 
   static String get normalizedBaseUrl =>
       baseUrl.endsWith('/') ? baseUrl : '$baseUrl/';

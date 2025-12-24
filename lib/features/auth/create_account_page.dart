@@ -203,8 +203,10 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     return Scaffold(
       body: BasePageWithToolbar(
         showBackButton: false,
+        stickChildrenToBottom: true,
         title: loc?.createAnAccount ?? 'Create an Account',
         children: [
+          SizedBox(height: 20.h),
           EditTextWidget(
               label: loc?.firstNameField ?? 'First name',
               hint: loc?.firstNameField ?? 'First name',
@@ -246,7 +248,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
             value: _agree,
             onChanged: (v) => setState(() => _agree = v ?? false),
           ),
-          SizedBox(height: 20.h),
+          Spacer(),
           ActionButtonWidget(
             onPressed: _isFormValid && !_loading ? _submit : null,
             text: loc?.createAccountButton ?? 'Create account',

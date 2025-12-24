@@ -4,6 +4,7 @@ import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/core/utils/orientation_utils.dart';
 import 'package:academy_2_app/features/modules/models/subtitle_entry.dart';
+import 'package:academy_2_app/features/modules/utils/subtitle_decoder.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -114,7 +115,10 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
       if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
         final response = await http.get(uri);
         if (response.statusCode == 200) {
-          content = response.body;
+          content = decodeSubtitleBytes(
+            response.bodyBytes,
+            contentType: response.headers['content-type'],
+          );
         } else {
           return;
         }
@@ -123,7 +127,8 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
             ? File.fromUri(uri)
             : File(url);
         if (await file.exists()) {
-          content = await file.readAsString();
+          final bytes = await file.readAsBytes();
+          content = decodeSubtitleBytes(bytes);
         } else {
           return;
         }

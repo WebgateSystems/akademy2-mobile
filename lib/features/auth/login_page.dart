@@ -122,7 +122,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(l10n.loginCreateAccountPrompt),
-                SizedBox(width: 12.w),
+                SizedBox(width: 6.w),
                 ActionTextButtonWidget(
                   onPressed: () => context.go('/create-account'),
                   text: l10n.loginCreateAccountCta,
