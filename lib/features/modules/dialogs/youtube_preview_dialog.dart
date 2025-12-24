@@ -218,7 +218,7 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
           ),
           if (_currentSubtitle.isNotEmpty)
             Positioned(
-              bottom: 80.h,
+              bottom: 90.h,
               left: 16.w,
               right: 16.w,
               child: Center(
@@ -242,19 +242,24 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
               ),
             ),
           Positioned(
-            top: 16.h,
-            right: 16.w,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => Navigator.of(context).pop(),
+            top: 32,
+            right: 16,
+            child: Material(
+              type: MaterialType.transparency,
               child: Container(
-                width: 48.w,
-                height: 48.w,
                 decoration: BoxDecoration(
-                  color: Colors.black.withValues(alpha: 0.6),
+                  color: Colors.black.withValues(alpha: 0.5),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(Icons.close, color: Colors.white, size: 24.w),
+                child: IconButton(
+                  iconSize: 28,
+                  padding: const EdgeInsets.all(12),
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
               ),
             ),
           ),

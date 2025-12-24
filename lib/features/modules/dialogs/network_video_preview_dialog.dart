@@ -316,7 +316,7 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
                   ),
                   if (_currentSubtitle.isNotEmpty)
                     Positioned(
-                      bottom: 80.h,
+                      bottom: 90.h,
                       left: 20.w,
                       right: 20.w,
                       child: Center(
@@ -347,7 +347,7 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
                       child: GestureDetector(
                         onTap: _togglePlayPause,
                         child: Container(
-                          padding: EdgeInsets.all(16.w),
+                          padding: EdgeInsets.all(16),
                           decoration: BoxDecoration(
                             color: Colors.black45,
                             shape: BoxShape.circle,
@@ -357,13 +357,13 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
                                 ? Icons.pause
                                 : Icons.play_arrow,
                             color: Colors.white,
-                            size: 48.w,
+                            size: 48,
                           ),
                         ),
                       ),
                     ),
                     Positioned(
-                      bottom: 20.h,
+                      bottom: 60.h,
                       left: 16.w,
                       right: 16.w,
                       child: VideoProgressIndicator(
@@ -382,21 +382,23 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
             ),
           ),
           Positioned(
-            top: MediaQuery.of(context).padding.top + 24.h,
-            right: 8.w,
+            top: 32,
+            right: 16,
             child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () => Navigator.of(context).pop(),
-                borderRadius: BorderRadius.circular(24.w),
-                child: Container(
-                  width: 48.w,
-                  height: 48.w,
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.6),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.close, color: Colors.white, size: 24.w),
+              type: MaterialType.transparency,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  iconSize: 28,
+                  padding: const EdgeInsets.all(12),
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.close, color: Colors.white),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
               ),
             ),
