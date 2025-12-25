@@ -120,7 +120,7 @@ class _AddVideoPageState extends State<AddVideoPage> {
         title: l10n.addVideoPageTitle,
         showBackButton: true,
         stickChildrenToBottom: true,
-        paddingBottom: 8.h,
+        paddingBottom: 20.h,
         children: [
           SizedBox(height: 16.h),
           _PreviewPicker(

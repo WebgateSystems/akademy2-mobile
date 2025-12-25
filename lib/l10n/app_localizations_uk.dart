@@ -540,7 +540,10 @@ class AppLocalizationsUk extends AppLocalizations {
   String get quizResultSkip => 'Пропустити';
 
   @override
-  String get quizResultDownload => 'Завантажити';
+  String get quizResultDownload => 'Завантажити сертифікат';
+
+  @override
+  String get quizRepeat => 'Спробувати знову';
 
   @override
   String get quizResultDownloadMissing =>

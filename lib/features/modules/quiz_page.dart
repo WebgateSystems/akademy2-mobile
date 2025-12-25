@@ -383,8 +383,8 @@ class ResultPage extends StatefulWidget {
 
 class _ResultPageState extends State<ResultPage> {
   String? title;
-
   String? subtitle;
+  num? percentage;
 
   String? body;
   bool _downloading = false;
@@ -454,6 +454,15 @@ class _ResultPageState extends State<ResultPage> {
     }
   }
 
+  void _quizRepeat(BuildContext context) {
+    final moduleId = widget.args.moduleId;
+    if (moduleId.isEmpty) {
+      context.go('/home');
+      return;
+    }
+    context.go('/module/$moduleId/quiz');
+  }
+
   Future<PermissionStatus> _requestPermission() async {
     if (await _requiresLegacyStoragePermission()) {
       return Permission.storage.request();
@@ -503,10 +512,7 @@ class _ResultPageState extends State<ResultPage> {
 
   void _calculateInterest(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final percentage = widget.args.totalPoints == 0
-        ? 0
-        : (widget.args.score / widget.args.totalPoints) * 100;
-    if (percentage >= 80) {
+    if (percentage! >= 80) {
       title = l10n.quizResultCongratsTitle;
       subtitle =
           l10n.quizResultScore(widget.args.score, widget.args.totalPoints);
@@ -526,6 +532,14 @@ class _ResultPageState extends State<ResultPage> {
     }
     final offset = box.localToGlobal(Offset.zero);
     return Rect.fromLTWH(offset.dx, offset.dy, box.size.width, box.size.height);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    percentage = widget.args.totalPoints == 0
+        ? 0
+        : ((widget.args.score / widget.args.totalPoints) * 100);
   }
 
   @override
@@ -557,11 +571,17 @@ class _ResultPageState extends State<ResultPage> {
               text: l10n.quizResultSkip,
               onPressed: () => context.go('/home'),
             ),
-            ActionButtonWidget(
-              text: l10n.quizResultDownload,
-              loading: _downloading,
-              onPressed: () => _downloadCertificate(context),
-            ),
+            if (percentage! >= 80)
+              ActionButtonWidget(
+                text: l10n.quizResultDownload,
+                loading: _downloading,
+                onPressed: () => _downloadCertificate(context),
+              ),
+            if (percentage! < 80)
+              ActionButtonWidget(
+                text: l10n.quizRepeat,
+                onPressed: () => _quizRepeat(context),
+              ),
           ],
         ),
       ),

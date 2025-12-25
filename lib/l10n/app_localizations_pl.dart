@@ -542,7 +542,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get quizResultSkip => 'Pomiń';
 
   @override
-  String get quizResultDownload => 'Pobierz';
+  String get quizResultDownload => 'Pobierz certyfikat';
+
+  @override
+  String get quizRepeat => 'Podejdź ponownie';
 
   @override
   String get quizResultDownloadMissing =>

@@ -274,6 +274,14 @@ class _ModulePageState extends ConsumerState<ModulePage> {
             stickChildrenToBottom: true,
             isOneToolbarRow: true,
             paddingBottom: 20.w,
+            onBack: () async {
+              final router = GoRouter.of(context);
+              if (router.canPop()) {
+                router.pop();
+              } else {
+                router.go('/home');
+              }
+            },
             children: [
               SizedBox(height: 16.h),
               Expanded(

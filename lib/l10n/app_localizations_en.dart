@@ -537,7 +537,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quizResultSkip => 'Skip';
 
   @override
-  String get quizResultDownload => 'Download';
+  String get quizResultDownload => 'Download сertificate';
+
+  @override
+  String get quizRepeat => 'Repeat Quiz';
 
   @override
   String get quizResultDownloadMissing =>

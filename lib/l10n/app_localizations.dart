@@ -1057,8 +1057,14 @@ abstract class AppLocalizations {
   /// No description provided for @quizResultDownload.
   ///
   /// In en, this message translates to:
-  /// **'Download'**
+  /// **'Download сertificate'**
   String get quizResultDownload;
+
+  /// No description provided for @quizRepeat.
+  ///
+  /// In en, this message translates to:
+  /// **'Repeat Quiz'**
+  String get quizRepeat;
 
   /// No description provided for @quizResultDownloadMissing.
   ///
