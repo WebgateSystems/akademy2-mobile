@@ -1,5 +1,5 @@
 class Api {
-  static const String baseUploadUrl = 'https://test.akademy.edu.pl';
+  static const String baseUploadUrl = 'https://akademy.edu.pl';
 
   static const String baseUrl = '$baseUploadUrl/api';
 

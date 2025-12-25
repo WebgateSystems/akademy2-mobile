@@ -9,6 +9,7 @@ import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:video_player/video_player.dart';
 
@@ -34,11 +35,13 @@ class _AddVideoPageState extends State<AddVideoPage> {
   @override
   void initState() {
     super.initState();
+    _hideSystemNavigation();
     _loadSubjects();
   }
 
   @override
   void dispose() {
+    _restoreSystemNavigation();
     _controller?.dispose();
     _titleCtrl.dispose();
     _descCtrl.dispose();
@@ -117,6 +120,7 @@ class _AddVideoPageState extends State<AddVideoPage> {
         title: l10n.addVideoPageTitle,
         showBackButton: true,
         stickChildrenToBottom: true,
+        paddingBottom: 8.h,
         children: [
           SizedBox(height: 16.h),
           _PreviewPicker(
@@ -242,6 +246,22 @@ class _AddVideoPageState extends State<AddVideoPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void _hideSystemNavigation() {
+    if (!Platform.isAndroid) return;
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: const [SystemUiOverlay.top],
+    );
+  }
+
+  void _restoreSystemNavigation() {
+    if (!Platform.isAndroid) return;
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: SystemUiOverlay.values,
     );
   }
 }

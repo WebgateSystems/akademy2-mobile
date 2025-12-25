@@ -37,7 +37,7 @@ class BasePageWithToolbar extends StatelessWidget {
             height: constraints.maxHeight,
             child: Column(
               children: [
-                SizedBox(height: 44.h),
+                SizedBox(height: 32.h),
                 if (showBackButton && !isOneToolbarRow)
                   Padding(
                     padding: EdgeInsets.only(top: 16.h),
@@ -103,7 +103,7 @@ class BasePageWithToolbar extends StatelessWidget {
                             ),
                           ),
                         ...?children,
-                        SizedBox(height: paddingBottom ?? 64.h),
+                        SizedBox(height: paddingBottom ?? 57.h),
                       ],
                     ),
                   ),
@@ -116,7 +116,7 @@ class BasePageWithToolbar extends StatelessWidget {
         return SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 44.h),
+              SizedBox(height: 32.h),
               if (showBackButton)
                 Padding(
                   padding: EdgeInsets.only(top: 16.h),

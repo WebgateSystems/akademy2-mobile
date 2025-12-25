@@ -226,9 +226,9 @@ class PinScaffold extends StatelessWidget {
         subtitle: subtitle,
         showBackButton: showBackButton,
         children: [
-          SizedBox(height: 56.h),
+          SizedBox(height: 32.h),
           DotsWidget(pin: pin),
-          if (hasError) SizedBox(height: 16.h),
+          if (hasError) SizedBox(height: 8.h),
           if (hasError)
             Row(
               mainAxisSize: MainAxisSize.max,
@@ -245,7 +245,7 @@ class PinScaffold extends StatelessWidget {
                 ),
               ],
             ),
-          SizedBox(height: 101.h),
+          SizedBox(height: 72.h),
           if (showProgress) Center(child: const CircularProgressWidget()),
           if (!showProgress)
             Row(
@@ -259,7 +259,7 @@ class PinScaffold extends StatelessWidget {
                 ),
               ],
             ),
-          if (footer != null) SizedBox(height: 24.h),
+          if (footer != null) SizedBox(height: 12.h),
           if (footer != null) footer!,
         ],
       ),
@@ -325,7 +325,7 @@ class _PinKeypad extends StatelessWidget {
     ];
     return SizedBox(
       width: 280.w,
-      height: 384.h,
+      height: 396.h,
       child: GridView.builder(
         physics: const NeverScrollableScrollPhysics(),
         itemCount: keys.length,

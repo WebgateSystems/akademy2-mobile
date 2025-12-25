@@ -233,34 +233,31 @@ class _UnlockPageState extends ConsumerState<UnlockPage>
         ),
         if (_biometricInProgress)
           Positioned.fill(
-            child: AbsorbPointer(
-              absorbing: true,
-              child: Container(
-                color: Colors.black54,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const CircularProgressWidget(),
-                      SizedBox(height: 12.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 24.w),
-                        child: ConstrainedBox(
-                          constraints:
-                              BoxConstraints(maxWidth: maxBiometricLabelWidth),
-                          child: Text(
-                            l10n.unlockBiometricWaiting,
-                            textAlign: TextAlign.center,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: AppTextStyles.b2(context).copyWith(
-                              color: Colors.white,
-                            ),
+            child: Scaffold(
+              backgroundColor: Colors.black87.withValues(alpha: .8),
+              body: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const CircularProgressWidget(),
+                    SizedBox(height: 12.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24.w),
+                      child: ConstrainedBox(
+                        constraints:
+                            BoxConstraints(maxWidth: maxBiometricLabelWidth),
+                        child: Text(
+                          l10n.unlockBiometricWaiting,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyles.b2(context).copyWith(
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

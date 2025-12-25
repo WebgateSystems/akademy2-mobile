@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
@@ -45,11 +47,73 @@ class _ModuleData {
   final List<ContentEntity> contents;
 }
 
+const _moduleRefreshThrottle = Duration(minutes: 1);
+final _moduleRefreshLocks = <String>{};
+final _moduleRefreshTimestamps = <String, DateTime>{};
+
 final moduleDataProvider = FutureProvider.autoDispose
     .family<_ModuleData, String>((ref, moduleId) async {
   final service = ref.watch(studentApiServiceProvider);
   final isarService = IsarService();
 
+  final cached = await _loadModuleFromCache(isarService, moduleId);
+  if (cached != null) {
+    _maybeRefreshModule(ref, service, isarService, moduleId);
+    return cached;
+  }
+
+  return _fetchAndCacheModule(service, isarService, moduleId);
+});
+
+Future<List<ContentEntity>> _validateDownloadedContent(
+  List<ContentEntity> items,
+) async {
+  if (items.isEmpty) return items;
+  final service = IsarService();
+
+  for (final content in items) {
+    if (!content.downloaded || content.downloadPath.isEmpty) continue;
+    final isFresh = await isContentDownloadFresh(content);
+    if (!isFresh) {
+      await service.updateContentDownload(
+        content.id,
+        downloaded: false,
+        downloadPath: '',
+      );
+      content
+        ..downloaded = false
+        ..downloadPath = '';
+    }
+  }
+
+  return items;
+}
+
+Future<_ModuleData?> _loadModuleFromCache(
+  IsarService isarService,
+  String moduleId,
+) async {
+  final module = await isarService.getModuleById(moduleId);
+  if (module == null) return null;
+
+  final contents = await isarService.getContentsByModuleId(moduleId);
+  if (contents.isEmpty) return null;
+
+  final validatedContents = await _validateDownloadedContent([...contents]);
+
+  return _ModuleData(
+    moduleId: module.id,
+    title: module.title,
+    singleFlow: module.singleFlow,
+    contents: validatedContents,
+  );
+}
+
+Future<_ModuleData> _fetchAndCacheModule(
+  StudentApiService service,
+  IsarService isarService,
+  String moduleId,
+) async {
   final moduleDetail = await service.fetchModuleDetail(moduleId);
 
   final contentEntities = <ContentEntity>[];
@@ -84,30 +148,37 @@ final moduleDataProvider = FutureProvider.autoDispose
     singleFlow: moduleDetail.singleFlow,
     contents: validatedContents,
   );
-});
+}
 
-Future<List<ContentEntity>> _validateDownloadedContent(
-  List<ContentEntity> items,
+void _maybeRefreshModule(
+  AutoDisposeFutureProviderRef<_ModuleData> ref,
+  StudentApiService service,
+  IsarService isarService,
+  String moduleId,
+) {
+  final now = DateTime.now();
+  final last = _moduleRefreshTimestamps[moduleId];
+  if (last != null && now.difference(last) < _moduleRefreshThrottle) return;
+  _moduleRefreshTimestamps[moduleId] = now;
+
+  unawaited(_refreshModule(ref, service, isarService, moduleId));
+}
+
+Future<void> _refreshModule(
+  AutoDisposeFutureProviderRef<_ModuleData> ref,
+  StudentApiService service,
+  IsarService isarService,
+  String moduleId,
 ) async {
-  if (items.isEmpty) return items;
-  final service = IsarService();
-
-  for (final content in items) {
-    if (!content.downloaded || content.downloadPath.isEmpty) continue;
-    final isFresh = await isContentDownloadFresh(content);
-    if (!isFresh) {
-      await service.updateContentDownload(
-        content.id,
-        downloaded: false,
-        downloadPath: '',
-      );
-      content
-        ..downloaded = false
-        ..downloadPath = '';
-    }
+  if (!_moduleRefreshLocks.add(moduleId)) return;
+  try {
+    await _fetchAndCacheModule(service, isarService, moduleId);
+    ref.invalidate(moduleDataProvider(moduleId));
+  } catch (e, st) {
+    debugPrint('ModulePage: background refresh failed for $moduleId $e\n$st');
+  } finally {
+    _moduleRefreshLocks.remove(moduleId);
   }
-
-  return items;
 }
 
 class ModulePage extends ConsumerStatefulWidget {
