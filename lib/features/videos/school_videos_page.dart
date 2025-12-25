@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
@@ -108,6 +109,37 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     }
   }
 
+  bool _isNetworkError(Object error) {
+    if (error is DioException) {
+      return error.type == DioExceptionType.connectionError ||
+          error.type == DioExceptionType.connectionTimeout ||
+          error.type == DioExceptionType.receiveTimeout ||
+          error.type == DioExceptionType.sendTimeout ||
+          (error.type == DioExceptionType.unknown &&
+              error.error is SocketException);
+    }
+    return false;
+  }
+
+  void _handleLoadError(Object error, int requestId) {
+    if (requestId != _requestId || !mounted) return;
+
+    setState(() => _isLoadingMore = false);
+
+    final l10n = AppLocalizations.of(context)!;
+    final message = _isNetworkError(error)
+        ? l10n.networkError
+        : l10n.schoolVideosError(
+            error is DioException && (error.message?.isNotEmpty ?? false)
+                ? error.message!
+                : error.toString(),
+          );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   void _onSearchChanged() {
     _searchDebounce?.cancel();
     _searchDebounce = Timer(const Duration(milliseconds: 500), () {
@@ -205,15 +237,8 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
 
       _fetchVideoDetails(newVideos.map((v) => v.id).toList());
     } catch (e) {
-      debugPrint('SchoolVideosPage: failed to load my videos - $e');
-      if (requestId != _requestId) return;
-      setState(() => _isLoadingMore = false);
-      if (mounted) {
-        final l10n = AppLocalizations.of(context)!;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.schoolVideosError('$e'))),
-        );
-      }
+      debugPrint('SchoolVideosPage: failed to load videos - $e');
+      _handleLoadError(e, requestId);
     }
   }
 
@@ -284,11 +309,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       _fetchVideoDetails(newIds);
     } catch (e) {
       debugPrint('SchoolVideosPage: failed to load my videos - $e');
-      if (!mounted || requestId != _requestId) return;
-      final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.schoolVideosError('$e'))),
-      );
+      rethrow;
     }
   }
 
