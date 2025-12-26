@@ -22,11 +22,16 @@ class PlPhoneFormatter {
       return '';
     }
 
+    // Не вмикаємо авто-префікс поки немає мінімум 3 цифр.
+    if (digits.length < 3) {
+      return digits;
+    }
+
     final config = _isUkrainian(digits) ? _ukraineConfig : _polandConfig;
     var localDigits = _stripCountryCode(digits, config);
 
     if (localDigits.isEmpty) {
-      return '';
+      return '+${config.countryCode}';
     }
 
     if (localDigits.length > config.maxLocalDigits) {
@@ -58,9 +63,12 @@ class PlPhoneFormatter {
     return polish.hasMatch(text) || ukrainian.hasMatch(text);
   }
 
-  static bool _isUkrainian(String digits) => digits.startsWith('38');
+  static bool _isUkrainian(String digits) => digits.startsWith('380');
 
   static String _stripCountryCode(String digits, _PhoneFormatConfig config) {
+    if (config.countryCode == '380' && digits.startsWith('380')) {
+      return digits.substring(3);
+    }
     return digits.startsWith(config.countryCode)
         ? digits.substring(config.countryCode.length)
         : digits;

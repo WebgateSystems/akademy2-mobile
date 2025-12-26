@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:io' as io;
 import 'dart:typed_data';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
@@ -191,9 +191,10 @@ class _PreviewImageBodyState extends State<PreviewImageBody> {
       final isLocal = url.startsWith('file://') || url.startsWith('/');
       final isSvg = url.toLowerCase().endsWith('.svg');
 
-      if (isLocal) {
-        final file =
-            url.startsWith('file://') ? File(Uri.parse(url).path) : File(url);
+          if (isLocal) {
+            final file = url.startsWith('file://')
+                ? io.File(Uri.parse(url).path)
+                : io.File(url);
         if (!file.existsSync()) {
           return Image.asset(widget.imagePath, fit: widget.fit);
         }
