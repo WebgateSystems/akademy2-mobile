@@ -241,6 +241,8 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
             controller: _phoneCtrl,
             keyboard: TextInputType.phone,
             errorText: _phoneError,
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) => FocusScope.of(context).unfocus(),
           ),
           SizedBox(height: 20.h),
           CheckboxWidget(

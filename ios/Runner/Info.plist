@@ -30,13 +30,19 @@
 	<string>Allow AKAdemy2.0 to use your camera for QR scanning and capturing media.</string>
 	<key>NSDocumentsUsageDescription</key>
 	<string>Allow AKAdemy2.0 to access documents for viewing PDFs and educational materials.</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Allow Face ID to quickly unlock your AKAdemy2.0 account.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Allow AKAdemy2.0 to record audio when capturing videos.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Allow AKAdemy2.0 to save your certificates and downloads to the photo library.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
+ <key>NSFaceIDUsageDescription</key>
+ <string>Allow Face ID to quickly unlock your AKAdemy2.0 account.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_dartobservatory._tcp</string>
+	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Allow AKAdemy2.0 to discover the debug service on your local network.</string>
+  <key>NSMicrophoneUsageDescription</key>
+  <string>Allow AKAdemy2.0 to record audio when capturing videos.</string>
+  <key>NSPhotoLibraryAddUsageDescription</key>
+  <string>Allow AKAdemy2.0 to save your certificates and downloads to the photo library.</string>
+  <key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow AKAdemy2.0 to access your photo library to pick and upload media.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>

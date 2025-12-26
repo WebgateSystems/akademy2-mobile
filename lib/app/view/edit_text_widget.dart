@@ -20,6 +20,8 @@ class EditTextWidget extends StatelessWidget {
   final TextAlign textAlign;
   final TextStyle? textStyle;
   final EdgeInsetsGeometry? contentPadding;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onSubmitted;
 
   const EditTextWidget({
     super.key,
@@ -40,6 +42,8 @@ class EditTextWidget extends StatelessWidget {
     this.textAlign = TextAlign.start,
     this.textStyle,
     this.contentPadding,
+    this.textInputAction,
+    this.onSubmitted,
   });
 
   @override
@@ -65,6 +69,8 @@ class EditTextWidget extends StatelessWidget {
             readOnly: readOnly,
             onChanged: onChanged,
             onTap: onTap,
+            textInputAction: textInputAction,
+            onSubmitted: onSubmitted,
             maxLength: maxLength,
             maxLines: maxLines ?? 1,
             obscureText: obscureText,

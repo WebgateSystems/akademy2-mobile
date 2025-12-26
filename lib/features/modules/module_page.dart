@@ -173,7 +173,7 @@ Future<void> _refreshModule(
   if (!_moduleRefreshLocks.add(moduleId)) return;
   try {
     await _fetchAndCacheModule(service, isarService, moduleId);
-    ref.invalidate(moduleDataProvider(moduleId));
+    ref.invalidateSelf();
   } catch (e, st) {
     debugPrint('ModulePage: background refresh failed for $moduleId $e\n$st');
   } finally {
@@ -284,23 +284,23 @@ class _ModulePageState extends ConsumerState<ModulePage> {
             },
             children: [
               SizedBox(height: 16.h),
-              Expanded(
-                child: ListView.separated(
-                  itemCount: contents.length,
-                  separatorBuilder: (_, __) => SizedBox(height: 8.h),
-                  itemBuilder: (context, index) {
-                    final content = contents[index];
-                    return _buildContentCard(
-                      context: context,
-                      l10n: l10n,
-                      moduleId: moduleId,
-                      content: content,
-                      onVideoPreview: () => _showVideoPreview(context, content),
-                      onInfographicPreview: () =>
-                          _showInfographicPreview(context, content),
-                    );
-                  },
-                ),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: contents.length,
+                separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                itemBuilder: (context, index) {
+                  final content = contents[index];
+                  return _buildContentCard(
+                    context: context,
+                    l10n: l10n,
+                    moduleId: moduleId,
+                    content: content,
+                    onVideoPreview: () => _showVideoPreview(context, content),
+                    onInfographicPreview: () =>
+                        _showInfographicPreview(context, content),
+                  );
+                },
               ),
             ],
           ),

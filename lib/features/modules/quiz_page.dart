@@ -105,24 +105,24 @@ class _QuizPageState extends State<QuizPage> {
                 style: AppTextStyles.h2(context),
               ),
               SizedBox(height: 16.h),
-              Expanded(
-                child: ListView.separated(
-                  itemCount: question.options.length,
-                  separatorBuilder: (_, __) => SizedBox(height: 8.h),
-                  itemBuilder: (context, index) {
-                    final opt = question.options[index];
-                    final selected =
-                        _selected[question.id]?.contains(opt.id) ?? false;
-                    return _OptionCard(
-                      option: opt,
-                      selected: selected,
-                      onTap: () => _onSelect(question, opt),
-                      multiple: question.isMultiple,
-                    );
-                  },
-                ),
+              ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: question.options.length,
+                separatorBuilder: (_, __) => SizedBox(height: 8.h),
+                itemBuilder: (context, index) {
+                  final opt = question.options[index];
+                  final selected =
+                      _selected[question.id]?.contains(opt.id) ?? false;
+                  return _OptionCard(
+                    option: opt,
+                    selected: selected,
+                    onTap: () => _onSelect(question, opt),
+                    multiple: question.isMultiple,
+                  );
+                },
               ),
-              SizedBox(height: 12.h),
+              Spacer(),
               ActionButtonWidget(
                 onPressed: canProceed ? () => _next() : null,
                 loading: canProceed && false,
