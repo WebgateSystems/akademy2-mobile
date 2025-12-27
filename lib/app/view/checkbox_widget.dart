@@ -28,8 +28,8 @@ class CheckboxWidget extends StatelessWidget {
             value
                 ? 'assets/images/ic_checkbox_checked.png'
                 : 'assets/images/ic_checkbox_unchecked.png',
-            width: 24.w,
-            height: 24.w,
+            width: 24.r,
+            height: 24.r,
           ),
         ),
         SizedBox(width: 8.w),

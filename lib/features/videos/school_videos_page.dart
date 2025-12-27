@@ -664,8 +664,8 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                     hint: l10n.schoolVideosSearchHint,
                     suffixIcon: Image.asset(
                       'assets/images/ic_search.png',
-                      width: 22.w,
-                      height: 22.w,
+                      width: 22.r,
+                      height: 22.r,
                       color: AppColors.contentPlaceholder(context),
                     ),
                   ),
@@ -691,8 +691,8 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
         },
         child: Image.asset(
           'assets/images/ic_add.png',
-          width: 24.w,
-          height: 24.w,
+          width: 24.r,
+          height: 24.r,
           color: AppColors.contentOnAccentPrimary(context),
         ),
       ),
@@ -832,8 +832,8 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                   icon: Image.asset(
                     'assets/images/ic_close.png',
                     color: AppColors.contentPrimary(context),
-                    width: 20.w,
-                    height: 20.w,
+                    width: 20.r,
+                    height: 20.r,
                   ),
                   onPressed: () async {
                     final confirmed = await _confirmDelete();
@@ -853,8 +853,8 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                   icon: Image.asset(
                     'assets/images/ic_cancel.png',
                     color: AppColors.contentError(context),
-                    width: 20.w,
-                    height: 20.w,
+                    width: 20.r,
+                    height: 20.r,
                   ),
                   onPressed: () => _showRejectionDialog(video.rejectionReason),
                 )
@@ -1009,8 +1009,8 @@ class _VideoPreviewState extends State<_VideoPreview> {
     final placeholder = _placeholder(
       Image.asset(
         'assets/images/ic_play_arrow.png',
-        width: 20.w,
-        height: 20.w,
+        width: 20.r,
+        height: 20.r,
       ),
     );
 
@@ -1036,8 +1036,8 @@ class _VideoPreviewState extends State<_VideoPreview> {
                       color: Colors.black.withValues(alpha: 0.15),
                       child: Image.asset(
                         'assets/images/ic_play_arrow.png',
-                        width: 20.w,
-                        height: 20.w,
+                        width: 20.r,
+                        height: 20.r,
                       ),
                     ),
                   ],

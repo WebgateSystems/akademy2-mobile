@@ -148,8 +148,8 @@ class CustomBottomBar extends StatelessWidget {
               children: [
                 Image.asset(
                   item.icon,
-                  width: 22.w,
-                  height: 22.w,
+                  width: 22.r,
+                  height: 22.r,
                   color: selected
                       ? AppColors.contentAccent(context)
                       : AppColors.contentSecondary(context),
@@ -227,8 +227,8 @@ class _SyncBanner extends StatelessWidget {
               children: [
                 Image.asset(icon,
                     color: AppColors.contentPrimary(context),
-                    width: 20.w,
-                    height: 20.w),
+                    width: 20.r,
+                    height: 20.r),
               ],
             ),
           ),

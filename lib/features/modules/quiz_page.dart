@@ -344,16 +344,16 @@ class _SelectionIcon extends StatelessWidget {
         selected
             ? 'assets/images/ic_checkbox_checked.png'
             : 'assets/images/ic_checkbox_unchecked.png',
-        width: 24.w,
-        height: 24.w,
+        width: 24.r,
+        height: 24.r,
       );
     }
     return Image.asset(
       selected
           ? 'assets/images/ic_radiobutton_checked.png'
           : 'assets/images/ic_radiobutton_unchecked.png',
-      width: 24.w,
-      height: 24.w,
+      width: 24.r,
+      height: 24.r,
     );
   }
 }

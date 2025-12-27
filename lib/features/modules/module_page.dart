@@ -344,8 +344,8 @@ class _ModulePageState extends ConsumerState<ModulePage> {
       return IconButton(
         icon: Image.asset(
           'assets/images/ic_download.png',
-          width: 24.w,
-          height: 24.w,
+          width: 24.r,
+          height: 24.r,
           color: AppColors.contentSecondary(context),
         ),
         onPressed: () {
@@ -364,8 +364,8 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     if (moduleDownloaded || state?.status == ModuleDownloadStatus.completed) {
       return Image.asset(
         'assets/images/ic_download_done.png',
-        width: 24.w,
-        height: 24.w,
+        width: 24.r,
+        height: 24.r,
         color: AppColors.contentAccent(context),
       );
     }
@@ -375,8 +375,8 @@ class _ModulePageState extends ConsumerState<ModulePage> {
     return IconButton(
       icon: Image.asset(
         'assets/images/ic_download.png',
-        width: 24.w,
-        height: 24.w,
+        width: 24.r,
+        height: 24.r,
         color: hasError
             ? AppColors.contentError(context)
             : AppColors.contentSecondary(context),

@@ -44,8 +44,8 @@ class VideoContentCard extends StatelessWidget {
             child: Image.asset(
               'assets/images/ic_play_arrow_48.png',
               fit: BoxFit.contain,
-              width: 48.w,
-              height: 48.w,
+              width: 48.r,
+              height: 48.r,
             ),
           ),
         ),

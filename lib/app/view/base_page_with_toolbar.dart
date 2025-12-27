@@ -39,10 +39,11 @@ class BasePageWithToolbar extends StatelessWidget {
         final bodyChildren = spacerIndex == -1
             ? childWidgets
             : childWidgets.sublist(0, spacerIndex);
-        final footerChildren =
-            spacerIndex == -1 ? <Widget>[] : childWidgets.sublist(spacerIndex + 1);
-        final hasFlexChild = bodyChildren
-            .any((w) => w is Expanded || w is Flexible || w is FlexibleSpaceBar);
+        final footerChildren = spacerIndex == -1
+            ? <Widget>[]
+            : childWidgets.sublist(spacerIndex + 1);
+        final hasFlexChild = bodyChildren.any(
+            (w) => w is Expanded || w is Flexible || w is FlexibleSpaceBar);
 
         if (stickChildrenToBottom) {
           return AnimatedContainer(
@@ -73,8 +74,10 @@ class BasePageWithToolbar extends StatelessWidget {
                         ),
                       ),
                     ),
-                  if (title.isNotEmpty) SizedBox(height: 16.h),
-                  if (title.isNotEmpty)
+                  if (title.isNotEmpty) ...[
+                    (showBackButton && !isOneToolbarRow)
+                        ? SizedBox(height: 16.h)
+                        : SizedBox(height: 32.h),
                     Padding(
                       padding: EdgeInsets.only(
                           right: 20.w,
@@ -104,6 +107,7 @@ class BasePageWithToolbar extends StatelessWidget {
                             : null,
                       ),
                     ),
+                  ],
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -154,7 +158,7 @@ class BasePageWithToolbar extends StatelessWidget {
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
             children: [
-              SizedBox(height: 32.h),
+              showBackButton ? SizedBox(height: 32.h) : SizedBox(height: 48.h),
               if (showBackButton)
                 Padding(
                   padding: EdgeInsets.only(top: 16.h),

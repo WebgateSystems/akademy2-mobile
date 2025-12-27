@@ -94,8 +94,8 @@ class WaitApprovalPage extends ConsumerWidget {
             icon: Image.asset(
               'assets/images/ic_close.png',
               color: AppColors.contentOnAccentPrimary(context),
-              width: 20.w,
-              height: 20.w,
+              width: 20.r,
+              height: 20.r,
             ),
             onPressed: () => context.go('/login'),
           ),

@@ -120,7 +120,6 @@ class _AddVideoPageState extends State<AddVideoPage> {
         title: l10n.addVideoPageTitle,
         showBackButton: true,
         stickChildrenToBottom: true,
-        paddingBottom: 20.h,
         children: [
           SizedBox(height: 16.h),
           _PreviewPicker(
@@ -320,8 +319,8 @@ class _PreviewPicker extends StatelessWidget {
                     Theme.of(context).brightness == Brightness.dark
                         ? 'assets/images/ic_upload_dark.png'
                         : 'assets/images/ic_upload.png',
-                    width: 48.w,
-                    height: 48.w,
+                    width: 48.r,
+                    height: 48.r,
                   ),
                 ),
               ),

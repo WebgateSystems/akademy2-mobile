@@ -534,7 +534,7 @@ class _RoundButtonState extends State<RoundButton> {
       return AnimatedOpacity(
         duration: const Duration(milliseconds: 120),
         opacity: _pressed ? widget.pressedImageOpacity : 1.0,
-        child: Image.asset(widget.assetImage!, width: 34.w, height: 24.h),
+        child: Image.asset(widget.assetImage!, width: 34.r, height: 24.r),
       );
     }
 

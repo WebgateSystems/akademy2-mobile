@@ -94,32 +94,42 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final router = ref.watch(routerProvider);
     final settings = ref.watch(settingsProvider);
-    return ScreenUtilInit(
-        designSize: const Size(375, 812),
-        minTextAdapt: false,
-        builder: (context, child) {
-          return MediaQuery.removePadding(
-            context: context,
-            removeTop: true,
-            removeBottom: !Platform.isAndroid,
-            removeLeft: true,
-            removeRight: true,
-            child: MediaQuery.withNoTextScaling(
-              child: MaterialApp.router(
-                debugShowCheckedModeBanner: false,
-                title: 'AKAdemy2.0',
-                theme: AppTheme.light,
-                darkTheme: AppTheme.dark,
-                themeMode: settings.themeMode,
-                locale: settings.locale,
-                routerConfig: router,
-                onGenerateTitle: (context) =>
-                    AppLocalizations.of(context)?.appTitle ?? 'AKAdemy2.0',
-                localizationsDelegates: AppLocalizations.localizationsDelegates,
-                supportedLocales: AppLocalizations.supportedLocales,
+    return LayoutBuilder(builder: (context, constraints) {
+      Size designSize;
+      if (constraints.maxWidth >= 600) {
+        designSize = const Size(768, 1024);
+      } else {
+        designSize = const Size(375, 812);
+      }
+      return ScreenUtilInit(
+          designSize: designSize,
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (context, child) {
+            return MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              removeBottom: !Platform.isAndroid,
+              removeLeft: true,
+              removeRight: true,
+              child: MediaQuery.withNoTextScaling(
+                child: MaterialApp.router(
+                  debugShowCheckedModeBanner: false,
+                  title: 'AKAdemy2.0',
+                  theme: AppTheme.light,
+                  darkTheme: AppTheme.dark,
+                  themeMode: settings.themeMode,
+                  locale: settings.locale,
+                  routerConfig: router,
+                  onGenerateTitle: (context) =>
+                      AppLocalizations.of(context)?.appTitle ?? 'AKAdemy2.0',
+                  localizationsDelegates:
+                      AppLocalizations.localizationsDelegates,
+                  supportedLocales: AppLocalizations.supportedLocales,
+                ),
               ),
-            ),
-          );
-        });
+            );
+          });
+    });
   }
 }
