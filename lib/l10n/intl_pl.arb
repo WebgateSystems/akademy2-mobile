@@ -208,6 +208,31 @@
   "profilePinDialogCancel": "Anuluj",
   "profilePinDialogSave": "Zapisz PIN",
   "profilePinDialogReset": "Zacznij od nowa",
+  "parentalGateTitle": "Poproś rodzica o pomoc",
+  "parentalGateMessage": "Zanim otworzysz link, poproś dorosłego o rozwiązanie krótkiego zadania.",
+  "parentalGateQuestionSum": "Ile to jest {a}+{b}?",
+  "@parentalGateQuestionSum": {
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "int"
+      }
+    }
+  },
+  "parentalGateQuestionDigits": "Wpisz te liczby: {sequence}",
+  "@parentalGateQuestionDigits": {
+    "placeholders": {
+      "sequence": {
+        "type": "String"
+      }
+    }
+  },
+  "parentalGateAnswerHint": "Odpowiedź",
+  "parentalGateError": "Nieprawidłowa odpowiedź. Spróbuj ponownie.",
+  "parentalGateCancel": "Anuluj",
+  "parentalGateConfirm": "Kontynuuj",
   "profileTheme": "Motyw",
   "profileLanguage": "Język",
   "profileThemeLight": "Jasny",

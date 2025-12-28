@@ -208,6 +208,31 @@
   "profilePinDialogCancel": "Cancel",
   "profilePinDialogSave": "Save PIN",
   "profilePinDialogReset": "Start over",
+  "parentalGateTitle": "Ask a parent to help",
+  "parentalGateMessage": "Before opening the link, ask an adult to solve this quick task.",
+  "parentalGateQuestionSum": "How much is {a}+{b}?",
+  "@parentalGateQuestionSum": {
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "int"
+      }
+    }
+  },
+  "parentalGateQuestionDigits": "Type these numbers: {sequence}",
+  "@parentalGateQuestionDigits": {
+    "placeholders": {
+      "sequence": {
+        "type": "String"
+      }
+    }
+  },
+  "parentalGateAnswerHint": "Answer",
+  "parentalGateError": "Incorrect answer. Try again.",
+  "parentalGateCancel": "Cancel",
+  "parentalGateConfirm": "Continue",
   "profileTheme": "Theme",
   "profileLanguage": "Language",
   "profileThemeLight": "Light",

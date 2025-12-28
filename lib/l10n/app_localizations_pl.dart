@@ -433,6 +433,35 @@ class AppLocalizationsPl extends AppLocalizations {
   String get profilePinDialogReset => 'Zacznij od nowa';
 
   @override
+  String get parentalGateTitle => 'Poproś rodzica o pomoc';
+
+  @override
+  String get parentalGateMessage =>
+      'Zanim otworzysz link, poproś dorosłego o rozwiązanie krótkiego zadania.';
+
+  @override
+  String parentalGateQuestionSum(int a, int b) {
+    return 'Ile to jest $a+$b?';
+  }
+
+  @override
+  String parentalGateQuestionDigits(String sequence) {
+    return 'Wpisz te liczby: $sequence';
+  }
+
+  @override
+  String get parentalGateAnswerHint => 'Odpowiedź';
+
+  @override
+  String get parentalGateError => 'Nieprawidłowa odpowiedź. Spróbuj ponownie.';
+
+  @override
+  String get parentalGateCancel => 'Anuluj';
+
+  @override
+  String get parentalGateConfirm => 'Kontynuuj';
+
+  @override
   String get profileTheme => 'Motyw';
 
   @override

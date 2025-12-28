@@ -856,6 +856,54 @@ abstract class AppLocalizations {
   /// **'Start over'**
   String get profilePinDialogReset;
 
+  /// No description provided for @parentalGateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask a parent to help'**
+  String get parentalGateTitle;
+
+  /// No description provided for @parentalGateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Before opening the link, ask an adult to solve this quick task.'**
+  String get parentalGateMessage;
+
+  /// No description provided for @parentalGateQuestionSum.
+  ///
+  /// In en, this message translates to:
+  /// **'How much is {a}+{b}?'**
+  String parentalGateQuestionSum(int a, int b);
+
+  /// No description provided for @parentalGateQuestionDigits.
+  ///
+  /// In en, this message translates to:
+  /// **'Type these numbers: {sequence}'**
+  String parentalGateQuestionDigits(String sequence);
+
+  /// No description provided for @parentalGateAnswerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer'**
+  String get parentalGateAnswerHint;
+
+  /// No description provided for @parentalGateError.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect answer. Try again.'**
+  String get parentalGateError;
+
+  /// No description provided for @parentalGateCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get parentalGateCancel;
+
+  /// No description provided for @parentalGateConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get parentalGateConfirm;
+
   /// No description provided for @profileTheme.
   ///
   /// In en, this message translates to:

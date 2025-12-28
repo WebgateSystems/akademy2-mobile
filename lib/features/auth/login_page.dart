@@ -4,6 +4,7 @@ import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/core/network/api.dart';
 import 'package:academy_2_app/core/utils/phone_formatter.dart';
+import 'package:academy_2_app/features/shared/parental_gate_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -89,6 +90,17 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     });
   }
 
+  void _openPrivacyPolicy() async {
+    final approved = await ParentalGateDialog.show(context);
+    if (mounted && approved) {
+      final locale = Localizations.localeOf(context).languageCode;
+      final url = locale.toLowerCase().startsWith('pl')
+          ? Api.privacyPolicyPlUrl
+          : Api.privacyPolicyEnUrl;
+      launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -137,14 +149,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               Spacer(),
               Center(
                 child: ActionTextButtonWidget(
-                  onPressed: () {
-                    final locale = Localizations.localeOf(context).languageCode;
-                    final url = locale.toLowerCase().startsWith('pl')
-                        ? Api.privacyPolicyPlUrl
-                        : Api.privacyPolicyEnUrl;
-                    launchUrl(Uri.parse(url),
-                        mode: LaunchMode.externalApplication);
-                  },
+                  onPressed: _openPrivacyPolicy,
                   text: l10n.privacyPolicy,
                   fullWidth: false,
                 ),

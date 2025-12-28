@@ -203,11 +203,36 @@
       "Введіть новий 4-значний код PIN і підтвердіть його, щоб захистити акаунт.",
   "profilePinDialogStepNewPin": "Введіть новий PIN",
   "profilePinDialogStepConfirmPin": "Підтвердіть PIN",
-  "profilePinDialogReady": "PIN готовий - натисніть Зберегти, щоб продовжити.",
+"profilePinDialogReady": "PIN готовий - натисніть Зберегти, щоб продовжити.",
   "profilePinDialogMismatch": "PIN не співпадають. Спробуйте ще раз.",
   "profilePinDialogCancel": "Скасувати",
   "profilePinDialogSave": "Зберегти PIN",
   "profilePinDialogReset": "Почати заново",
+  "parentalGateTitle": "Попросіть батьків допомогти",
+  "parentalGateMessage": "Перш ніж відкрити посилання, попросіть дорослого відповісти на запитання.",
+  "parentalGateQuestionSum": "Скільки буде {a}+{b}?",
+  "@parentalGateQuestionSum": {
+    "placeholders": {
+      "a": {
+        "type": "int"
+      },
+      "b": {
+        "type": "int"
+      }
+    }
+  },
+  "parentalGateQuestionDigits": "Введіть числа: {sequence}",
+  "@parentalGateQuestionDigits": {
+    "placeholders": {
+      "sequence": {
+        "type": "String"
+      }
+    }
+  },
+  "parentalGateAnswerHint": "Відповідь",
+  "parentalGateError": "Неправильна відповідь. Спробуйте ще раз.",
+  "parentalGateCancel": "Скасувати",
+  "parentalGateConfirm": "Продовжити",
   "profileTheme": "Тема",
   "profileLanguage": "Мова",
   "profileThemeLight": "Світла",

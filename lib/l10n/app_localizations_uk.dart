@@ -432,6 +432,35 @@ class AppLocalizationsUk extends AppLocalizations {
   String get profilePinDialogReset => 'Почати заново';
 
   @override
+  String get parentalGateTitle => 'Попросіть батьків допомогти';
+
+  @override
+  String get parentalGateMessage =>
+      'Перш ніж відкрити посилання, попросіть дорослого відповісти на запитання.';
+
+  @override
+  String parentalGateQuestionSum(int a, int b) {
+    return 'Скільки буде $a+$b?';
+  }
+
+  @override
+  String parentalGateQuestionDigits(String sequence) {
+    return 'Введіть числа: $sequence';
+  }
+
+  @override
+  String get parentalGateAnswerHint => 'Відповідь';
+
+  @override
+  String get parentalGateError => 'Неправильна відповідь. Спробуйте ще раз.';
+
+  @override
+  String get parentalGateCancel => 'Скасувати';
+
+  @override
+  String get parentalGateConfirm => 'Продовжити';
+
+  @override
   String get profileTheme => 'Тема';
 
   @override

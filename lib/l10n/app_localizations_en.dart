@@ -429,6 +429,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profilePinDialogReset => 'Start over';
 
   @override
+  String get parentalGateTitle => 'Ask a parent to help';
+
+  @override
+  String get parentalGateMessage =>
+      'Before opening the link, ask an adult to solve this quick task.';
+
+  @override
+  String parentalGateQuestionSum(int a, int b) {
+    return 'How much is $a+$b?';
+  }
+
+  @override
+  String parentalGateQuestionDigits(String sequence) {
+    return 'Type these numbers: $sequence';
+  }
+
+  @override
+  String get parentalGateAnswerHint => 'Answer';
+
+  @override
+  String get parentalGateError => 'Incorrect answer. Try again.';
+
+  @override
+  String get parentalGateCancel => 'Cancel';
+
+  @override
+  String get parentalGateConfirm => 'Continue';
+
+  @override
   String get profileTheme => 'Theme';
 
   @override
