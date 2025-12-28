@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
-import 'package:academy_2_app/core/utils/orientation_utils.dart';
 import 'package:academy_2_app/features/modules/models/subtitle_entry.dart';
 import 'package:academy_2_app/features/modules/utils/subtitle_decoder.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 import 'package:video_player/video_player.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class NetworkVideoPreviewDialog extends StatefulWidget {
   const NetworkVideoPreviewDialog({
@@ -34,11 +34,12 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
   String _currentSubtitle = '';
   bool _showControls = true;
   String? _errorMessage;
+  bool _wakelockEnabled = false;
 
   @override
   void initState() {
     super.initState();
-    OrientationUtils.allowVideoOrientations();
+    // OrientationUtils.allowVideoOrientations();
     _init();
   }
 
@@ -81,6 +82,7 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
 
       controller.addListener(_onVideoProgress);
       controller.play();
+      _syncWakelock(true);
 
       if (!mounted) {
         controller.dispose();
@@ -98,6 +100,7 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
       debugPrint('Video init error: $e');
       debugPrint('Stack trace: $st');
       controller?.dispose();
+      _syncWakelock(false);
       if (!mounted) return;
       setState(() {
         _error = true;
@@ -224,9 +227,14 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
   }
 
   void _onVideoProgress() {
-    if (_controller == null || _subtitles.isEmpty) return;
+    final controller = _controller;
+    if (controller == null) return;
 
-    final position = _controller!.value.position;
+    _syncWakelock(controller.value.isPlaying);
+
+    if (_subtitles.isEmpty) return;
+
+    final position = controller.value.position;
     String newSubtitle = '';
 
     for (final entry in _subtitles) {
@@ -260,8 +268,19 @@ class _NetworkVideoPreviewDialogState extends State<NetworkVideoPreviewDialog> {
   void dispose() {
     _controller?.removeListener(_onVideoProgress);
     _controller?.dispose();
-    OrientationUtils.lockPortrait();
+    _syncWakelock(false);
+    // OrientationUtils.lockPortrait();
     super.dispose();
+  }
+
+  void _syncWakelock(bool isPlaying) {
+    if (_wakelockEnabled == isPlaying) return;
+    _wakelockEnabled = isPlaying;
+    if (isPlaying) {
+      WakelockPlus.enable();
+    } else {
+      WakelockPlus.disable();
+    }
   }
 
   @override

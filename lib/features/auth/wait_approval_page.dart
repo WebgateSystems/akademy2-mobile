@@ -116,6 +116,7 @@ class CancelEnrollmentDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.all(20.w),
       child: Container(
+        constraints: BoxConstraints(maxWidth: 400),
         padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
           color: AppColors.surfacePrimary(context),
@@ -142,7 +143,7 @@ class CancelEnrollmentDialog extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: ActionOutlinedButtonWidget(
-                    height: 48.h,
+                    height: 48.r,
                     onPressed: () => Navigator.pop(context, false),
                     text: l10n.waitApprovalCancelDialogCancel,
                   ),
@@ -151,7 +152,7 @@ class CancelEnrollmentDialog extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: ActionButtonWidget(
-                    height: 48.h,
+                    height: 48.r,
                     onPressed: () => Navigator.pop(context, true),
                     text: l10n.waitApprovalCancelDialogConfirm,
                   ),

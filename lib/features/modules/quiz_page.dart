@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
@@ -53,6 +54,14 @@ class _QuizPageState extends State<QuizPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final viewPadding = MediaQueryData.fromView(View.of(context)).padding;
+    final leftInset = viewPadding.left == viewPadding.right
+        ? viewPadding.left
+        : (viewPadding.left > viewPadding.right ? viewPadding.left : 0.0);
+    final rightInset = viewPadding.left == viewPadding.right
+        ? viewPadding.right
+        : (viewPadding.right > viewPadding.left ? viewPadding.right : 0.0);
+
     return FutureBuilder<ContentEntity?>(
       future: _quizFuture,
       builder: (context, snap) {
@@ -85,52 +94,115 @@ class _QuizPageState extends State<QuizPage> {
         final progress = '${_current + 1}/${_questions.length}';
         final canProceed = (_selected[question.id]?.isNotEmpty ?? false);
 
+        final isTablet = MediaQuery.sizeOf(context).width > 800;
+
+        Widget options;
+        if (isTablet) {
+          options = Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 700),
+              child: LayoutBuilder(builder: (context, box) {
+                const maxCardExtent = 320.0;
+                final spacing = 12.r;
+                var columns =
+                    ((box.maxWidth + spacing) / (maxCardExtent + spacing))
+                        .floor();
+                if (columns < 2) columns = 2;
+                final itemWidth =
+                    (box.maxWidth - spacing * (columns - 1)) / columns;
+
+                final textStyle = AppTextStyles.b2(context).copyWith(
+                  color: AppColors.contentPrimary(context),
+                );
+                final availableTextWidth = max(
+                  20.0,
+                  itemWidth - (12.w * 2) - 24.r - 12.w,
+                );
+                double minHeight = 0;
+                for (final opt in question.options) {
+                  final painter = TextPainter(
+                    text: TextSpan(text: opt.text, style: textStyle),
+                    textDirection: Directionality.of(context),
+                    maxLines: null,
+                  )..layout(maxWidth: availableTextWidth);
+                  minHeight = max(minHeight, painter.height + 24.h);
+                }
+                minHeight = max(minHeight, 48.h);
+
+                return Wrap(
+                  spacing: spacing,
+                  runSpacing: spacing,
+                  children: question.options.map((opt) {
+                    final selected =
+                        _selected[question.id]?.contains(opt.id) ?? false;
+                    return SizedBox(
+                      width: itemWidth,
+                      child: _OptionCard(
+                        option: opt,
+                        selected: selected,
+                        onTap: () => _onSelect(question, opt),
+                        multiple: question.isMultiple,
+                        minHeight: minHeight,
+                      ),
+                    );
+                  }).toList(),
+                );
+              }),
+            ),
+          );
+        } else {
+          options = ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: question.options.length,
+            separatorBuilder: (_, __) => SizedBox(height: 8.h),
+            itemBuilder: (context, index) {
+              final opt = question.options[index];
+              final selected =
+                  _selected[question.id]?.contains(opt.id) ?? false;
+              return _OptionCard(
+                option: opt,
+                selected: selected,
+                onTap: () => _onSelect(question, opt),
+                multiple: question.isMultiple,
+              );
+            },
+          );
+        }
+
         return _buildScaffold(
           context,
-          BasePageWithToolbar(
-            title: content.title,
-            rightIcon: Text(
-              progress,
-              style: AppTextStyles.b1(context)
-                  .copyWith(color: AppColors.contentSecondary(context)),
+          Padding(
+            padding: EdgeInsets.only(left: leftInset, right: rightInset),
+            child: BasePageWithToolbar(
+              title: content.title,
+              rightIcon: Text(
+                progress,
+                style: AppTextStyles.b1(context)
+                    .copyWith(color: AppColors.contentSecondary(context)),
+              ),
+              stickChildrenToBottom: true,
+              isOneToolbarRow: true,
+              showBackButton: true,
+              children: [
+                SizedBox(height: 16.h),
+                Text(
+                  question.text,
+                  style: AppTextStyles.h2(context),
+                ),
+                SizedBox(height: 16.h),
+                options,
+                Spacer(),
+                ActionButtonWidget(
+                  onPressed: canProceed ? () => _next() : null,
+                  loading: canProceed && false,
+                  text: _current == _questions.length - 1
+                      ? l10n.quizTitle
+                      : l10n.next,
+                ),
+              ],
             ),
-            stickChildrenToBottom: true,
-            isOneToolbarRow: true,
-            showBackButton: true,
-            paddingBottom: 57.h,
-            children: [
-              SizedBox(height: 16.h),
-              Text(
-                question.text,
-                style: AppTextStyles.h2(context),
-              ),
-              SizedBox(height: 16.h),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: question.options.length,
-                separatorBuilder: (_, __) => SizedBox(height: 8.h),
-                itemBuilder: (context, index) {
-                  final opt = question.options[index];
-                  final selected =
-                      _selected[question.id]?.contains(opt.id) ?? false;
-                  return _OptionCard(
-                    option: opt,
-                    selected: selected,
-                    onTap: () => _onSelect(question, opt),
-                    multiple: question.isMultiple,
-                  );
-                },
-              ),
-              Spacer(),
-              ActionButtonWidget(
-                onPressed: canProceed ? () => _next() : null,
-                loading: canProceed && false,
-                text: _current == _questions.length - 1
-                    ? l10n.quizTitle
-                    : l10n.next,
-              ),
-            ],
           ),
         );
       },
@@ -286,16 +358,18 @@ class _OptionCard extends StatelessWidget {
     required this.selected,
     required this.onTap,
     required this.multiple,
+    this.minHeight,
   });
 
   final _QuizOption option;
   final bool selected;
   final VoidCallback onTap;
   final bool multiple;
+  final double? minHeight;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    final card = Card(
       elevation: 0,
       color: AppColors.surfacePrimary(context),
       shape: RoundedRectangleBorder(
@@ -309,25 +383,30 @@ class _OptionCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12.r),
         onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  option.text,
-                  style: AppTextStyles.b2(context).copyWith(
-                    color: AppColors.contentPrimary(context),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: minHeight ?? 0),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    option.text,
+                    style: AppTextStyles.b2(context).copyWith(
+                      color: AppColors.contentPrimary(context),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(width: 12.w),
-              _SelectionIcon(selected: selected, multiple: multiple),
-            ],
+                SizedBox(width: 12.w),
+                _SelectionIcon(selected: selected, multiple: multiple),
+              ],
+            ),
           ),
         ),
       ),
     );
+
+    return card;
   }
 }
 

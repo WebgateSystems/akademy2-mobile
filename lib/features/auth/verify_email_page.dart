@@ -16,23 +16,29 @@ class VerifyEmailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      body: BasePageWithToolbar(
-        title: l10n.verifyYourAccount,
-        subtitle: l10n.verifyEmailMessage(args.email),
-        showBackButton: true,
-        children: [
-          Text(
-            l10n.checkSpam,
-            style: AppTextStyles.b1(context).copyWith(
-              color: AppColors.contentSecondary(context),
-            ),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: BasePageWithToolbar(
+            title: l10n.verifyYourAccount,
+            subtitle: l10n.verifyEmailMessage(args.email),
+            showBackButton: true,
+            children: [
+              Text(
+                l10n.checkSpam,
+                style: AppTextStyles.b1(context).copyWith(
+                  color: AppColors.contentSecondary(context),
+                ),
+              ),
+              SizedBox(height: 32.h),
+              ActionButtonWidget(
+                onPressed: () =>
+                    context.push('/create-pin', extra: args.flowId),
+                text: l10n.next,
+              ),
+            ],
           ),
-          SizedBox(height: 32.h),
-          ActionButtonWidget(
-            onPressed: () => context.push('/create-pin', extra: args.flowId),
-            text: l10n.next,
-          ),
-        ],
+        ),
       ),
     );
   }

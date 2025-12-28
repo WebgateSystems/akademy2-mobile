@@ -261,48 +261,104 @@ class _ModulePageState extends ConsumerState<ModulePage> {
 
         final downloadState = downloadMap[moduleId];
 
+        bool isTablet = MediaQuery.sizeOf(context).width > 800;
+        final viewPadding = MediaQueryData.fromView(View.of(context)).padding;
+        final leftInset = viewPadding.left == viewPadding.right
+            ? viewPadding.left
+            : (viewPadding.left > viewPadding.right ? viewPadding.left : 0.0);
+        final rightInset = viewPadding.left == viewPadding.right
+            ? viewPadding.right
+            : (viewPadding.right > viewPadding.left ? viewPadding.right : 0.0);
+
+        Widget contentList;
+        if (isTablet) {
+          contentList = Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: LayoutBuilder(builder: (context, box) {
+                final spacing = 12.r;
+                final maxWidth = box.maxWidth;
+                const maxCardExtent = 220.0;
+                var columns =
+                    ((maxWidth + spacing) / (maxCardExtent + spacing)).floor();
+                if (columns < 2) columns = 2;
+                final itemWidth =
+                    (maxWidth - spacing * (columns - 1)) / columns;
+
+                return Wrap(
+                  spacing: spacing,
+                  runSpacing: spacing,
+                  children: contents.map((content) {
+                    final isQuiz = content.type == 'quiz';
+                    final cardWidth = isQuiz ? maxWidth : itemWidth;
+                    return SizedBox(
+                      width: cardWidth,
+                      child: _buildContentCard(
+                        context: context,
+                        l10n: l10n,
+                        moduleId: moduleId,
+                        content: content,
+                        onVideoPreview: () =>
+                            _showVideoPreview(context, content),
+                        onInfographicPreview: () =>
+                            _showInfographicPreview(context, content),
+                      ),
+                    );
+                  }).toList(),
+                );
+              }),
+            ),
+          );
+        } else {
+          contentList = ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: contents.length,
+            separatorBuilder: (_, __) => SizedBox(height: 8.h),
+            itemBuilder: (context, index) {
+              final content = contents[index];
+              return _buildContentCard(
+                context: context,
+                l10n: l10n,
+                moduleId: moduleId,
+                content: content,
+                onVideoPreview: () => _showVideoPreview(context, content),
+                onInfographicPreview: () =>
+                    _showInfographicPreview(context, content),
+              );
+            },
+          );
+        }
+
         return _buildScaffold(
           context,
-          BasePageWithToolbar(
-            title: title,
-            rightIcon: _buildDownloadAction(
-              context: context,
-              moduleId: moduleId,
-              contents: contents,
-              state: downloadState,
-            ),
-            stickChildrenToBottom: true,
-            isOneToolbarRow: true,
-            paddingBottom: 20.w,
-            onBack: () async {
-              final router = GoRouter.of(context);
-              if (router.canPop()) {
-                router.pop();
-              } else {
-                router.go('/home');
-              }
-            },
-            children: [
-              SizedBox(height: 16.h),
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: contents.length,
-                separatorBuilder: (_, __) => SizedBox(height: 8.h),
-                itemBuilder: (context, index) {
-                  final content = contents[index];
-                  return _buildContentCard(
-                    context: context,
-                    l10n: l10n,
-                    moduleId: moduleId,
-                    content: content,
-                    onVideoPreview: () => _showVideoPreview(context, content),
-                    onInfographicPreview: () =>
-                        _showInfographicPreview(context, content),
-                  );
-                },
+          Padding(
+            padding: EdgeInsets.only(left: leftInset, right: rightInset),
+            child: BasePageWithToolbar(
+              title: title,
+              rightIcon: _buildDownloadAction(
+                context: context,
+                moduleId: moduleId,
+                contents: contents,
+                state: downloadState,
               ),
-            ],
+              stickChildrenToBottom: true,
+              isOneToolbarRow: true,
+              paddingBottom: 20.w,
+              onBack: () async {
+                final router = GoRouter.of(context);
+                if (router.canPop()) {
+                  router.pop();
+                } else {
+                  router.go('/home');
+                }
+              },
+              children: [
+                SizedBox(height: 16.h),
+                contentList,
+              ],
+            ),
           ),
         );
       },

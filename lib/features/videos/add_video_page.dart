@@ -114,56 +114,152 @@ class _AddVideoPageState extends State<AddVideoPage> {
         _subjectId != null &&
         _titleCtrl.text.trim().isNotEmpty;
     final l10n = AppLocalizations.of(context)!;
+    bool isTablet = MediaQuery.sizeOf(context).width > 800;
+    final viewPadding = MediaQueryData.fromView(View.of(context)).padding;
+    final leftInset = viewPadding.left == viewPadding.right
+        ? viewPadding.left
+        : (viewPadding.left > viewPadding.right ? viewPadding.left : 0.0);
+    final rightInset = viewPadding.left == viewPadding.right
+        ? viewPadding.right
+        : (viewPadding.right > viewPadding.left ? viewPadding.right : 0.0);
 
     return Scaffold(
-      body: BasePageWithToolbar(
-        title: l10n.addVideoPageTitle,
-        showBackButton: true,
-        stickChildrenToBottom: true,
-        children: [
-          SizedBox(height: 16.h),
-          _PreviewPicker(
-            controller: _controller,
-            onPick: _pickFile,
-            onTogglePlayback: () {
-              setState(() {
-                if (_controller?.value.isPlaying ?? false) {
-                  _controller?.pause();
-                } else {
-                  _controller?.play();
-                }
-              });
-            },
-          ),
-          SizedBox(height: 16.h),
-          _dropdown<String>(
-            label: l10n.addVideoPageTopicLabel,
-            value: _subjectId,
-            items: _subjects
-                .map((s) => DropdownMenuItem(value: s.id, child: Text(s.title)))
-                .toList(),
-            onChanged: (v) => setState(() => _subjectId = v),
-          ),
-          SizedBox(height: 8.h),
-          EditTextWidget(
-            controller: _titleCtrl,
-            label: l10n.addVideoPageTitleFieldLabel,
-            onChanged: (_) => setState(() {}),
-          ),
-          SizedBox(height: 8.h),
-          EditTextWidget(
-            controller: _descCtrl,
-            maxLines: 3,
-            label: l10n.addVideoPageDescriptionFieldLabel,
-          ),
-          Spacer(),
-          ActionButtonWidget(
-            onPressed: canSubmit && !_saving ? _submit : null,
-            loading: _saving,
-            text: l10n.addVideoPageSubmitButton,
-          ),
-        ],
+      body: Padding(
+        padding: EdgeInsets.only(left: leftInset, right: rightInset),
+        child: BasePageWithToolbar(
+          title: l10n.addVideoPageTitle,
+          showBackButton: true,
+          stickChildrenToBottom: true,
+          isOneToolbarRow: isTablet,
+          children: [
+            Expanded(
+              child: isTablet
+                  ? _buildTabletsLayout(l10n, canSubmit)
+                  : _buildPortraitPhoneLayout(l10n, canSubmit),
+            )
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildPortraitPhoneLayout(AppLocalizations l10n, bool canSubmit) {
+    return Column(
+      children: [
+        SizedBox(height: 16.h),
+        _PreviewPicker(
+          isTablet: false,
+          controller: _controller,
+          onPick: _pickFile,
+          onTogglePlayback: () {
+            setState(() {
+              if (_controller?.value.isPlaying ?? false) {
+                _controller?.pause();
+              } else {
+                _controller?.play();
+              }
+            });
+          },
+        ),
+        SizedBox(height: 16.h),
+        _dropdown<String>(
+          label: l10n.addVideoPageTopicLabel,
+          value: _subjectId,
+          items: _subjects
+              .map((s) => DropdownMenuItem(value: s.id, child: Text(s.title)))
+              .toList(),
+          onChanged: (v) => setState(() => _subjectId = v),
+        ),
+        SizedBox(height: 8.h),
+        EditTextWidget(
+          controller: _titleCtrl,
+          label: l10n.addVideoPageTitleFieldLabel,
+          onChanged: (_) => setState(() {}),
+        ),
+        SizedBox(height: 8.h),
+        EditTextWidget(
+          controller: _descCtrl,
+          maxLines: 3,
+          label: l10n.addVideoPageDescriptionFieldLabel,
+        ),
+        Spacer(),
+        ActionButtonWidget(
+          onPressed: canSubmit && !_saving ? _submit : null,
+          loading: _saving,
+          text: l10n.addVideoPageSubmitButton,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTabletsLayout(AppLocalizations l10n, bool canSubmit) {
+    return Row(
+      children: [
+        Flexible(
+          child: Column(
+            children: [
+              SizedBox(height: 16.h),
+              _PreviewPicker(
+                isTablet: true,
+                controller: _controller,
+                onPick: _pickFile,
+                onTogglePlayback: () {
+                  setState(() {
+                    if (_controller?.value.isPlaying ?? false) {
+                      _controller?.pause();
+                    } else {
+                      _controller?.play();
+                    }
+                  });
+                },
+              ),
+            ],
+          ),
+        ),
+        SizedBox(width: 16.w),
+        Flexible(
+          child: LayoutBuilder(builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: EdgeInsets.only(bottom: 16.h),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: Column(
+                  children: [
+                    SizedBox(height: 16.h),
+                    _dropdown<String>(
+                      label: l10n.addVideoPageTopicLabel,
+                      value: _subjectId,
+                      items: _subjects
+                          .map((s) => DropdownMenuItem(
+                              value: s.id, child: Text(s.title)))
+                          .toList(),
+                      onChanged: (v) => setState(() => _subjectId = v),
+                    ),
+                    SizedBox(height: 8.h),
+                    EditTextWidget(
+                      controller: _titleCtrl,
+                      label: l10n.addVideoPageTitleFieldLabel,
+                      onChanged: (_) => setState(() {}),
+                    ),
+                    SizedBox(height: 8.h),
+                    EditTextWidget(
+                      controller: _descCtrl,
+                      maxLines: 3,
+                      label: l10n.addVideoPageDescriptionFieldLabel,
+                    ),
+                    SizedBox(height: 8.h),
+                    ActionButtonWidget(
+                      onPressed: canSubmit && !_saving ? _submit : null,
+                      loading: _saving,
+                      text: l10n.addVideoPageSubmitButton,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }),
+        ),
+      ],
     );
   }
 
@@ -270,83 +366,101 @@ class _PreviewPicker extends StatelessWidget {
     required this.controller,
     required this.onPick,
     required this.onTogglePlayback,
+    required this.isTablet,
   });
 
   final VideoPlayerController? controller;
   final VoidCallback onPick;
   final VoidCallback onTogglePlayback;
+  final bool isTablet;
 
   @override
   Widget build(BuildContext context) {
     final hasVideo = controller != null && controller!.value.isInitialized;
     return GestureDetector(
       onTap: onPick,
-      child: Container(
-        height: 192.h,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.r),
-          image: const DecorationImage(
-            image: AssetImage('assets/images/placeholder.png'),
-            fit: BoxFit.cover,
+      child: LayoutBuilder(builder: (context, constraints) {
+        final width = constraints.maxWidth;
+        final media = MediaQuery.of(context);
+        final safeHeight = media.size.height - media.padding.vertical;
+        final hasBoundedHeight =
+            constraints.hasBoundedHeight && constraints.maxHeight.isFinite;
+        final maxHeight = hasBoundedHeight ? constraints.maxHeight : safeHeight;
+
+        final aspectRatio = hasVideo ? controller!.value.aspectRatio : (16 / 9);
+        double calculatedHeight = width / aspectRatio;
+
+        if (calculatedHeight > maxHeight && maxHeight > 0) {
+          calculatedHeight = maxHeight;
+        }
+
+        return Container(
+          height: calculatedHeight,
+          width: width,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.r),
+            image: const DecorationImage(
+              image: AssetImage('assets/images/placeholder.png'),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: Stack(
-          children: [
-            if (hasVideo)
-              Positioned.fill(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.r),
-                  child: GestureDetector(
-                    onTap: onTogglePlayback,
-                    child: FittedBox(
-                      fit: BoxFit.cover,
-                      child: SizedBox(
-                        width: controller!.value.size.width,
-                        height: controller!.value.size.height,
-                        child: VideoPlayer(controller!),
+          child: Stack(
+            children: [
+              if (hasVideo)
+                Positioned.fill(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16.r),
+                    child: GestureDetector(
+                      onTap: onTogglePlayback,
+                      child: FittedBox(
+                        fit: BoxFit.cover,
+                        child: SizedBox(
+                          width: controller!.value.size.width,
+                          height: controller!.value.size.height,
+                          child: VideoPlayer(controller!),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              )
-            else
-              Center(
-                child: CircleAvatar(
-                  radius: 48.w / 2,
-                  backgroundColor: AppColors.surfaceIcon(context),
-                  child: Image.asset(
-                    Theme.of(context).brightness == Brightness.dark
-                        ? 'assets/images/ic_upload_dark.png'
-                        : 'assets/images/ic_upload.png',
-                    width: 48.r,
-                    height: 48.r,
+                )
+              else
+                Center(
+                  child: CircleAvatar(
+                    radius: 48.w / 2,
+                    backgroundColor: AppColors.surfaceIcon(context),
+                    child: Image.asset(
+                      Theme.of(context).brightness == Brightness.dark
+                          ? 'assets/images/ic_upload_dark.png'
+                          : 'assets/images/ic_upload.png',
+                      width: 48.r,
+                      height: 48.r,
+                    ),
                   ),
                 ),
-              ),
-            if (hasVideo)
-              Positioned.fill(
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    splashColor: Colors.black26,
-                    borderRadius: BorderRadius.circular(16.r),
-                    onTap: onTogglePlayback,
+              if (hasVideo)
+                Positioned.fill(
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      splashColor: Colors.black26,
+                      borderRadius: BorderRadius.circular(16.r),
+                      onTap: onTogglePlayback,
+                    ),
                   ),
                 ),
-              ),
-            if (hasVideo)
-              Positioned(
-                bottom: 80.h,
-                right: MediaQuery.of(context).size.width / 2 - 40.w,
-                child: _PlayPauseButton(
-                  isPlaying: controller!.value.isPlaying,
-                  onPressed: onTogglePlayback,
+              if (hasVideo)
+                Positioned(
+                  bottom: 80.h,
+                  right: MediaQuery.of(context).size.width / 2 - 40.w,
+                  child: _PlayPauseButton(
+                    isPlaying: controller!.value.isPlaying,
+                    onPressed: onTogglePlayback,
+                  ),
                 ),
-              ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

@@ -221,47 +221,53 @@ class PinScaffold extends StatelessWidget {
     final hasError =
         mismatch || (errorMessage != null && errorMessage!.isNotEmpty);
     return Scaffold(
-      body: BasePageWithToolbar(
-        title: title,
-        subtitle: subtitle,
-        showBackButton: showBackButton,
-        children: [
-          SizedBox(height: 32.h),
-          DotsWidget(pin: pin),
-          if (hasError) SizedBox(height: 8.h),
-          if (hasError)
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Text(
-                    errorMessage ?? l10n.pinMismatchInline,
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.b2(context).copyWith(
-                      color: AppColors.contentError(context),
+      body: Center(
+        heightFactor: 1,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: BasePageWithToolbar(
+            title: title,
+            subtitle: subtitle,
+            showBackButton: showBackButton,
+            children: [
+              SizedBox(height: 32.h),
+              DotsWidget(pin: pin),
+              if (hasError) SizedBox(height: 8.h),
+              if (hasError)
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        errorMessage ?? l10n.pinMismatchInline,
+                        textAlign: TextAlign.center,
+                        style: AppTextStyles.b2(context).copyWith(
+                          color: AppColors.contentError(context),
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          SizedBox(height: 72.h),
-          if (showProgress) Center(child: const CircularProgressWidget()),
-          if (!showProgress)
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _PinKeypad(
-                  onKey: onKey,
-                  showBiometricKey: showBiometricKey,
-                  onBiometricTap: onBiometricTap,
+              SizedBox(height: 72.h),
+              if (showProgress) Center(child: const CircularProgressWidget()),
+              if (!showProgress)
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _PinKeypad(
+                      onKey: onKey,
+                      showBiometricKey: showBiometricKey,
+                      onBiometricTap: onBiometricTap,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          if (footer != null) SizedBox(height: 12.h),
-          if (footer != null) footer!,
-        ],
+              if (footer != null) SizedBox(height: 12.h),
+              if (footer != null) footer!,
+            ],
+          ),
+        ),
       ),
     );
   }

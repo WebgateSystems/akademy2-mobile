@@ -96,56 +96,62 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final isLoading = authState.isLoading;
 
     return Scaffold(
-      body: BasePageWithToolbar(
-        stickChildrenToBottom: true,
-        showBackButton: false,
-        title: l10n.loginTitle,
-        children: [
-          SizedBox(height: 16.h),
-          EditTextWidget(
-            controller: _phoneCtl,
-            hint: l10n.phoneHintField,
-            label: l10n.phoneField,
-            keyboard: TextInputType.phone,
-            errorText: _phoneError,
-          ),
-          SizedBox(height: 16.h),
-          ActionButtonWidget(
-            onPressed: _goToPin,
-            text: l10n.loginTitle,
-            loading: isLoading,
-          ),
-          SizedBox(height: 16.h),
-          Center(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(l10n.loginCreateAccountPrompt),
-                SizedBox(width: 6.w),
-                ActionTextButtonWidget(
-                  onPressed: () => context.go('/create-account'),
-                  text: l10n.loginCreateAccountCta,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: BasePageWithToolbar(
+            stickChildrenToBottom: true,
+            showBackButton: false,
+            title: l10n.loginTitle,
+            children: [
+              SizedBox(height: 16.h),
+              EditTextWidget(
+                controller: _phoneCtl,
+                hint: l10n.phoneHintField,
+                label: l10n.phoneField,
+                keyboard: TextInputType.phone,
+                errorText: _phoneError,
+              ),
+              SizedBox(height: 16.h),
+              ActionButtonWidget(
+                onPressed: _goToPin,
+                text: l10n.loginTitle,
+                loading: isLoading,
+              ),
+              SizedBox(height: 16.h),
+              Center(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(l10n.loginCreateAccountPrompt),
+                    SizedBox(width: 6.w),
+                    ActionTextButtonWidget(
+                      onPressed: () => context.go('/create-account'),
+                      text: l10n.loginCreateAccountCta,
+                      fullWidth: false,
+                    ),
+                  ],
+                ),
+              ),
+              Spacer(),
+              Center(
+                child: ActionTextButtonWidget(
+                  onPressed: () {
+                    final locale = Localizations.localeOf(context).languageCode;
+                    final url = locale.toLowerCase().startsWith('pl')
+                        ? Api.privacyPolicyPlUrl
+                        : Api.privacyPolicyEnUrl;
+                    launchUrl(Uri.parse(url),
+                        mode: LaunchMode.externalApplication);
+                  },
+                  text: l10n.privacyPolicy,
                   fullWidth: false,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Spacer(),
-          Center(
-            child: ActionTextButtonWidget(
-              onPressed: () {
-                final locale = Localizations.localeOf(context).languageCode;
-                final url = locale.toLowerCase().startsWith('pl')
-                    ? Api.privacyPolicyPlUrl
-                    : Api.privacyPolicyEnUrl;
-                launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-              },
-              text: l10n.privacyPolicy,
-              fullWidth: false,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

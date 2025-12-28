@@ -227,7 +227,7 @@ class AppTextStyles {
         fontFamily: 'Rubik',
         fontWeight: FontWeight.w400,
         color: AppColors.contentPrimary(context),
-        height: 1.3,
+        height: 1.2,
         letterSpacing: 1.2,
       );
 }

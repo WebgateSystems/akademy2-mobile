@@ -100,47 +100,52 @@ class _EnableBiometricPageState extends ConsumerState<EnableBiometricPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      body: BasePageWithToolbar(
-        title: l10n.enableBiometricTitle,
-        subtitle: l10n.enableBiometricSubtitle,
-        showBackButton: true,
-        stickChildrenToBottom: true,
-        children: [
-          const Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: BasePageWithToolbar(
+            title: l10n.enableBiometricTitle,
+            subtitle: l10n.enableBiometricSubtitle,
+            showBackButton: true,
+            stickChildrenToBottom: true,
             children: [
-              CustomImageChip(
-                selected: _fingerprint,
-                onTap: _toggleFingerprint,
-                assetPath: 'assets/images/ic_fingerprint_id.png',
-                size: 64.h,
+              const Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomImageChip(
+                    selected: _fingerprint,
+                    onTap: _toggleFingerprint,
+                    assetPath: 'assets/images/ic_fingerprint_id.png',
+                    size: 64.h,
+                  ),
+                  SizedBox(width: 20.w),
+                  CustomImageChip(
+                    selected: _face,
+                    onTap: _toggleFace,
+                    assetPath: 'assets/images/ic_face_id.png',
+                    size: 64.h,
+                  ),
+                ],
               ),
-              SizedBox(width: 20.w),
-              CustomImageChip(
-                selected: _face,
-                onTap: _toggleFace,
-                assetPath: 'assets/images/ic_face_id.png',
-                size: 64.h,
+              SizedBox(height: 64.h),
+              Column(
+                children: [
+                  ActionButtonWidget(
+                    text: l10n.enableBiometricEnable,
+                    onPressed: _enableWithAuth,
+                    loading: _saving,
+                  ),
+                  SizedBox(height: 12.h),
+                  ActionTextButtonWidget(
+                    onPressed: _saving ? null : () => _skipBiometric(l10n),
+                    text: l10n.enableBiometricNotNow,
+                  ),
+                ],
               ),
             ],
           ),
-          SizedBox(height: 64.h),
-          Column(
-            children: [
-              ActionButtonWidget(
-                text: l10n.enableBiometricEnable,
-                onPressed: _enableWithAuth,
-                loading: _saving,
-              ),
-              SizedBox(height: 12.h),
-              ActionTextButtonWidget(
-                onPressed: _saving ? null : () => _skipBiometric(l10n),
-                text: l10n.enableBiometricNotNow,
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }

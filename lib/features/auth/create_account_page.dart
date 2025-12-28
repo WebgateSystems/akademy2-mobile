@@ -201,62 +201,67 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context);
     return Scaffold(
-      body: BasePageWithToolbar(
-        showBackButton: false,
-        stickChildrenToBottom: true,
-        title: loc?.createAnAccount ?? 'Create an Account',
-        children: [
-          SizedBox(height: 20.h),
-          EditTextWidget(
-              label: loc?.firstNameField ?? 'First name',
-              hint: loc?.firstNameField ?? 'First name',
-              controller: _firstNameCtrl),
-          SizedBox(height: 12.h),
-          EditTextWidget(
-              label: loc?.lastNameField ?? 'Last name',
-              hint: loc?.lastNameField ?? 'Last name',
-              controller: _lastNameCtrl),
-          SizedBox(height: 12.h),
-          GestureDetector(
-            onTap: _pickDob,
-            child: AbsorbPointer(
-              child: EditTextWidget(
-                label: loc?.dateOfBirthField ?? 'Date of birth',
-                hint: loc?.dateOfBirthHintField ?? 'Date of birth',
-                controller: _dobCtrl,
-                readOnly: true,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: BasePageWithToolbar(
+            showBackButton: false,
+            stickChildrenToBottom: true,
+            title: loc?.createAnAccount ?? 'Create an Account',
+            children: [
+              SizedBox(height: 20.h),
+              EditTextWidget(
+                  label: loc?.firstNameField ?? 'First name',
+                  hint: loc?.firstNameField ?? 'First name',
+                  controller: _firstNameCtrl),
+              SizedBox(height: 12.h),
+              EditTextWidget(
+                  label: loc?.lastNameField ?? 'Last name',
+                  hint: loc?.lastNameField ?? 'Last name',
+                  controller: _lastNameCtrl),
+              SizedBox(height: 12.h),
+              GestureDetector(
+                onTap: _pickDob,
+                child: AbsorbPointer(
+                  child: EditTextWidget(
+                    label: loc?.dateOfBirthField ?? 'Date of birth',
+                    hint: loc?.dateOfBirthHintField ?? 'Date of birth',
+                    controller: _dobCtrl,
+                    readOnly: true,
+                  ),
+                ),
               ),
-            ),
+              SizedBox(height: 12.h),
+              EditTextWidget(
+                  label: loc?.emailField ?? 'Email',
+                  hint: loc?.emailHintField ?? 'Email',
+                  controller: _emailCtrl,
+                  errorText: _emailError),
+              SizedBox(height: 12.h),
+              EditTextWidget(
+                label: loc?.phoneField ?? 'Phone',
+                hint: loc?.phoneHintField ?? 'Phone',
+                controller: _phoneCtrl,
+                keyboard: TextInputType.phone,
+                errorText: _phoneError,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => FocusScope.of(context).unfocus(),
+              ),
+              SizedBox(height: 20.h),
+              CheckboxWidget(
+                text: loc?.iAgreeToReceive ?? '',
+                value: _agree,
+                onChanged: (v) => setState(() => _agree = v ?? false),
+              ),
+              Spacer(),
+              ActionButtonWidget(
+                onPressed: _isFormValid && !_loading ? _submit : null,
+                text: loc?.createAccountButton ?? 'Create account',
+                loading: _loading,
+              ),
+            ],
           ),
-          SizedBox(height: 12.h),
-          EditTextWidget(
-              label: loc?.emailField ?? 'Email',
-              hint: loc?.emailHintField ?? 'Email',
-              controller: _emailCtrl,
-              errorText: _emailError),
-          SizedBox(height: 12.h),
-          EditTextWidget(
-            label: loc?.phoneField ?? 'Phone',
-            hint: loc?.phoneHintField ?? 'Phone',
-            controller: _phoneCtrl,
-            keyboard: TextInputType.phone,
-            errorText: _phoneError,
-            textInputAction: TextInputAction.done,
-            onSubmitted: (_) => FocusScope.of(context).unfocus(),
-          ),
-          SizedBox(height: 20.h),
-          CheckboxWidget(
-            text: loc?.iAgreeToReceive ?? '',
-            value: _agree,
-            onChanged: (v) => setState(() => _agree = v ?? false),
-          ),
-          Spacer(),
-          ActionButtonWidget(
-            onPressed: _isFormValid && !_loading ? _submit : null,
-            text: loc?.createAccountButton ?? 'Create account',
-            loading: _loading,
-          ),
-        ],
+        ),
       ),
     );
   }

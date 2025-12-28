@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/core/services/quiz_sync_service.dart';
+import 'package:academy_2_app/core/utils/orientation_utils.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,6 +28,7 @@ class _HomeShellState extends State<HomeShell> {
   @override
   void initState() {
     super.initState();
+    OrientationUtils.allowVideoOrientations();
     QuizSyncService.instance.init();
     _checkPendingQueue();
     _syncSubscription = QuizSyncService.instance.statusStream.listen((status) {
@@ -46,12 +48,21 @@ class _HomeShellState extends State<HomeShell> {
   void dispose() {
     _syncSubscription?.cancel();
     _pendingSubscription?.cancel();
+    OrientationUtils.lockPortrait();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isWide = MediaQuery.of(context).size.width > 600;
+    final viewPadding = MediaQueryData.fromView(View.of(context)).padding;
+    final leftInset = viewPadding.left == viewPadding.right
+        ? viewPadding.left
+        : (viewPadding.left > viewPadding.right ? viewPadding.left : 0.0);
+    final rightInset = viewPadding.left == viewPadding.right
+        ? viewPadding.right
+        : (viewPadding.right > viewPadding.left ? viewPadding.right : 0.0);
 
     final pages = [
       const SubjectsPage(),
@@ -60,40 +71,83 @@ class _HomeShellState extends State<HomeShell> {
     ];
 
     return Scaffold(
-      body: SafeArea(child: pages[_index]),
-      bottomNavigationBar: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+      body: Padding(
+        padding: EdgeInsets.only(
+          left: leftInset,
+          right: rightInset,
+        ),
+        child: Row(
           children: [
-            _SyncBanner(
-              status: _syncStatus,
-              hasPendingQueue: _hasPendingQueue,
-            ),
-            CustomBottomBar(
-              currentIndex: _index,
-              onTap: (i) {
-                setState(() => _index = i);
-              },
-              items: [
-                CustomBottomItem(
-                  icon: 'assets/images/ic_courses.png',
-                  label: l10n.bottomNavCourses,
-                ),
-                CustomBottomItem(
-                  icon: 'assets/images/ic_school_videos.png',
-                  label: l10n.bottomNavSchoolVideos,
-                ),
-                CustomBottomItem(
-                  icon: 'assets/images/ic_account.png',
-                  label: l10n.bottomNavAccount,
-                ),
-              ],
+            if (isWide) _buildNavigationRail(context, l10n),
+            Expanded(
+              child: Column(
+                children: [
+                  Expanded(child: pages[_index]),
+                  _SyncBanner(
+                    status: _syncStatus,
+                    hasPendingQueue: _hasPendingQueue,
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
+      bottomNavigationBar: isWide
+          ? null
+          : SafeArea(
+              top: false,
+              child: CustomBottomBar(
+                currentIndex: _index,
+                onTap: (i) {
+                  setState(() => _index = i);
+                },
+                items: _getNavItems(l10n),
+              ),
+            ),
     );
+  }
+
+  Widget _buildNavigationRail(BuildContext context, AppLocalizations l10n) {
+    return Padding(
+      padding: EdgeInsets.only(top: 48.h),
+      child: NavigationRail(
+        indicatorColor: AppColors.background(context),
+        selectedIndex: _index,
+        onDestinationSelected: (i) => setState(() => _index = i),
+        backgroundColor: AppColors.background(context),
+        labelType: NavigationRailLabelType.all,
+        selectedLabelTextStyle: AppTextStyles.b3(context)
+            .copyWith(color: AppColors.contentAccent(context)),
+        unselectedLabelTextStyle: AppTextStyles.b3(context)
+            .copyWith(color: AppColors.contentSecondary(context)),
+        destinations: _getNavItems(l10n).map((item) {
+          return NavigationRailDestination(
+            icon: Image.asset(item.icon,
+                width: 24.r,
+                height: 24.r,
+                color: AppColors.contentSecondary(context)),
+            selectedIcon: Image.asset(item.icon,
+                width: 24.r,
+                height: 24.r,
+                color: AppColors.contentAccent(context)),
+            label: Text(item.label),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  List<CustomBottomItem> _getNavItems(AppLocalizations l10n) {
+    return [
+      CustomBottomItem(
+          icon: 'assets/images/ic_courses.png', label: l10n.bottomNavCourses),
+      CustomBottomItem(
+          icon: 'assets/images/ic_school_videos.png',
+          label: l10n.bottomNavSchoolVideos),
+      CustomBottomItem(
+          icon: 'assets/images/ic_account.png', label: l10n.bottomNavAccount),
+    ];
   }
 
   Future<void> _checkPendingQueue() async {
@@ -215,7 +269,7 @@ class _SyncBanner extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      height: 52.h,
+      height: 52.r,
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
       color: bgColor,
       child: Row(

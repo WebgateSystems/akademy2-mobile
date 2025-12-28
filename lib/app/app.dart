@@ -105,6 +105,7 @@ class _AppState extends ConsumerState<App> with WidgetsBindingObserver {
           designSize: designSize,
           minTextAdapt: true,
           splitScreenMode: true,
+          fontSizeResolver: FontSizeResolvers.radius,
           builder: (context, child) {
             return MediaQuery.removePadding(
               context: context,

@@ -26,6 +26,7 @@ class BaseWaitApprovalPage extends StatelessWidget {
     final loc = AppLocalizations.of(context)!;
     return Scaffold(
       body: Container(
+        constraints: BoxConstraints.expand(),
         decoration: BoxDecoration(
           color: AppColors.backgroundAccent(context),
         ),

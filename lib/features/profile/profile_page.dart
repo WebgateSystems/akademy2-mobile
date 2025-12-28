@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:academy_2_app/app/theme/tokens.dart';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/action_outlinedbutton_widget.dart';
@@ -233,31 +235,177 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isTablet = MediaQuery.of(context).size.width > 600;
     return Scaffold(
       body: SafeArea(
         child: BasePageWithToolbar(
           title: l10n.profileTitle,
           showBackButton: false,
-          children: [
-            EditTextWidget(
+          children: isTablet
+              ? _buildTabletContent(l10n)
+              : _buildPortraitContent(l10n),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _buildPortraitContent(AppLocalizations l10n) {
+    return [
+      EditTextWidget(
+        label: l10n.profileFirstName,
+        readOnly: true,
+        controller: _firstNameCtrl,
+      ),
+      SizedBox(height: 8.h),
+      EditTextWidget(
+        label: l10n.profileLastName,
+        readOnly: true,
+        controller: _lastNameCtrl,
+      ),
+      SizedBox(height: 8.h),
+      EditTextWidget(
+        label: l10n.profileDob,
+        readOnly: true,
+        controller: _dobCtrl,
+      ),
+      SizedBox(height: 8.h),
+      EditTextWidget(
+        label: l10n.profileEmail,
+        readOnly: false,
+        keyboard: TextInputType.emailAddress,
+        controller: _emailCtrl,
+        infoText: _emailCtrl.text.isEmpty ? l10n.unverifiedEmailAddress : null,
+      ),
+      SizedBox(height: 8.h),
+      EditTextWidget(
+        label: l10n.profilePhone,
+        readOnly: false,
+        keyboard: TextInputType.phone,
+        controller: _phoneCtrl,
+        infoText: _phoneCtrl.text.isEmpty ? l10n.unverifiedPhoneNubmer : null,
+      ),
+      SizedBox(height: 8.h),
+      EditTextWidget(
+        label: l10n.profilePin,
+        readOnly: true,
+        keyboard: TextInputType.number,
+        controller: _pinCtrl,
+        obscureText: true,
+        maxLength: 4,
+        onTap: _editPin,
+      ),
+      SizedBox(height: 8.h),
+      _dropdown<String>(
+        label: l10n.profileTheme,
+        value: _theme,
+        items: [
+          DropdownMenuItem(
+            value: 'light',
+            child: Text(l10n.profileThemeLight),
+          ),
+          DropdownMenuItem(
+            value: 'dark',
+            child: Text(l10n.profileThemeDark),
+          ),
+        ],
+        onChanged: (v) {
+          setState(() => _theme = v ?? 'light');
+          ref.read(settingsProvider.notifier).setTheme(_theme);
+        },
+      ),
+      SizedBox(height: 8.h),
+      _dropdown<String>(
+        label: l10n.profileLanguage,
+        value: _language,
+        items: [
+          DropdownMenuItem(value: 'en', child: Text(l10n.profileLangEn)),
+          DropdownMenuItem(value: 'uk', child: Text(l10n.profileLangUk)),
+          DropdownMenuItem(value: 'pl', child: Text(l10n.profileLangPl)),
+        ],
+        onChanged: (v) {
+          setState(() => _language = v ?? 'en');
+          ref.read(settingsProvider.notifier).setLanguage(_language);
+        },
+      ),
+      SizedBox(height: 20.h),
+      if (_dirty)
+        ActionButtonWidget(
+          onPressed: _loading ? null : _saveProfile,
+          loading: _loading,
+          text: l10n.profileSaveButton,
+        ),
+      if (_dirty) SizedBox(height: 8.h),
+      Row(
+        children: [
+          Flexible(
+            flex: 1,
+            child: ActionTextButtonWidget(
+              onPressed: _deleting ? null : _deleteAccount,
+              color: AppColors.contentError(context),
+              loading: _deleting,
+              text: l10n.profileDeleteButton,
+            ),
+          ),
+          SizedBox(width: 8.h),
+          Flexible(
+            flex: 1,
+            child: ActionTextButtonWidget(
+              onPressed: _deleting ? null : _logout,
+              text: l10n.profileLogoutButton,
+            ),
+          ),
+        ],
+      ),
+      if (_appVersion != null) ...[
+        SizedBox(height: 8.h),
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            'v$_appVersion',
+            style: AppTextStyles.b3(context).copyWith(
+              color: AppColors.contentSecondary(context),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    ];
+  }
+
+  List<Widget> _buildTabletContent(AppLocalizations l10n) {
+    return [
+      Row(
+        children: [
+          Flexible(
+            child: EditTextWidget(
               label: l10n.profileFirstName,
               readOnly: true,
               controller: _firstNameCtrl,
             ),
-            SizedBox(height: 8.h),
-            EditTextWidget(
+          ),
+          SizedBox(width: 8.w),
+          Flexible(
+            child: EditTextWidget(
               label: l10n.profileLastName,
               readOnly: true,
               controller: _lastNameCtrl,
             ),
-            SizedBox(height: 8.h),
-            EditTextWidget(
+          ),
+        ],
+      ),
+      SizedBox(height: 8.h),
+      Row(
+        children: [
+          Flexible(
+            child: EditTextWidget(
               label: l10n.profileDob,
               readOnly: true,
               controller: _dobCtrl,
             ),
-            SizedBox(height: 8.h),
-            EditTextWidget(
+          ),
+          SizedBox(width: 8.w),
+          Flexible(
+            child: EditTextWidget(
               label: l10n.profileEmail,
               readOnly: false,
               keyboard: TextInputType.emailAddress,
@@ -265,8 +413,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               infoText:
                   _emailCtrl.text.isEmpty ? l10n.unverifiedEmailAddress : null,
             ),
-            SizedBox(height: 8.h),
-            EditTextWidget(
+          ),
+        ],
+      ),
+      SizedBox(height: 8.h),
+      Row(
+        children: [
+          Flexible(
+            child: EditTextWidget(
               label: l10n.profilePhone,
               readOnly: false,
               keyboard: TextInputType.phone,
@@ -274,8 +428,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               infoText:
                   _phoneCtrl.text.isEmpty ? l10n.unverifiedPhoneNubmer : null,
             ),
-            SizedBox(height: 8.h),
-            EditTextWidget(
+          ),
+          SizedBox(width: 8.w),
+          Flexible(
+            child: EditTextWidget(
               label: l10n.profilePin,
               readOnly: true,
               keyboard: TextInputType.number,
@@ -284,8 +440,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               maxLength: 4,
               onTap: _editPin,
             ),
-            SizedBox(height: 8.h),
-            _dropdown<String>(
+          ),
+        ],
+      ),
+      SizedBox(height: 8.h),
+      Row(
+        children: [
+          Flexible(
+            child: _dropdown<String>(
               label: l10n.profileTheme,
               value: _theme,
               items: [
@@ -303,8 +465,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ref.read(settingsProvider.notifier).setTheme(_theme);
               },
             ),
-            SizedBox(height: 8.h),
-            _dropdown<String>(
+          ),
+          SizedBox(width: 8.w),
+          Flexible(
+            child: _dropdown<String>(
               label: l10n.profileLanguage,
               value: _language,
               items: [
@@ -317,52 +481,52 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ref.read(settingsProvider.notifier).setLanguage(_language);
               },
             ),
-            SizedBox(height: 20.h),
-            if (_dirty)
-              ActionButtonWidget(
-                onPressed: _loading ? null : _saveProfile,
-                loading: _loading,
-                text: l10n.profileSaveButton,
-              ),
-            if (_dirty) SizedBox(height: 8.h),
-            Row(
-              children: [
-                Flexible(
-                  flex: 1,
-                  child: ActionTextButtonWidget(
-                    onPressed: _deleting ? null : _deleteAccount,
-                    color: AppColors.contentError(context),
-                    loading: _deleting,
-                    text: l10n.profileDeleteButton,
-                  ),
-                ),
-                SizedBox(width: 8.h),
-                Flexible(
-                  flex: 1,
-                  child: ActionTextButtonWidget(
-                    onPressed: _deleting ? null : _logout,
-                    text: l10n.profileLogoutButton,
-                  ),
-                ),
-              ],
-            ),
-            if (_appVersion != null) ...[
-              SizedBox(height: 8.h),
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'v$_appVersion',
-                  style: AppTextStyles.b3(context).copyWith(
-                    color: AppColors.contentSecondary(context),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ],
-        ),
+          ),
+        ],
       ),
-    );
+      SizedBox(height: 20.h),
+      if (_dirty)
+        ActionButtonWidget(
+          onPressed: _loading ? null : _saveProfile,
+          loading: _loading,
+          text: l10n.profileSaveButton,
+        ),
+      if (_dirty) SizedBox(height: 8.h),
+      Row(
+        children: [
+          Flexible(
+            flex: 1,
+            child: ActionTextButtonWidget(
+              onPressed: _deleting ? null : _deleteAccount,
+              color: AppColors.contentError(context),
+              loading: _deleting,
+              text: l10n.profileDeleteButton,
+            ),
+          ),
+          SizedBox(width: 8.h),
+          Flexible(
+            flex: 1,
+            child: ActionTextButtonWidget(
+              onPressed: _deleting ? null : _logout,
+              text: l10n.profileLogoutButton,
+            ),
+          ),
+        ],
+      ),
+      if (_appVersion != null) ...[
+        SizedBox(height: 8.h),
+        Align(
+          alignment: Alignment.center,
+          child: Text(
+            'v$_appVersion',
+            style: AppTextStyles.b3(context).copyWith(
+              color: AppColors.contentSecondary(context),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    ];
   }
 
   Widget _dropdown<T>({
@@ -563,6 +727,7 @@ class _ProfilePinDialogState extends State<ProfilePinDialog> {
             : l10n.profilePinDialogStepNewPin;
     final showReset =
         _current.isNotEmpty || _firstPin != null || _finalPin != null;
+    final isTablet = MediaQuery.of(context).size.width > 600;
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -573,79 +738,182 @@ class _ProfilePinDialogState extends State<ProfilePinDialog> {
           color: AppColors.surfacePrimary(context),
           borderRadius: BorderRadius.circular(12.r),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              l10n.profilePinDialogTitle,
-              style: AppTextStyles.h3(context),
+        child: isTablet
+            ? _buildTabletPin(l10n, context, stageLabel, showReset)
+            : _buildPortraitPin(l10n, context, stageLabel, showReset),
+      ),
+    );
+  }
+
+  Column _buildPortraitPin(AppLocalizations l10n, BuildContext context,
+      String stageLabel, bool showReset) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          l10n.profilePinDialogTitle,
+          style: AppTextStyles.h3(context),
+        ),
+        SizedBox(height: 10.h),
+        Text(
+          l10n.profilePinDialogMessage,
+          textAlign: TextAlign.center,
+          style: AppTextStyles.b1(context)
+              .copyWith(color: AppColors.contentSecondary(context)),
+        ),
+        SizedBox(height: 10.h),
+        Text(
+          stageLabel,
+          style: AppTextStyles.b2(context).copyWith(
+            color: AppColors.contentPrimary(context),
+          ),
+        ),
+        SizedBox(height: 12.h),
+        DotsWidget(pin: _finalPin ?? _current),
+        if (_mismatch) ...[
+          SizedBox(height: 12.h),
+          Text(
+            l10n.profilePinDialogMismatch,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.b3(context).copyWith(
+              color: AppColors.contentError(context),
             ),
-            SizedBox(height: 10.h),
-            Text(
-              l10n.profilePinDialogMessage,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.b1(context)
-                  .copyWith(color: AppColors.contentSecondary(context)),
-            ),
-            SizedBox(height: 10.h),
-            Text(
-              stageLabel,
-              style: AppTextStyles.b2(context).copyWith(
+          ),
+        ],
+        if (showReset) ...[
+          SizedBox(height: 12.h),
+          TextButton(
+            onPressed: _reset,
+            child: Text(
+              l10n.profilePinDialogReset,
+              style: AppTextStyles.b3(context).copyWith(
                 color: AppColors.contentPrimary(context),
               ),
             ),
-            SizedBox(height: 12.h),
-            DotsWidget(pin: _finalPin ?? _current),
-            if (_mismatch) SizedBox(height: 12.h),
-            if (_mismatch)
-              Text(
-                l10n.profilePinDialogMismatch,
-                textAlign: TextAlign.center,
-                style: AppTextStyles.b3(context).copyWith(
-                  color: AppColors.contentError(context),
-                ),
+          ),
+        ],
+        SizedBox(height: 20.h),
+        _ProfilePinKeypad(onKey: _handleKey),
+        SizedBox(height: 40.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Flexible(
+              flex: 1,
+              child: ActionOutlinedButtonWidget(
+                height: 48.r,
+                onPressed: () => Navigator.pop(context, null),
+                text: l10n.profilePinDialogCancel,
               ),
-            if (showReset) SizedBox(height: 12.h),
-            if (showReset)
-              TextButton(
-                onPressed: _reset,
-                child: Text(
-                  l10n.profilePinDialogReset,
-                  style: AppTextStyles.b3(context).copyWith(
-                    color: AppColors.contentPrimary(context),
-                  ),
-                ),
+            ),
+            SizedBox(width: 20.w),
+            Flexible(
+              flex: 1,
+              child: ActionButtonWidget(
+                height: 48.r,
+                onPressed:
+                    _isReady ? () => Navigator.pop(context, _finalPin) : null,
+                text: l10n.profilePinDialogSave,
               ),
-            SizedBox(height: 20.h),
-            _ProfilePinKeypad(onKey: _handleKey),
-            SizedBox(height: 40.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Flexible(
-                  flex: 1,
-                  child: ActionOutlinedButtonWidget(
-                    height: 48.h,
-                    onPressed: () => Navigator.pop(context, null),
-                    text: l10n.profilePinDialogCancel,
-                  ),
-                ),
-                SizedBox(width: 20.w),
-                Flexible(
-                  flex: 1,
-                  child: ActionButtonWidget(
-                    height: 48.h,
-                    onPressed: _isReady
-                        ? () => Navigator.pop(context, _finalPin)
-                        : null,
-                    text: l10n.profilePinDialogSave,
-                  ),
-                ),
-              ],
             ),
           ],
         ),
-      ),
+      ],
+    );
+  }
+
+  Column _buildTabletPin(AppLocalizations l10n, BuildContext context,
+      String stageLabel, bool showReset) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              flex: 1,
+              child: Column(
+                children: [
+                  Text(
+                    l10n.profilePinDialogTitle,
+                    style: AppTextStyles.h3(context),
+                  ),
+                  SizedBox(height: 10.h),
+                  Text(
+                    l10n.profilePinDialogMessage,
+                    textAlign: TextAlign.center,
+                    style: AppTextStyles.b1(context)
+                        .copyWith(color: AppColors.contentSecondary(context)),
+                  ),
+                  SizedBox(height: 24.h),
+                  Text(
+                    stageLabel,
+                    style: AppTextStyles.b2(context).copyWith(
+                      color: AppColors.contentPrimary(context),
+                    ),
+                  ),
+                  SizedBox(height: 24.h),
+                  DotsWidget(pin: _finalPin ?? _current),
+                ],
+              ),
+            ),
+            Flexible(
+              flex: 1,
+              child: Column(
+                children: [
+                  if (_mismatch) ...[
+                    SizedBox(height: 12.h),
+                    Text(
+                      l10n.profilePinDialogMismatch,
+                      textAlign: TextAlign.center,
+                      style: AppTextStyles.b3(context).copyWith(
+                        color: AppColors.contentError(context),
+                      ),
+                    ),
+                  ],
+                  if (showReset) ...[
+                    SizedBox(height: 12.h),
+                    TextButton(
+                      onPressed: _reset,
+                      child: Text(
+                        l10n.profilePinDialogReset,
+                        style: AppTextStyles.b3(context).copyWith(
+                          color: AppColors.contentPrimary(context),
+                        ),
+                      ),
+                    ),
+                  ],
+                  SizedBox(height: 20.h),
+                  _ProfilePinKeypad(onKey: _handleKey),
+                  SizedBox(height: 40.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Flexible(
+                        flex: 1,
+                        child: ActionOutlinedButtonWidget(
+                          onPressed: () => Navigator.pop(context, null),
+                          text: l10n.profilePinDialogCancel,
+                        ),
+                      ),
+                      SizedBox(width: 20.w),
+                      Flexible(
+                        flex: 1,
+                        child: ActionButtonWidget(
+                          onPressed: _isReady
+                              ? () => Navigator.pop(context, _finalPin)
+                              : null,
+                          text: l10n.profilePinDialogSave,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -659,61 +927,86 @@ class _ProfilePinKeypad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final keys = [
-      '1',
-      '2',
-      '3',
-      '4',
-      '5',
-      '6',
-      '7',
-      '8',
-      '9',
-      '',
-      '0',
-      'back',
-    ];
-    return SizedBox(
-      width: 260.w,
-      height: 352.h,
-      child: GridView.builder(
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: keys.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 1.15,
-        ),
-        itemBuilder: (context, index) {
-          final key = keys[index];
-          if (key.isEmpty) {
-            return const SizedBox.shrink();
-          }
-          if (key == 'back') {
-            return RoundButton.image(
-              size: 70.r,
-              onTap: () => onKey('back'),
-              backgroundColor: Colors.transparent,
+    return LayoutBuilder(builder: (context, constraints) {
+      const columns = 3;
+      const rows = 4;
+      final spacing = 8.r;
+      final maxWidth = constraints.maxWidth.isFinite
+          ? constraints.maxWidth
+          : MediaQuery.sizeOf(context).width;
+      final maxHeight = constraints.maxHeight.isFinite
+          ? constraints.maxHeight
+          : MediaQuery.sizeOf(context).height;
+
+      final sizeByWidth = (maxWidth - spacing * (columns - 1)) / columns;
+      final sizeByHeight = (maxHeight - spacing * (rows - 1)) / rows;
+      const maxButtonSize = 48.0;
+      const minButtonSize = 32.0;
+      final buttonSize = sizeByWidth.isFinite && sizeByHeight.isFinite
+          ? sizeByWidth.clamp(minButtonSize, min(maxButtonSize, sizeByHeight))
+          : sizeByWidth.clamp(minButtonSize, maxButtonSize);
+
+      final gridWidth = buttonSize * columns + spacing * (columns - 1);
+      final gridHeight = buttonSize * rows + spacing * (rows - 1);
+
+      final keys = [
+        '1',
+        '2',
+        '3',
+        '4',
+        '5',
+        '6',
+        '7',
+        '8',
+        '9',
+        '',
+        '0',
+        'back',
+      ];
+
+      return SizedBox(
+        width: gridWidth,
+        height: gridHeight,
+        child: GridView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: keys.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            mainAxisSpacing: spacing,
+            crossAxisSpacing: spacing,
+            childAspectRatio: 1,
+          ),
+          itemBuilder: (context, index) {
+            final key = keys[index];
+            if (key.isEmpty) {
+              return const SizedBox.shrink();
+            }
+            if (key == 'back') {
+              return RoundButton.image(
+                size: buttonSize.toDouble(),
+                onTap: () => onKey('back'),
+                backgroundColor: Colors.transparent,
+                splashColor: AppColors.surfaceAccent(context),
+                assetImage: Theme.of(context).brightness == Brightness.dark
+                    ? 'assets/images/ic_back_button_dark.png'
+                    : 'assets/images/ic_back_button.png',
+                pressedImageOpacity: 0.5,
+              );
+            }
+            return RoundButton.text(
+              size: buttonSize.toDouble(),
+              onTap: () => onKey(key),
+              backgroundColor: AppColors.surfaceActive(context),
               splashColor: AppColors.surfaceAccent(context),
-              assetImage: Theme.of(context).brightness == Brightness.dark
-                  ? 'assets/images/ic_back_button_dark.png'
-                  : 'assets/images/ic_back_button.png',
-              pressedImageOpacity: 0.5,
+              textColor: AppColors.contentPrimary(context),
+              pressedTextColor: AppColors.background(context),
+              text: key,
             );
-          }
-          return RoundButton.text(
-            size: 70.r,
-            onTap: () => onKey(key),
-            backgroundColor: AppColors.surfaceActive(context),
-            splashColor: AppColors.surfaceAccent(context),
-            textColor: AppColors.contentPrimary(context),
-            pressedTextColor: AppColors.background(context),
-            text: key,
-          );
-        },
-      ),
-    );
+          },
+        ),
+      );
+    });
   }
 }
 
@@ -730,6 +1023,7 @@ class LogoutDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.all(20.w),
       child: Container(
+        constraints: BoxConstraints(maxWidth: 400),
         padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
           color: AppColors.surfacePrimary(context),
@@ -756,7 +1050,7 @@ class LogoutDialog extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: ActionOutlinedButtonWidget(
-                    height: 48.h,
+                    height: 48.r,
                     onPressed: () => Navigator.pop(context, false),
                     text: l10n.profileLogoutCancel,
                   ),
@@ -765,7 +1059,7 @@ class LogoutDialog extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: ActionButtonWidget(
-                    height: 48.h,
+                    height: 48.r,
                     onPressed: () => Navigator.pop(context, true),
                     text: l10n.profileLogoutConfirm,
                   ),
@@ -792,6 +1086,7 @@ class DeleteAccountDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.all(20.w),
       child: Container(
+        constraints: BoxConstraints(maxWidth: 400),
         padding: EdgeInsets.all(20.w),
         decoration: BoxDecoration(
           color: AppColors.surfacePrimary(context),
@@ -818,7 +1113,7 @@ class DeleteAccountDialog extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: ActionOutlinedButtonWidget(
-                    height: 48.h,
+                    height: 48.r,
                     onPressed: () => Navigator.pop(context, false),
                     text: l10n.profileDeleteCancel,
                   ),
@@ -827,7 +1122,7 @@ class DeleteAccountDialog extends StatelessWidget {
                 Flexible(
                   flex: 1,
                   child: ActionButtonWidget(
-                    height: 48.h,
+                    height: 48.r,
                     onPressed: () => Navigator.pop(context, true),
                     text: l10n.profileDeleteConfirm,
                   ),

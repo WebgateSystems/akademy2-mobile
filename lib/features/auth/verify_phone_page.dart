@@ -163,46 +163,51 @@ class _VerifyPhonePageState extends ConsumerState<VerifyPhonePage> {
     }
 
     return Scaffold(
-      body: BasePageWithToolbar(
-        title: l10n.verifyPhoneTitle,
-        subtitle: l10n.verifyPhoneSubtitle(phone),
-        showBackButton: true,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(_controllers.length, (index) {
-              return SizedBox(
-                height: 90.w,
-                width: 60.w,
-                child: EditTextWidget(
-                  controller: _controllers[index],
-                  focusNode: _focusNodes[index],
-                  keyboard: TextInputType.number,
-                  maxLength: 1,
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 700),
+          child: BasePageWithToolbar(
+            title: l10n.verifyPhoneTitle,
+            subtitle: l10n.verifyPhoneSubtitle(phone),
+            showBackButton: true,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(_controllers.length, (index) {
+                  return SizedBox(
+                    height: 90.w,
+                    width: 60.w,
+                    child: EditTextWidget(
+                      controller: _controllers[index],
+                      focusNode: _focusNodes[index],
+                      keyboard: TextInputType.number,
+                      maxLength: 1,
+                      textAlign: TextAlign.center,
+                      onChanged: (v) => _onDigitChanged(index, v),
+                      errorText: _invalid ? "" : null,
+                      textStyle: AppTextStyles.h1(context),
+                    ),
+                  );
+                }),
+              ),
+              SizedBox(height: 12.h),
+              if (_invalid)
+                Text(
+                  l10n.verifyPhoneInvalidCode,
                   textAlign: TextAlign.center,
-                  onChanged: (v) => _onDigitChanged(index, v),
-                  errorText: _invalid ? "" : null,
-                  textStyle: AppTextStyles.h1(context),
+                  style: AppTextStyles.b2(context)
+                      .copyWith(color: AppColors.contentError(context)),
                 ),
-              );
-            }),
+              SizedBox(height: 12.h),
+              ActionButtonWidget(
+                onPressed: _canResend ? _resend : null,
+                text: buttonText,
+                loading: _loading,
+              ),
+            ],
           ),
-          SizedBox(height: 12.h),
-          if (_invalid)
-            Text(
-              l10n.verifyPhoneInvalidCode,
-              textAlign: TextAlign.center,
-              style: AppTextStyles.b2(context)
-                  .copyWith(color: AppColors.contentError(context)),
-            ),
-          SizedBox(height: 12.h),
-          ActionButtonWidget(
-            onPressed: _canResend ? _resend : null,
-            text: buttonText,
-            loading: _loading,
-          ),
-        ],
+        ),
       ),
     );
   }

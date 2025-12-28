@@ -21,7 +21,7 @@ class ActionTextButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 56.h,
+      height: 56.r,
       width: fullWidth ? double.infinity : null,
       child: Container(
         alignment: Alignment.center,

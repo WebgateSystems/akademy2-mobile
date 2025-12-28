@@ -19,10 +19,10 @@ class _CircularProgressWidgetState extends State<CircularProgressWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: widget.size ?? 48.w,
-      height: widget.size ?? 48.w,
+      width: widget.size ?? 48.r,
+      height: widget.size ?? 48.r,
       child: CircularProgressIndicator(
-        strokeWidth: 2.w,
+        strokeWidth: 2.r,
         value: widget.value,
         backgroundColor: AppColors.borderPrimary(context),
         valueColor: AlwaysStoppedAnimation<Color>(

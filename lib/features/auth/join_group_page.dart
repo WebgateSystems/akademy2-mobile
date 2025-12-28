@@ -4,12 +4,12 @@ import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:dio/dio.dart';
 
 import '../../app/theme/tokens.dart';
 import '../../app/view/action_outlinedbutton_widget.dart';
@@ -141,6 +141,7 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
           backgroundColor: Colors.transparent,
           insetPadding: EdgeInsets.all(20.w),
           child: Container(
+            constraints: BoxConstraints(maxWidth: 400),
             padding: EdgeInsets.all(20.w),
             decoration: BoxDecoration(
               color: AppColors.surfacePrimary(context),
@@ -167,7 +168,7 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
                     Flexible(
                       flex: 1,
                       child: ActionOutlinedButtonWidget(
-                        height: 48.h,
+                        height: 48.r,
                         onPressed: () => Navigator.pop(context, false),
                         text: l10n.profileLogoutCancel,
                       ),
@@ -176,7 +177,7 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
                     Flexible(
                       flex: 1,
                       child: ActionButtonWidget(
-                        height: 48.h,
+                        height: 48.r,
                         onPressed: () => Navigator.pop(context, true),
                         text: l10n.profileLogoutConfirm,
                       ),
@@ -221,60 +222,66 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
     return WillPopScope(
       onWillPop: _handleWillPop,
       child: Scaffold(
-        body: BasePageWithToolbar(
-          title: l10n.joinGroupTitle,
-          subtitle: l10n.joinGroupSubtitle,
-          stickChildrenToBottom: true,
-          showBackButton: true,
-          onBack: _handleBackPressed,
-          children: [
-            SizedBox(height: 32.h),
-            EditTextWidget(
-              controller: _codeCtrl,
-              onChanged: (_) => setState(() {}),
-              hint: l10n.joinGroupHint,
-              errorText: _error,
-            ),
-            const Spacer(),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 700),
+            child: BasePageWithToolbar(
+              title: l10n.joinGroupTitle,
+              subtitle: l10n.joinGroupSubtitle,
+              stickChildrenToBottom: true,
+              showBackButton: true,
+              onBack: _handleBackPressed,
               children: [
-                SizedBox(
-                  width: 240.w,
-                  height: 240.w,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16.r),
-                    child: Stack(
-                      children: [
-                        MobileScanner(
-                          onDetect: _onDetect,
-                          controller: _scannerController,
-                        ),
-                        if (_scanPaused)
-                          Positioned.fill(
-                            child: Container(
-                              color: Colors.black45,
-                              child: Center(
-                                child: Text(
-                                  l10n.joinGroupCodeCaptured,
-                                  style: const TextStyle(color: Colors.white),
+                SizedBox(height: 32.h),
+                EditTextWidget(
+                  controller: _codeCtrl,
+                  onChanged: (_) => setState(() {}),
+                  hint: l10n.joinGroupHint,
+                  errorText: _error,
+                ),
+                const Spacer(),
+                Row(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 240.w,
+                      height: 240.w,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.r),
+                        child: Stack(
+                          children: [
+                            MobileScanner(
+                              onDetect: _onDetect,
+                              controller: _scannerController,
+                            ),
+                            if (_scanPaused)
+                              Positioned.fill(
+                                child: Container(
+                                  color: Colors.black45,
+                                  child: Center(
+                                    child: Text(
+                                      l10n.joinGroupCodeCaptured,
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                      ],
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
+                ),
+                const Spacer(),
+                ActionButtonWidget(
+                  onPressed: _canSubmit ? _submit : null,
+                  text: l10n.next,
                 ),
               ],
             ),
-            const Spacer(),
-            ActionButtonWidget(
-              onPressed: _canSubmit ? _submit : null,
-              text: l10n.next,
-            ),
-          ],
+          ),
         ),
       ),
     );

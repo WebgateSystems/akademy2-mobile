@@ -406,6 +406,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
         backgroundColor: Colors.transparent,
         insetPadding: EdgeInsets.all(20.w),
         child: Container(
+          constraints: BoxConstraints(maxWidth: 400),
           padding: EdgeInsets.all(20.w),
           decoration: BoxDecoration(
             color: AppColors.surfacePrimary(context),
@@ -451,6 +452,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
             backgroundColor: Colors.transparent,
             insetPadding: EdgeInsets.all(20.w),
             child: Container(
+              constraints: BoxConstraints(maxWidth: 400),
               padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
                 color: AppColors.surfacePrimary(context),
@@ -485,7 +487,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
                       SizedBox(width: 12.w),
                       Expanded(
                         child: ActionButtonWidget(
-                          height: 44.h,
+                          height: 44.r,
                           onPressed: () => Navigator.of(context).pop(true),
                           text: l10n.ok,
                         ),
@@ -593,91 +595,124 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       _loadVideos(reset: true);
     });
 
+    bool isTablet = MediaQuery.sizeOf(context).width > 800;
+
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(height: 44.h),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 16.h),
-                ToolbarWidget(
-                  title: l10n.schoolVideosTitle,
-                ),
-                SizedBox(height: 16.h),
-                Text(
-                  l10n.schoolVideosSubtitle,
-                  style: AppTextStyles.b1(context).copyWith(
-                    color: AppColors.contentSecondary(context),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 16.h),
-          if (_subjects.isNotEmpty)
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  SizedBox(width: 20.w),
-                  _FilterChip(
-                    label: l10n.schoolVideosFilterAll,
-                    selected: selectedSubject.isEmpty,
-                    onTap: () =>
-                        ref.read(_subjectFiltersProvider.notifier).state = {},
-                  ),
-                  ..._subjects.map(
-                    (s) => Padding(
-                      padding: EdgeInsets.only(left: 8.w),
-                      child: _FilterChip(
-                        label: s.title,
-                        selected: selectedSubject.contains(s.id),
-                        onTap: () {
-                          final current =
-                              ref.read(_subjectFiltersProvider.notifier);
-                          final next = {...current.state};
-                          if (next.contains(s.id)) {
-                            next.remove(s.id);
-                          } else {
-                            next.add(s.id);
-                          }
-                          current.state = next;
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 20.w),
-                ],
-              ),
-            ),
-          SizedBox(height: 16.h),
-          Expanded(
-            child: Padding(
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: Column(
+          children: [
+            SizedBox(height: 44.h),
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  EditTextWidget(
-                    controller: _searchController,
-                    hint: l10n.schoolVideosSearchHint,
-                    suffixIcon: Image.asset(
-                      'assets/images/ic_search.png',
-                      width: 22.r,
-                      height: 22.r,
-                      color: AppColors.contentPlaceholder(context),
+                  if (isTablet)
+                    Row(
+                      children: [
+                        Flexible(
+                          flex: 1,
+                          child: ToolbarWidget(
+                            title: l10n.schoolVideosTitle,
+                          ),
+                        ),
+                        Flexible(
+                          flex: 2,
+                          child: EditTextWidget(
+                            controller: _searchController,
+                            hint: l10n.schoolVideosSearchHint,
+                            suffixIcon: Image.asset(
+                              'assets/images/ic_search.png',
+                              width: 22.r,
+                              height: 22.r,
+                              color: AppColors.contentPlaceholder(context),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  SizedBox(height: 16.h),
-                  Expanded(
-                    child: _buildVideosList(l10n, subjectDetailsMap),
-                  ),
+                  if (!isTablet) ...[
+                    SizedBox(height: 16.h),
+                    ToolbarWidget(
+                      title: l10n.schoolVideosTitle,
+                    ),
+                    SizedBox(height: 16.h),
+                    Text(
+                      l10n.schoolVideosSubtitle,
+                      style: AppTextStyles.b1(context).copyWith(
+                        color: AppColors.contentSecondary(context),
+                      ),
+                    )
+                  ],
                 ],
               ),
             ),
-          ),
-        ],
+            SizedBox(height: 16.h),
+            if (_subjects.isNotEmpty)
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    SizedBox(width: 20.w),
+                    _FilterChip(
+                      label: l10n.schoolVideosFilterAll,
+                      selected: selectedSubject.isEmpty,
+                      onTap: () =>
+                          ref.read(_subjectFiltersProvider.notifier).state = {},
+                    ),
+                    ..._subjects.map(
+                      (s) => Padding(
+                        padding: EdgeInsets.only(left: 8.w),
+                        child: _FilterChip(
+                          label: s.title,
+                          selected: selectedSubject.contains(s.id),
+                          onTap: () {
+                            final current =
+                                ref.read(_subjectFiltersProvider.notifier);
+                            final next = {...current.state};
+                            if (next.contains(s.id)) {
+                              next.remove(s.id);
+                            } else {
+                              next.add(s.id);
+                            }
+                            current.state = next;
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 20.w),
+                  ],
+                ),
+              ),
+            SizedBox(height: 16.h),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Column(
+                  children: [
+                    if (!isTablet)
+                      EditTextWidget(
+                        controller: _searchController,
+                        hint: l10n.schoolVideosSearchHint,
+                        suffixIcon: Image.asset(
+                          'assets/images/ic_search.png',
+                          width: 22.r,
+                          height: 22.r,
+                          color: AppColors.contentPlaceholder(context),
+                        ),
+                      ),
+                    SizedBox(height: 16.h),
+                    Expanded(
+                      child:
+                          _buildVideosList(isTablet, l10n, subjectDetailsMap),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.surfaceAccent(context),
@@ -700,6 +735,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
   }
 
   Widget _buildVideosList(
+    bool isTablet,
     AppLocalizations l10n,
     Map<String, DashboardSubject> subjectDetails,
   ) {
@@ -737,33 +773,63 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
             l10n.schoolVideosGroupUnknown;
         final iconUrl = detail?.iconUrl ?? '';
 
-        return Padding(
-          padding: EdgeInsets.only(bottom: 12.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GroupTitleWidget(title: title, iconUrl: iconUrl),
-              SizedBox(height: 8.h),
-              ...entry.value.map((video) {
-                final likeCount =
-                    _likesCount.putIfAbsent(video.id, () => video.likesCount);
-                if (video.likedByMe) {
-                  _likedIds.add(video.id);
-                }
-                final isLiked = _likedIds.contains(video.id);
-                final detail = _videoDetails[video.id];
-                return _getVideoCard(
-                    context, video, isLiked, likeCount, detail);
-              }),
-            ],
-          ),
-        );
+        return isTablet
+            ? Padding(
+                padding: EdgeInsets.only(bottom: 24.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GroupTitleWidget(title: title, iconUrl: iconUrl),
+                    SizedBox(height: 12.h),
+                    LayoutBuilder(builder: (context, box) {
+                      final spacing = 12.r;
+                      final itemWidth = (box.maxWidth - spacing * 2) / 3;
+                      return Wrap(
+                        spacing: spacing,
+                        runSpacing: spacing,
+                        children: entry.value.map((video) {
+                          final likeCount =
+                              _likesCount[video.id] ?? video.likesCount;
+                          final isLiked = _likedIds.contains(video.id);
+
+                          return SizedBox(
+                            width: itemWidth,
+                            child: _getVideoCard(context, video, isLiked,
+                                likeCount, _videoDetails[video.id], isTablet),
+                          );
+                        }).toList(),
+                      );
+                    }),
+                  ],
+                ),
+              )
+            : Padding(
+                padding: EdgeInsets.only(bottom: 12.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GroupTitleWidget(title: title, iconUrl: iconUrl),
+                    SizedBox(height: 8.h),
+                    ...entry.value.map((video) {
+                      final likeCount = _likesCount.putIfAbsent(
+                          video.id, () => video.likesCount);
+                      if (video.likedByMe) {
+                        _likedIds.add(video.id);
+                      }
+                      final isLiked = _likedIds.contains(video.id);
+                      final detail = _videoDetails[video.id];
+                      return _getVideoCard(
+                          context, video, isLiked, likeCount, detail, isTablet);
+                    }),
+                  ],
+                ),
+              );
       },
     );
   }
 
   Card _getVideoCard(BuildContext context, SchoolVideo video, bool isLiked,
-      int likeCount, VideoDetail? detail) {
+      int likeCount, VideoDetail? detail, bool isTablet) {
     final isMyPendingVideo = (video.author?.isMe == true && video.isPending) ||
         (detail != null && detail.author?.isMe == true && detail.isPending);
     final canDelete = video.canDelete;
@@ -787,111 +853,247 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
             : () => _onVideoTap(video),
         child: Padding(
           padding: EdgeInsets.all(6.w),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          child: isTablet
+              ? _getVideoColumn(video, isTablet, context, canDelete, isRejected,
+                  isLiked, likeCount)
+              : _getVideoRow(video, isTablet, context, canDelete, isRejected,
+                  isLiked, likeCount),
+        ),
+      ),
+    );
+  }
+
+  Row _getVideoRow(SchoolVideo video, bool isTablet, BuildContext context,
+      bool canDelete, bool isRejected, bool isLiked, int likeCount) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: () => _onVideoTap(video),
+          child: Padding(
+            padding: EdgeInsets.all(2.w),
+            child: _VideoPreview(
+              isTablet: isTablet,
+              url: _resolvePreviewUrl(video),
+            ),
+          ),
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: () => _onVideoTap(video),
-                child: Padding(
-                  padding: EdgeInsets.all(2.w),
-                  child: _VideoPreview(
-                    url: _resolvePreviewUrl(video),
-                  ),
-                ),
+              Text(
+                video.title,
+                style: AppTextStyles.h4(context),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              SizedBox(width: 12.w),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      video.title,
-                      style: AppTextStyles.h4(context),
-                    ),
-                    SizedBox(height: 4.h),
-                    Text(
-                      video.description,
-                      style: AppTextStyles.b2(context).copyWith(
-                        color: AppColors.contentSecondary(context),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
+              SizedBox(height: 4.h),
+              Text(
+                video.description,
+                style: AppTextStyles.b2(context).copyWith(
+                  color: AppColors.contentSecondary(context),
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-              if (canDelete)
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(
-                    minWidth: 32.w,
-                    minHeight: 32.w,
-                  ),
-                  icon: Image.asset(
-                    'assets/images/ic_close.png',
-                    color: AppColors.contentPrimary(context),
-                    width: 20.r,
-                    height: 20.r,
-                  ),
-                  onPressed: () async {
-                    final confirmed = await _confirmDelete();
-                    if (confirmed) {
-                      await VideoService().deleteVideo(video.id);
-                      _loadVideos(reset: true);
-                    }
-                  },
-                )
-              else if (isRejected)
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(
-                    minWidth: 32.w,
-                    minHeight: 32.w,
-                  ),
-                  icon: Image.asset(
-                    'assets/images/ic_cancel.png',
-                    color: AppColors.contentError(context),
-                    width: 20.r,
-                    height: 20.r,
-                  ),
-                  onPressed: () => _showRejectionDialog(video.rejectionReason),
-                )
-              else
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      constraints: BoxConstraints(
-                        minWidth: 32.w,
-                        minHeight: 32.w,
-                      ),
-                      icon: isLiked
-                          ? Image.asset(
-                              'assets/images/ic_favorite.png',
-                              color: AppColors.contentAccent(context),
-                            )
-                          : Image.asset(
-                              'assets/images/ic_favorite_border.png',
-                              color: AppColors.contentAccent(context),
-                            ),
-                      onPressed: () =>
-                          _toggleLike(video.id, likeCount, isLiked),
-                    ),
-                    Text(
-                      '$likeCount',
-                      style: AppTextStyles.b3(context).copyWith(
-                        color: AppColors.contentSecondary(context),
-                      ),
-                    ),
-                  ],
-                ),
             ],
           ),
         ),
-      ),
+        if (canDelete)
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(
+              minWidth: 32.w,
+              minHeight: 32.w,
+            ),
+            icon: Image.asset(
+              'assets/images/ic_close.png',
+              color: AppColors.contentPrimary(context),
+              width: 20.r,
+              height: 20.r,
+            ),
+            onPressed: () async {
+              final confirmed = await _confirmDelete();
+              if (confirmed) {
+                await VideoService().deleteVideo(video.id);
+                _loadVideos(reset: true);
+              }
+            },
+          )
+        else if (isRejected)
+          IconButton(
+            padding: EdgeInsets.zero,
+            constraints: BoxConstraints(
+              minWidth: 32.w,
+              minHeight: 32.w,
+            ),
+            icon: Image.asset(
+              'assets/images/ic_cancel.png',
+              color: AppColors.contentError(context),
+              width: 20.r,
+              height: 20.r,
+            ),
+            onPressed: () => _showRejectionDialog(video.rejectionReason),
+          )
+        else
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(
+                  minWidth: 32.w,
+                  minHeight: 32.w,
+                ),
+                icon: isLiked
+                    ? Image.asset(
+                        'assets/images/ic_favorite.png',
+                        color: AppColors.contentAccent(context),
+                      )
+                    : Image.asset(
+                        'assets/images/ic_favorite_border.png',
+                        color: AppColors.contentAccent(context),
+                      ),
+                onPressed: () => _toggleLike(video.id, likeCount, isLiked),
+              ),
+              Text(
+                '$likeCount',
+                style: AppTextStyles.b3(context).copyWith(
+                  color: AppColors.contentSecondary(context),
+                ),
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  Column _getVideoColumn(SchoolVideo video, bool isTablet, BuildContext context,
+      bool canDelete, bool isRejected, bool isLiked, int likeCount) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        GestureDetector(
+          onTap: () => _onVideoTap(video),
+          child: Padding(
+            padding: EdgeInsets.all(2.w),
+            child: _VideoPreview(
+              isTablet: isTablet,
+              url: _resolvePreviewUrl(video),
+            ),
+          ),
+        ),
+        SizedBox(height: 12.h),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 6.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                video.title,
+                style: AppTextStyles.h4(context),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(height: 4.h),
+              Text(
+                video.description,
+                style: AppTextStyles.b2(context).copyWith(
+                  color: AppColors.contentSecondary(context),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+        if (canDelete)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Spacer(),
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(
+                  minWidth: 32.w,
+                  minHeight: 32.w,
+                ),
+                icon: Image.asset(
+                  'assets/images/ic_cancel.png',
+                  color: AppColors.contentError(context),
+                  width: 20.r,
+                  height: 20.r,
+                ),
+                onPressed: () => _showRejectionDialog(video.rejectionReason),
+              ),
+              SizedBox(width: 6.w),
+            ],
+          )
+        else if (isRejected)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Spacer(),
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(
+                  minWidth: 32.w,
+                  minHeight: 32.w,
+                ),
+                icon: Image.asset(
+                  'assets/images/ic_close.png',
+                  color: AppColors.contentPrimary(context),
+                  width: 20.r,
+                  height: 20.r,
+                ),
+                onPressed: () async {
+                  final confirmed = await _confirmDelete();
+                  if (confirmed) {
+                    await VideoService().deleteVideo(video.id);
+                    _loadVideos(reset: true);
+                  }
+                },
+              ),
+              SizedBox(width: 6.w),
+            ],
+          )
+        else
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Spacer(),
+              IconButton(
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(
+                  minWidth: 32.w,
+                  minHeight: 32.w,
+                ),
+                icon: isLiked
+                    ? Image.asset(
+                        'assets/images/ic_favorite.png',
+                        color: AppColors.contentAccent(context),
+                      )
+                    : Image.asset(
+                        'assets/images/ic_favorite_border.png',
+                        color: AppColors.contentAccent(context),
+                      ),
+                onPressed: () => _toggleLike(video.id, likeCount, isLiked),
+              ),
+              Text(
+                '$likeCount',
+                style: AppTextStyles.b3(context).copyWith(
+                  color: AppColors.contentSecondary(context),
+                ),
+              ),
+              SizedBox(width: 6.w),
+            ],
+          ),
+      ],
     );
   }
 }
@@ -944,9 +1146,10 @@ class GroupTitleWidget extends StatelessWidget {
 }
 
 class _VideoPreview extends StatefulWidget {
-  const _VideoPreview({required this.url});
+  const _VideoPreview({required this.url, required this.isTablet});
 
   final String url;
+  final bool isTablet;
 
   @override
   State<_VideoPreview> createState() => _VideoPreviewState();
@@ -991,8 +1194,6 @@ class _VideoPreviewState extends State<_VideoPreview> {
 
   Widget _placeholder(Widget child) {
     return Container(
-      width: 56.w,
-      height: 56.w,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/images/placeholder.png'),
@@ -1014,52 +1215,66 @@ class _VideoPreviewState extends State<_VideoPreview> {
       ),
     );
 
-    if (widget.url.isEmpty) return placeholder;
-
-    if (_looksLikeVideo) {
+    Widget wrapSquare(Widget child) {
       return ClipRRect(
         borderRadius: BorderRadius.circular(4.r),
         child: SizedBox(
-          width: 56.w,
-          height: 56.w,
-          child: FutureBuilder<Uint8List?>(
-            future: _thumbnailFuture,
-            builder: (context, snapshot) {
-              final data = snapshot.data;
-              if (data != null) {
-                return Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.memory(data, fit: BoxFit.cover),
-                    Container(
-                      alignment: Alignment.center,
-                      color: Colors.black.withValues(alpha: 0.15),
-                      child: Image.asset(
-                        'assets/images/ic_play_arrow.png',
-                        width: 20.r,
-                        height: 20.r,
-                      ),
-                    ),
-                  ],
-                );
-              }
-              return placeholder;
-            },
+          width: widget.isTablet ? double.infinity : 56.w,
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: child,
           ),
         ),
       );
     }
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(4.r),
-      child: SizedBox(
-        width: 56.w,
-        height: 56.w,
-        child: Image.network(
-          widget.url,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => placeholder,
+    if (widget.url.isEmpty) return wrapSquare(placeholder);
+
+    if (_looksLikeVideo) {
+      return wrapSquare(
+        FutureBuilder<Uint8List?>(
+          future: _thumbnailFuture,
+          builder: (context, snapshot) {
+            final data = snapshot.data;
+            if (data != null) {
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.memory(data, fit: BoxFit.cover),
+                  Container(
+                    alignment: Alignment.center,
+                    color: Colors.black.withValues(alpha: 0.15),
+                    child: Image.asset(
+                      'assets/images/ic_play_arrow.png',
+                      width: 20.r,
+                      height: 20.r,
+                    ),
+                  ),
+                ],
+              );
+            }
+            return placeholder;
+          },
         ),
+      );
+    }
+
+    return wrapSquare(
+      Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.network(widget.url,
+              fit: BoxFit.cover, errorBuilder: (_, __, ___) => placeholder),
+          Container(
+            alignment: Alignment.center,
+            color: Colors.black.withValues(alpha: 0.15),
+            child: Image.asset(
+              'assets/images/ic_play_arrow.png',
+              width: 20.r,
+              height: 20.r,
+            ),
+          ),
+        ],
       ),
     );
   }

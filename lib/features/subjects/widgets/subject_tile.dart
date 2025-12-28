@@ -20,8 +20,7 @@ class SubjectTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final completed = subject.completionRate > 0 && subject.averageScore > 0;
     final cardColor = AppColors.subjectCardColor(context, subject, completed);
-    final rezultCardColor =
-        AppColors.subjectCardColor(context, subject, false);
+    final rezultCardColor = AppColors.subjectCardColor(context, subject, false);
 
     return InkWell(
       onTap: onTap,
@@ -108,7 +107,7 @@ class _SubjectIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = 56.w;
+    final size = 56.r;
     final bg = AppColors.surfaceIcon(context);
     final iconUrl = (url == null || url!.isEmpty) ? null : url;
 

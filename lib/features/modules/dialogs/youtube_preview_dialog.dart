@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
-import 'package:academy_2_app/core/utils/orientation_utils.dart';
 import 'package:academy_2_app/features/modules/models/subtitle_entry.dart';
 import 'package:academy_2_app/features/modules/utils/subtitle_decoder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class YoutubePreviewDialog extends StatefulWidget {
@@ -27,11 +27,12 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
   late final YoutubePlayerController _controller;
   List<SubtitleEntry> _subtitles = [];
   String _currentSubtitle = '';
+  bool _wakelockEnabled = false;
 
   @override
   void initState() {
     super.initState();
-    OrientationUtils.allowVideoOrientations();
+    // OrientationUtils.allowVideoOrientations();
     _controller = YoutubePlayerController(
       initialVideoId: widget.videoId,
       flags: YoutubePlayerFlags(
@@ -48,6 +49,7 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
     }
 
     _controller.addListener(_onVideoProgress);
+    _syncWakelock(true);
   }
 
   Future<void> _loadSubtitles(String url) async {
@@ -168,6 +170,8 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
   }
 
   void _onVideoProgress() {
+    _syncWakelock(_controller.value.isPlaying);
+
     if (_subtitles.isEmpty) return;
 
     final position = _controller.value.position;
@@ -189,8 +193,19 @@ class _YoutubePreviewDialogState extends State<YoutubePreviewDialog> {
   void dispose() {
     _controller.removeListener(_onVideoProgress);
     _controller.dispose();
-    OrientationUtils.lockPortrait();
+    _syncWakelock(false);
+    // OrientationUtils.lockPortrait();
     super.dispose();
+  }
+
+  void _syncWakelock(bool isPlaying) {
+    if (_wakelockEnabled == isPlaying) return;
+    _wakelockEnabled = isPlaying;
+    if (isPlaying) {
+      WakelockPlus.enable();
+    } else {
+      WakelockPlus.disable();
+    }
   }
 
   @override

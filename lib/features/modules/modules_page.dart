@@ -3,6 +3,7 @@ import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/services/student_api_service.dart';
@@ -170,6 +171,7 @@ class _OfflineContentDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.all(20),
       child: Container(
+        constraints: BoxConstraints(maxWidth: 400),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           color: AppColors.surfacePrimary(context),
@@ -192,7 +194,7 @@ class _OfflineContentDialog extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             ActionButtonWidget(
-              height: 48,
+              height: 48.r,
               onPressed: () => Navigator.of(context).pop(),
               text: confirmText,
             ),
