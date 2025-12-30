@@ -47,6 +47,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get splashPartnerFsoLinkLabel => 'Website FSO:';
 
   @override
+  String get splashPartnerOspTitle => 'OSP Witomino';
+
+  @override
+  String get splashPartnerOspDescription =>
+      'OSP Witomino is a newly reactivated volunteer fire department from Gdynia – Witomino, created by the local community to strengthen residents\' safety and support rescue operations in the area. The organization brings together volunteers ready to help in situations threatening life, health, and property, and runs preventive and educational activities around safety.\n\nOSP Witomino engages in training, raising safety awareness, and cooperating with residents, promoting prevention and crisis response skills while building the local community\'s readiness to act together.';
+
+  @override
+  String get splashPartnerOspLink1Label => 'Website 1:';
+
+  @override
+  String get splashPartnerOspLink2Label => 'Website 2:';
+
+  @override
+  String get splashPartnerPonTitle => 'Pomorska Obrona Narodowa';
+
+  @override
+  String get splashPartnerPonDescription =>
+      'Pomorska Obrona Narodowa is a pro-defense association from Gdynia that works to strengthen the security of the state and society through education, training, and practical civic action. The organization brings together active soldiers, reservists, and civilians committed to promoting defense readiness and skills useful in crisis situations.\n\nAs part of its work, Pomorska Obrona Narodowa runs diverse training—from defense preparedness, first aid, and land navigation to light infantry tactics and elements of rescue and defense operations—combining practical knowledge with social and civic engagement.';
+
+  @override
+  String get splashPartnerPonLinkLabel => 'Website:';
+
+  @override
+  String get splashPartnerPoprTitle => 'POPR';
+
+  @override
+  String get splashPartnerPoprDescription =>
+      'Poszukiwawcze Ochotnicze Pogotowie Ratunkowe (POPR) is an association from Gdynia working for safety and rescue. The organization specializes in searching for missing persons in open areas and evacuating the injured from hard-to-reach locations, and provides training in first aid and how to behave in dangerous situations.\n\nPOPR operates non-profit with community volunteers and cooperates with the police and other rescue services, offering around-the-clock support where fast and effective help is critical.';
+
+  @override
+  String get splashPartnerPoprLinkLabel => 'Website:';
+
+  @override
   String get splashLinkOpenError => 'Could not open link';
 
   @override

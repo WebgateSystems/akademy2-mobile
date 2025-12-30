@@ -47,6 +47,39 @@ class AppLocalizationsPl extends AppLocalizations {
   String get splashPartnerFsoLinkLabel => 'Strona FSO:';
 
   @override
+  String get splashPartnerOspTitle => 'OSP Witomino';
+
+  @override
+  String get splashPartnerOspDescription =>
+      'Ochotnicza Straż Pożarna Witomino to nowo reaktywowana jednostka ochotniczej straży pożarnej z Gdyni – Witomina, która powstała z inicjatywy lokalnej społeczności, by wzmocnić bezpieczeństwo mieszkańców i wspierać działania ratownicze w swoim otoczeniu. Organizacja skupia ochotników gotowych do niesienia pomocy w sytuacjach zagrożenia życia, zdrowia i mienia oraz prowadzi działania prewencyjne i edukacyjne w zakresie bezpieczeństwa.\n\nOSP Witomino angażuje się w szkolenia, podnoszenie świadomości bezpieczeństwa oraz współpracę z mieszkańcami, promując profilaktykę i umiejętności reagowania w kryzysowych sytuacjach, a także budując gotowość lokalnej społeczności do wspólnego działania.';
+
+  @override
+  String get splashPartnerOspLink1Label => 'Strona 1:';
+
+  @override
+  String get splashPartnerOspLink2Label => 'Strona 2:';
+
+  @override
+  String get splashPartnerPonTitle => 'Pomorska Obrona Narodowa';
+
+  @override
+  String get splashPartnerPonDescription =>
+      'Pomorska Obrona Narodowa to stowarzyszenie proobronne z Gdyni, które działa na rzecz wzmacniania bezpieczeństwa państwa i społeczeństwa poprzez edukację, szkolenia i praktyczne działania obywatelskie. Organizacja skupia zarówno czynnych żołnierzy, rezerwistów, jak i cywilów zaangażowanych w promowanie gotowości obronnej oraz umiejętności przydatnych w sytuacjach kryzysowych.\n\nW ramach swojej działalności Pomorska Obrona Narodowa prowadzi różnorodne szkolenia – od przysposobienia obronnego, pierwszej pomocy i nawigacji w terenie, po taktykę lekkiej piechoty oraz elementy działań ratowniczych i obronnych – łącząc wiedzę praktyczną z zaangażowaniem społecznym i obywatelskim.';
+
+  @override
+  String get splashPartnerPonLinkLabel => 'Strona:';
+
+  @override
+  String get splashPartnerPoprTitle => 'POPR';
+
+  @override
+  String get splashPartnerPoprDescription =>
+      'Poszukiwawcze Ochotnicze Pogotowie Ratunkowe (POPR) to stowarzyszenie z Gdyni działające na rzecz bezpieczeństwa i ratownictwa. Organizacja specjalizuje się w poszukiwaniu osób zaginionych w terenach otwartych oraz ewakuacji poszkodowanych z trudno dostępnych miejsc, a także prowadzi szkolenia z pierwszej pomocy i zasad zachowania się w sytuacjach zagrożenia.\n\nPOPR działa non-profit w oparciu o społecznych ochotników i współpracuje z policją oraz innymi służbami ratowniczymi, oferując całodobowe wsparcie w sytuacjach, gdzie liczy się szybka i efektywna pomoc.';
+
+  @override
+  String get splashPartnerPoprLinkLabel => 'Strona:';
+
+  @override
   String get splashLinkOpenError => 'Nie można otworzyć linku';
 
   @override

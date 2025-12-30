@@ -172,6 +172,66 @@ abstract class AppLocalizations {
   /// **'Website FSO:'**
   String get splashPartnerFsoLinkLabel;
 
+  /// No description provided for @splashPartnerOspTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'OSP Witomino'**
+  String get splashPartnerOspTitle;
+
+  /// No description provided for @splashPartnerOspDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'OSP Witomino is a newly reactivated volunteer fire department from Gdynia – Witomino, created by the local community to strengthen residents\' safety and support rescue operations in the area. The organization brings together volunteers ready to help in situations threatening life, health, and property, and runs preventive and educational activities around safety.\n\nOSP Witomino engages in training, raising safety awareness, and cooperating with residents, promoting prevention and crisis response skills while building the local community\'s readiness to act together.'**
+  String get splashPartnerOspDescription;
+
+  /// No description provided for @splashPartnerOspLink1Label.
+  ///
+  /// In en, this message translates to:
+  /// **'Website 1:'**
+  String get splashPartnerOspLink1Label;
+
+  /// No description provided for @splashPartnerOspLink2Label.
+  ///
+  /// In en, this message translates to:
+  /// **'Website 2:'**
+  String get splashPartnerOspLink2Label;
+
+  /// No description provided for @splashPartnerPonTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pomorska Obrona Narodowa'**
+  String get splashPartnerPonTitle;
+
+  /// No description provided for @splashPartnerPonDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Pomorska Obrona Narodowa is a pro-defense association from Gdynia that works to strengthen the security of the state and society through education, training, and practical civic action. The organization brings together active soldiers, reservists, and civilians committed to promoting defense readiness and skills useful in crisis situations.\n\nAs part of its work, Pomorska Obrona Narodowa runs diverse training—from defense preparedness, first aid, and land navigation to light infantry tactics and elements of rescue and defense operations—combining practical knowledge with social and civic engagement.'**
+  String get splashPartnerPonDescription;
+
+  /// No description provided for @splashPartnerPonLinkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website:'**
+  String get splashPartnerPonLinkLabel;
+
+  /// No description provided for @splashPartnerPoprTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'POPR'**
+  String get splashPartnerPoprTitle;
+
+  /// No description provided for @splashPartnerPoprDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Poszukiwawcze Ochotnicze Pogotowie Ratunkowe (POPR) is an association from Gdynia working for safety and rescue. The organization specializes in searching for missing persons in open areas and evacuating the injured from hard-to-reach locations, and provides training in first aid and how to behave in dangerous situations.\n\nPOPR operates non-profit with community volunteers and cooperates with the police and other rescue services, offering around-the-clock support where fast and effective help is critical.'**
+  String get splashPartnerPoprDescription;
+
+  /// No description provided for @splashPartnerPoprLinkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website:'**
+  String get splashPartnerPoprLinkLabel;
+
   /// No description provided for @splashLinkOpenError.
   ///
   /// In en, this message translates to:

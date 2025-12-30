@@ -47,6 +47,39 @@ class AppLocalizationsUk extends AppLocalizations {
   String get splashPartnerFsoLinkLabel => 'Вебсайт FSO:';
 
   @override
+  String get splashPartnerOspTitle => 'OSP Witomino';
+
+  @override
+  String get splashPartnerOspDescription =>
+      'OSP Witomino — щойно відновлена добровільна пожежна частина з Гдині (Вітоміно), створена з ініціативи місцевої спільноти, щоб посилити безпеку мешканців і підтримувати рятувальні дії у своєму районі. Організація об’єднує волонтерів, готових допомагати у ситуаціях загрози життю, здоров’ю та майну, а також веде превентивну та освітню діяльність щодо безпеки.\n\nOSP Witomino залучається до навчань, підвищення обізнаності з безпеки та співпраці з мешканцями, популяризуючи профілактику й навички реагування у кризових ситуаціях, а також формуючи готовність місцевої спільноти діяти разом.';
+
+  @override
+  String get splashPartnerOspLink1Label => 'Вебсайт 1:';
+
+  @override
+  String get splashPartnerOspLink2Label => 'Вебсайт 2:';
+
+  @override
+  String get splashPartnerPonTitle => 'Pomorska Obrona Narodowa';
+
+  @override
+  String get splashPartnerPonDescription =>
+      'Pomorska Obrona Narodowa — прооборонна асоціація з Гдині, що працює над посиленням безпеки держави й суспільства через освіту, тренінги та практичні громадянські дії. Організація об’єднує як чинних військових, резервістів, так і цивільних, які просувають оборонну готовність і навички, корисні в кризових ситуаціях.\n\nУ межах діяльності Pomorska Obrona Narodowa проводить різноманітні тренінги: від оборонної підготовки, першої допомоги та орієнтування на місцевості до тактики легкої піхоти та елементів рятувальних і оборонних дій, поєднуючи практичні знання з громадянською залученістю.';
+
+  @override
+  String get splashPartnerPonLinkLabel => 'Вебсайт:';
+
+  @override
+  String get splashPartnerPoprTitle => 'POPR';
+
+  @override
+  String get splashPartnerPoprDescription =>
+      'Poszukiwawcze Ochotnicze Pogotowie Ratunkowe (POPR) — це асоціація з Гдині, що працює у сфері безпеки та рятувальних операцій. Організація спеціалізується на пошуку зниклих людей у відкритій місцевості та евакуації постраждалих із важкодоступних місць, а також проводить навчання з першої допомоги й правил поведінки у небезпечних ситуаціях.\n\nPOPR працює неприбутково, спираючись на волонтерів, і співпрацює з поліцією та іншими рятувальними службами, пропонуючи цілодобову підтримку там, де важлива швидка й ефективна допомога.';
+
+  @override
+  String get splashPartnerPoprLinkLabel => 'Вебсайт:';
+
+  @override
   String get splashLinkOpenError => 'Не вдалося відкрити посилання';
 
   @override

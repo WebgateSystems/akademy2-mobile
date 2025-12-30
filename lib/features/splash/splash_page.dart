@@ -291,12 +291,20 @@ class _SplashPageState extends ConsumerState<SplashPage> {
 
   Widget _buildPartnerInfoCard(AppLocalizations l10n) {
     final info = _activeLogoInfo!;
-    final linkLabel =
-        info.linkLabel?.isNotEmpty == true ? info.linkLabel! : info.link ?? '';
-    final maxHeight = max(_stackSize.height * 0.35, 200.h);
+    final links = info.links;
+    final availableHeight = _stackSize.height == 0
+        ? MediaQuery.sizeOf(context).height
+        : _stackSize.height;
+    final maxCardHeight = max(availableHeight * 0.7, 320.h);
 
     return Container(
       padding: EdgeInsets.all(16.w),
+      constraints: BoxConstraints(
+        maxWidth: _stackSize.width == 0
+            ? MediaQuery.sizeOf(context).width
+            : _stackSize.width,
+        maxHeight: maxCardHeight,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -307,49 +315,69 @@ class _SplashPageState extends ConsumerState<SplashPage> {
               style: AppTextStyles.h2(context),
             ),
           ),
-          SizedBox(height: 12.h),
-          ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: maxHeight),
+          SizedBox(height: 32.h),
+          Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.zero,
-              child: Text(
-                info.description,
-                style: AppTextStyles.b2(context).copyWith(
-                  color: AppColors.contentSecondary(context),
-                  height: 1.35,
+              child: Center(
+                child: Container(
+                  constraints: BoxConstraints(
+                    maxWidth: 600.w,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        info.description,
+                        style: AppTextStyles.b2(context).copyWith(
+                          color: AppColors.contentSecondary(context),
+                          height: 1.35,
+                        ),
+                      ),
+                      if (links.isNotEmpty) ...[
+                        SizedBox(height: 14.h),
+                        ...links.map(
+                          (link) => Padding(
+                            padding: EdgeInsets.only(bottom: 8.h),
+                            child: RichText(
+                              text: TextSpan(
+                                style: AppTextStyles.b2(context).copyWith(
+                                  color: AppColors.contentSecondary(context),
+                                ),
+                                children: [
+                                  if (link.label != null &&
+                                      link.label!.isNotEmpty)
+                                    TextSpan(text: '${link.label} '),
+                                  TextSpan(
+                                    text: link.url,
+                                    style: AppTextStyles.b2(context).copyWith(
+                                      color: AppColors.blue60,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () => _onLinkTap(link.url),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 2.h),
+                          child: Text(
+                            l10n.splashLinkGuardHint,
+                            style: AppTextStyles.b3(context).copyWith(
+                              color: AppColors.contentSecondary(context),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-          if (info.link != null) ...[
-            SizedBox(height: 14.h),
-            RichText(
-              text: TextSpan(
-                style: AppTextStyles.b2(context).copyWith(
-                  color: AppColors.contentSecondary(context),
-                ),
-                children: [
-                  TextSpan(text: '$linkLabel '),
-                  TextSpan(
-                    text: info.link,
-                    style: AppTextStyles.b2(context).copyWith(
-                      color: AppColors.blue60,
-                      decoration: TextDecoration.underline,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () => _onLinkTap(info.link!),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 4.h),
-            Text(
-              l10n.splashLinkGuardHint,
-              style: AppTextStyles.b3(context).copyWith(
-                color: AppColors.contentSecondary(context),
-              ),
-            ),
-          ],
         ],
       ),
     );
@@ -513,8 +541,9 @@ class _SplashPageState extends ConsumerState<SplashPage> {
     for (final config in _logoConfigs.values) {
       final keyContext = config.key.currentContext;
       final renderBox = keyContext?.findRenderObject() as RenderBox?;
-      if (renderBox == null || !renderBox.attached || !renderBox.hasSize)
+      if (renderBox == null || !renderBox.attached || !renderBox.hasSize) {
         continue;
+      }
 
       final offset = renderBox.localToGlobal(Offset.zero, ancestor: stackBox);
       snapshots.add(
@@ -597,15 +626,51 @@ class _SplashPageState extends ConsumerState<SplashPage> {
       _LogoIds.main: defaultInfo,
       _LogoIds.min: defaultInfo,
       _LogoIds.enhanced: defaultInfo,
-      _LogoIds.logo8: defaultInfo,
       _LogoIds.ws: defaultInfo,
-      _LogoIds.logo6: defaultInfo,
       _LogoIds.securhub: defaultInfo,
       _LogoIds.logo4: _PartnerLogoInfo(
         title: l10n.splashPartnerFsoTitle,
         description: l10n.splashPartnerFsoDescription,
-        link: 'https://www.facebook.com/share/1CHRFB4HEC/',
-        linkLabel: l10n.splashPartnerFsoLinkLabel,
+        links: [
+          _PartnerLink(
+            url: 'https://www.facebook.com/share/1CHRFB4HEC/',
+            label: l10n.splashPartnerFsoLinkLabel,
+          ),
+        ],
+      ),
+      _LogoIds.logo8: _PartnerLogoInfo(
+        title: l10n.splashPartnerOspTitle,
+        description: l10n.splashPartnerOspDescription,
+        links: [
+          _PartnerLink(
+            url: 'https://www.ospwitomino.pl/',
+            label: l10n.splashPartnerOspLink1Label,
+          ),
+          _PartnerLink(
+            url: 'https://www.facebook.com/ospwitomino',
+            label: l10n.splashPartnerOspLink2Label,
+          ),
+        ],
+      ),
+      _LogoIds.logo6: _PartnerLogoInfo(
+        title: l10n.splashPartnerPonTitle,
+        description: l10n.splashPartnerPonDescription,
+        links: [
+          _PartnerLink(
+            url: 'https://pomorskaon.pl/',
+            label: l10n.splashPartnerPonLinkLabel,
+          ),
+        ],
+      ),
+      _LogoIds.enhanced: _PartnerLogoInfo(
+        title: l10n.splashPartnerPoprTitle,
+        description: l10n.splashPartnerPoprDescription,
+        links: [
+          _PartnerLink(
+            url: 'https://www.popr.com.pl/',
+            label: l10n.splashPartnerPoprLinkLabel,
+          ),
+        ],
       ),
     };
   }
@@ -636,14 +701,19 @@ class _PartnerLogoInfo {
   const _PartnerLogoInfo({
     required this.title,
     required this.description,
-    this.link,
-    this.linkLabel,
+    this.links = const [],
   });
 
   final String title;
   final String description;
-  final String? link;
-  final String? linkLabel;
+  final List<_PartnerLink> links;
+}
+
+class _PartnerLink {
+  const _PartnerLink({required this.url, this.label});
+
+  final String url;
+  final String? label;
 }
 
 class _LogoIds {
