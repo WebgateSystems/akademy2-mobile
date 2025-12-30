@@ -142,6 +142,48 @@ abstract class AppLocalizations {
   /// **'Privacy policy'**
   String get privacyPolicy;
 
+  /// No description provided for @splashPartnerDefaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Our partners'**
+  String get splashPartnerDefaultTitle;
+
+  /// No description provided for @splashPartnerDefaultDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap a partner logo to see more. Details for this organization will appear soon.'**
+  String get splashPartnerDefaultDescription;
+
+  /// No description provided for @splashPartnerFsoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fundacja Sebastiana Ody'**
+  String get splashPartnerFsoTitle;
+
+  /// No description provided for @splashPartnerFsoDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Fundacja Sebastiana Ody is a non-governmental organization focused on education in safety, civil defense, and crisis management. The Foundation carries out initiatives to prepare society for extraordinary situations, including training in organizing and coordinating operations, public safety, and civil protection.\n\nIn its work, the Foundation combines expert knowledge with practice, undertaking initiatives related to securing high-risk events, including rocket launches and other undertakings that require advanced planning and safety procedures.'**
+  String get splashPartnerFsoDescription;
+
+  /// No description provided for @splashPartnerFsoLinkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website FSO:'**
+  String get splashPartnerFsoLinkLabel;
+
+  /// No description provided for @splashLinkOpenError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open link'**
+  String get splashLinkOpenError;
+
+  /// No description provided for @splashLinkGuardHint.
+  ///
+  /// In en, this message translates to:
+  /// **'External link is protected by a parental gate.'**
+  String get splashLinkGuardHint;
+
   /// No description provided for @loginFailed.
   ///
   /// In en, this message translates to:

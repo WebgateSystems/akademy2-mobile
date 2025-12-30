@@ -30,6 +30,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get privacyPolicy => 'Privacy policy';
 
   @override
+  String get splashPartnerDefaultTitle => 'Our partners';
+
+  @override
+  String get splashPartnerDefaultDescription =>
+      'Tap a partner logo to see more. Details for this organization will appear soon.';
+
+  @override
+  String get splashPartnerFsoTitle => 'Fundacja Sebastiana Ody';
+
+  @override
+  String get splashPartnerFsoDescription =>
+      'Fundacja Sebastiana Ody is a non-governmental organization focused on education in safety, civil defense, and crisis management. The Foundation carries out initiatives to prepare society for extraordinary situations, including training in organizing and coordinating operations, public safety, and civil protection.\n\nIn its work, the Foundation combines expert knowledge with practice, undertaking initiatives related to securing high-risk events, including rocket launches and other undertakings that require advanced planning and safety procedures.';
+
+  @override
+  String get splashPartnerFsoLinkLabel => 'Website FSO:';
+
+  @override
+  String get splashLinkOpenError => 'Could not open link';
+
+  @override
+  String get splashLinkGuardHint =>
+      'External link is protected by a parental gate.';
+
+  @override
   String loginFailed(String error) {
     return 'Login failed: $error';
   }

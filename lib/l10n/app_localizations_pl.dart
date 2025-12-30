@@ -30,6 +30,30 @@ class AppLocalizationsPl extends AppLocalizations {
   String get privacyPolicy => 'Polityka prywatności';
 
   @override
+  String get splashPartnerDefaultTitle => 'Nasi partnerzy';
+
+  @override
+  String get splashPartnerDefaultDescription =>
+      'Stuknij w logo partnera, aby zobaczyć więcej. Szczegóły dla tej organizacji pojawią się wkrótce.';
+
+  @override
+  String get splashPartnerFsoTitle => 'Fundacja Sebastiana Ody';
+
+  @override
+  String get splashPartnerFsoDescription =>
+      'Fundacja Sebastiana Ody to organizacja pozarządowa zajmująca się edukacją w obszarze bezpieczeństwa, obrony cywilnej oraz zarządzania kryzysowego. Fundacja realizuje działania związane z przygotowaniem społeczeństwa do sytuacji nadzwyczajnych, w tym szkolenia z zakresu organizacji i koordynacji działań, bezpieczeństwa publicznego oraz ochrony ludności.\n\nW swojej działalności Fundacja łączy wiedzę ekspercką z praktyką, podejmując również inicjatywy związane z zabezpieczeniem wydarzeń wysokiego ryzyka, w tym startów rakiet oraz innych przedsięwzięć wymagających zaawansowanego planowania i procedur bezpieczeństwa.';
+
+  @override
+  String get splashPartnerFsoLinkLabel => 'Strona FSO:';
+
+  @override
+  String get splashLinkOpenError => 'Nie można otworzyć linku';
+
+  @override
+  String get splashLinkGuardHint =>
+      'Link zewnętrzny jest zabezpieczony bramką rodzicielską.';
+
+  @override
   String loginFailed(String error) {
     return 'Logowanie nie powiodło się: $error';
   }

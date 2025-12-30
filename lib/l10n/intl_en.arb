@@ -7,6 +7,13 @@
   "loginCreateAccountPrompt": "Don't have an account?",
   "loginCreateAccountCta": "Create account",
   "privacyPolicy": "Privacy policy",
+  "splashPartnerDefaultTitle": "Our partners",
+  "splashPartnerDefaultDescription": "Tap a partner logo to see more. Details for this organization will appear soon.",
+  "splashPartnerFsoTitle": "Fundacja Sebastiana Ody",
+  "splashPartnerFsoDescription": "Fundacja Sebastiana Ody is a non-governmental organization focused on education in safety, civil defense, and crisis management. The Foundation carries out initiatives to prepare society for extraordinary situations, including training in organizing and coordinating operations, public safety, and civil protection.\n\nIn its work, the Foundation combines expert knowledge with practice, undertaking initiatives related to securing high-risk events, including rocket launches and other undertakings that require advanced planning and safety procedures.",
+  "splashPartnerFsoLinkLabel": "Website FSO:",
+  "splashLinkOpenError": "Could not open link",
+  "splashLinkGuardHint": "External link is protected by a parental gate.",
   "loginFailed": "Login failed: {error}",
   "@loginFailed": {
     "placeholders": {

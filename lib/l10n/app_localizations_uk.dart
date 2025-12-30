@@ -30,6 +30,30 @@ class AppLocalizationsUk extends AppLocalizations {
   String get privacyPolicy => 'Політика конфіденційності';
 
   @override
+  String get splashPartnerDefaultTitle => 'Наші партнери';
+
+  @override
+  String get splashPartnerDefaultDescription =>
+      'Натисніть на логотип партнера, щоб дізнатися більше. Деталі для цієї організації з\'являться згодом.';
+
+  @override
+  String get splashPartnerFsoTitle => 'Фундація Себастьяна Оди';
+
+  @override
+  String get splashPartnerFsoDescription =>
+      'Фундація Себастьяна Оди — недержавна організація, що займається просвітою у сфері безпеки, цивільної оборони та кризового управління. Фундація реалізує ініціативи з підготовки суспільства до надзвичайних ситуацій, зокрема проводить навчання з організації та координації дій, громадської безпеки й захисту населення.\n\nУ своїй діяльності Фундація поєднує експертні знання з практикою, беручи участь в ініціативах із забезпечення подій підвищеного ризику, зокрема запусків ракет та інших проєктів, що потребують ретельного планування й процедур безпеки.';
+
+  @override
+  String get splashPartnerFsoLinkLabel => 'Вебсайт FSO:';
+
+  @override
+  String get splashLinkOpenError => 'Не вдалося відкрити посилання';
+
+  @override
+  String get splashLinkGuardHint =>
+      'Зовнішнє посилання відкривається лише після батьківського контролю.';
+
+  @override
   String loginFailed(String error) {
     return 'Не вдалося увійти: $error';
   }
