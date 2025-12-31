@@ -156,8 +156,8 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                     icon: Image.asset(
                       'assets/images/ic_close.png',
                       color: theme.textTheme.bodyMedium?.color,
-                      width: 20.r,
-                      height: 20.r,
+                      width: 16.r,
+                      height: 16.r,
                     ),
                     onPressed: _goNext,
                   ),
@@ -209,7 +209,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
             .rect;
 
     final safeTop = MediaQuery.of(context).padding.top + 68.h;
-    final detailTop = max(safeTop, selectedRect.bottom + 16.h);
+    final detailTop = max(safeTop, selectedRect.bottom + 32.h);
     final maxWidth = min(
       _stackSize.width == 0
           ? MediaQuery.sizeOf(context).width
@@ -251,8 +251,8 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                 icon: Image.asset(
                   'assets/images/ic_close.png',
                   color: theme.textTheme.bodyMedium?.color,
-                  width: 20.r,
-                  height: 20.r,
+                  width: 16.r,
+                  height: 16.r,
                 ),
                 onPressed: _closeDetails,
               ),
@@ -571,7 +571,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
           8.0,
           canvasSize.width - snapshot.rect.width - 8.0,
         );
-        final top = max(padding.top + 68.h, 12.0);
+        final top = max(padding.top + 120.h, 12.0);
         targets[snapshot.config.id] = Rect.fromLTWH(
           clampedLeft.toDouble(),
           top,
@@ -625,7 +625,6 @@ class _SplashPageState extends ConsumerState<SplashPage> {
     return {
       _LogoIds.main: defaultInfo,
       _LogoIds.min: defaultInfo,
-      _LogoIds.enhanced: defaultInfo,
       _LogoIds.ws: defaultInfo,
       _LogoIds.securhub: defaultInfo,
       _LogoIds.logo4: _PartnerLogoInfo(
