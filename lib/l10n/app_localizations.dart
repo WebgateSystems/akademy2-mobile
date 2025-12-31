@@ -1401,6 +1401,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OK'**
   String get ok;
+
+  /// No description provided for @splashPartnerSecurhubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'SecureHUB'**
+  String get splashPartnerSecurhubTitle;
+
+  /// No description provided for @splashPartnerSecurhubDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'SecurHUB zrzesza ekspertów z branży bezpieczeństwa i cyberbezpieczeństwa oferujac kompletny zakres usług w oparciu o wyselekcjonowane firmy i specjalistów z danych dziedzin na podstawie wieloletniego doswiadczenia. SecurHUB to nie tylko wygodna platforma - to gwarancja jakości.'**
+  String get splashPartnerSecurhubDescription;
+
+  /// No description provided for @splashPartnerSecurhubLinkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website:'**
+  String get splashPartnerSecurhubLinkLabel;
+
+  /// No description provided for @splashPartnerMainTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AKAdemy 2.0'**
+  String get splashPartnerMainTitle;
+
+  /// No description provided for @splashPartnerMainDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'AKAdemy 2.0 is a digital learning space that brings together students, teachers, and partners to deliver modern safety and civic education. The platform combines interactive content, multimedia, and project-based activities to help young people build practical skills and awareness. Together with our partners, we create experiences that connect education with real-world action.'**
+  String get splashPartnerMainDescription;
+
+  /// No description provided for @splashPartnerMainLinkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website:'**
+  String get splashPartnerMainLinkLabel;
 }
 
 class _AppLocalizationsDelegate

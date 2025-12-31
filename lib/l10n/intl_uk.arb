@@ -341,5 +341,11 @@
   "networkError": "Помилка мережі. Перевірте з'єднання.",
   "offlineContentTitle": "Контент недоступний офлайн",
   "offlineContentMessage": "Підключіться до інтернету та спробуйте ще раз.",
-  "ok": "OK"
+  "ok": "OK",
+  "splashPartnerSecurhubTitle": "SecureHUB",
+  "splashPartnerSecurhubDescription": "SecurHUB zrzesza ekspertów z branży bezpieczeństwa i cyberbezpieczeństwa oferujac kompletny zakres usług w oparciu o wyselekcjonowane firmy i specjalistów z danych dziedzin на podstawie wieloletniego doswiadczenia. SecurHUB to nie tylko wygodna platforma - to gwarancja jakości.",
+  "splashPartnerSecurhubLinkLabel": "Вебсайт:",
+  "splashPartnerMainTitle": "AKAdemy 2.0",
+  "splashPartnerMainDescription": "AKAdemy 2.0 — це цифровий освітній простір, який об’єднує учнів, учителів і партнерів, пропонуючи сучасну освіту з безпеки та громадянських компетенцій. Платформа поєднує інтерактивні матеріали, мультимедіа та проєктну роботу, щоб допомогти молоді розвивати практичні навички та усвідомленість. Разом із партнерами ми створюємо досвід, що поєднує навчання з реальними діями.",
+  "splashPartnerMainLinkLabel": "Вебсайт:"
 }

@@ -85,7 +85,7 @@
   "resultTitle": "Result",
   "downloadsTitle": "Downloads",
   "downloadsPlaceholder": "Downloads placeholder (M1)",
-  "profileTitle": "Profile",
+  "profileTitle": "Account",
   "profilePlaceholder": "Profile placeholder (M1)",
   "inviteToken": "Invite token: {token}",
   "createAnAccount": "Create an Account",
@@ -219,7 +219,6 @@
       }
     }
   },
-  "profileTitle": "Account",
   "profileFirstName": "First name",
   "profileLastName": "Last name",
   "profileDob": "Date of birth",
@@ -227,11 +226,10 @@
   "profilePhone": "Phone",
   "profilePin": "PIN code",
   "profilePinDialogTitle": "Change PIN",
-  "profilePinDialogMessage":
-      "Enter a new 4-digit PIN and confirm it to keep your account secure.",
+  "profilePinDialogMessage": "Enter a new 4-digit PIN and confirm it to keep your account secure.",
   "profilePinDialogStepNewPin": "Enter new PIN",
   "profilePinDialogStepConfirmPin": "Confirm PIN",
-"profilePinDialogReady": "PIN ready - tap Save to continue.",
+  "profilePinDialogReady": "PIN ready - tap Save to continue.",
   "profilePinDialogMismatch": "PINs do not match. Try again.",
   "profilePinDialogCancel": "Cancel",
   "profilePinDialogSave": "Save PIN",
@@ -314,8 +312,7 @@
   "quizResultDownloadSuccess": "Certificate saved to {path}",
   "quizResultDownloadFailed": "Unable to download certificate: {error}",
   "quizResultDownloadPermissionDenied": "Storage permission is required to save the certificate.",
-  "quizResultDownloadPermissionPermanentlyDenied":
-      "Permission was permanently denied. Enable storage access in settings.",
+  "quizResultDownloadPermissionPermanentlyDenied": "Permission was permanently denied. Enable storage access in settings.",
   "quizResultDownloadOpenSettings": "Open settings",
   "@quizResultDownloadSuccess": {
     "placeholders": {
@@ -344,5 +341,11 @@
   "networkError": "Network error. Please check your connection.",
   "offlineContentTitle": "Content unavailable offline",
   "offlineContentMessage": "Connect to the internet and try again.",
-  "ok": "OK"
+  "ok": "OK",
+  "splashPartnerSecurhubTitle": "SecureHUB",
+  "splashPartnerSecurhubDescription": "SecurHUB zrzesza ekspertów z branży bezpieczeństwa i cyberbezpieczeństwa oferujac kompletny zakres usług w oparciu o wyselekcjonowane firmy i specjalistów z danych dziedzin na podstawie wieloletniego doswiadczenia. SecurHUB to nie tylko wygodna platforma - to gwarancja jakości.",
+  "splashPartnerSecurhubLinkLabel": "Website:",
+  "splashPartnerMainTitle": "AKAdemy 2.0",
+  "splashPartnerMainDescription": "AKAdemy 2.0 is a digital learning space that brings together students, teachers, and partners to deliver modern safety and civic education. The platform combines interactive content, multimedia, and project-based activities to help young people build practical skills and awareness. Together with our partners, we create experiences that connect education with real-world action.",
+  "splashPartnerMainLinkLabel": "Website:"
 }

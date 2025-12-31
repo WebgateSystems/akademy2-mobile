@@ -738,4 +738,24 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get ok => 'OK';
+
+  @override
+  String get splashPartnerSecurhubTitle => 'SecureHUB';
+
+  @override
+  String get splashPartnerSecurhubDescription =>
+      'SecurHUB zrzesza ekspertów z branży bezpieczeństwa i cyberbezpieczeństwa oferujac kompletny zakres usług w oparciu o wyselekcjonowane firmy i specjalistów z danych dziedzin на podstawie wieloletniego doswiadczenia. SecurHUB to nie tylko wygodna platforma - to gwarancja jakości.';
+
+  @override
+  String get splashPartnerSecurhubLinkLabel => 'Вебсайт:';
+
+  @override
+  String get splashPartnerMainTitle => 'AKAdemy 2.0';
+
+  @override
+  String get splashPartnerMainDescription =>
+      'AKAdemy 2.0 — це цифровий освітній простір, який об’єднує учнів, учителів і партнерів, пропонуючи сучасну освіту з безпеки та громадянських компетенцій. Платформа поєднує інтерактивні матеріали, мультимедіа та проєктну роботу, щоб допомогти молоді розвивати практичні навички та усвідомленість. Разом із партнерами ми створюємо досвід, що поєднує навчання з реальними діями.';
+
+  @override
+  String get splashPartnerMainLinkLabel => 'Вебсайт:';
 }

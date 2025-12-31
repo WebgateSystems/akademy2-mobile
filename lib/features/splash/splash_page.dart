@@ -656,7 +656,16 @@ class _SplashPageState extends ConsumerState<SplashPage> {
   Map<String, _PartnerLogoInfo> _localizedPartnerInfo(AppLocalizations l10n) {
     final defaultInfo = _defaultLogoInfo(l10n);
     return {
-      _LogoIds.main: defaultInfo,
+      _LogoIds.main: _PartnerLogoInfo(
+        title: l10n.splashPartnerMainTitle,
+        description: l10n.splashPartnerMainDescription,
+        links: [
+          _PartnerLink(
+            url: 'https://akademy.edu.pl/',
+            label: l10n.splashPartnerMainLinkLabel,
+          ),
+        ],
+      ),
       _LogoIds.ws: _PartnerLogoInfo(
         title: l10n.splashPartnerWsTitle,
         description: l10n.splashPartnerWsDescription,
@@ -667,7 +676,16 @@ class _SplashPageState extends ConsumerState<SplashPage> {
           ),
         ],
       ),
-      _LogoIds.securhub: defaultInfo,
+      _LogoIds.securhub: _PartnerLogoInfo(
+        title: l10n.splashPartnerSecurhubTitle,
+        description: l10n.splashPartnerSecurhubDescription,
+        links: [
+          _PartnerLink(
+            url: 'https://www.securhub.pl/',
+            label: l10n.splashPartnerSecurhubLinkLabel,
+          ),
+        ],
+      ),
       _LogoIds.logo4: _PartnerLogoInfo(
         title: l10n.splashPartnerFsoTitle,
         description: l10n.splashPartnerFsoDescription,
