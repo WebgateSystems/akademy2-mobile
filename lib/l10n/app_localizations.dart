@@ -232,6 +232,60 @@ abstract class AppLocalizations {
   /// **'Website:'**
   String get splashPartnerPoprLinkLabel;
 
+  /// No description provided for @splashPartnerMenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ministerstwo Edukacji Narodowej'**
+  String get splashPartnerMenTitle;
+
+  /// No description provided for @splashPartnerMenDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Projekt współfinansowany przez Ministerstwo Edukacji Narodowej w ramach programu \'Młodzi Obywatele\' 2025'**
+  String get splashPartnerMenDescription;
+
+  /// No description provided for @splashPartnerMenLinkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website:'**
+  String get splashPartnerMenLinkLabel;
+
+  /// No description provided for @splashPartnerWsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Webgate Systems LTD'**
+  String get splashPartnerWsTitle;
+
+  /// No description provided for @splashPartnerWsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Jesteśmy międzynarodowym zespołem doświadczonych specjalistów, wyspecjalizowanych w projektowaniu i utrzymaniu wysokowydajnych aplikacji webowych w skali przemysłowej. Realizujemy zarówno proste strony i niewielkie projekty, jak i złożone systemy o dużym ruchu, gdzie kluczowe znaczenie mają skalowalność, wysoka dostępność (HA) oraz architektury rozproszone pomiędzy centrami danych. Nasze kompetencje obejmują m.in. systemy CRM, platformy analityczne, sieci reklamowe czy rozwiązania bankowości online.\n\nPracujemy w oparciu o metodyki zwinne, umożliwiając klientom realny wpływ na kształt produktu na każdym etapie rozwoju – w regularnych, krótkich iteracjach.\n\nStosujemy automatyczne testy oraz podejście Behaviour Driven Development (BDD), co przekłada się na wysoką jakość kodu, łatwość rozwoju i aktualizacji oraz długoterminową odporność systemów na zagrożenia bezpieczeństwa.\n\nJakość kodu traktujemy bezkompromisowo – dlatego nie mamy oporów przed jego udostępnianiem. Jeśli umowa na to pozwala, tworzymy rozwiązania o otwartym kodzie źródłowym, z bardzo wysokim pokryciem testami. Projekt AKAdemy 2.0 jest tego naturalnym przykładem, a nie wyjątkiem.'**
+  String get splashPartnerWsDescription;
+
+  /// No description provided for @splashPartnerWsLinkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website:'**
+  String get splashPartnerWsLinkLabel;
+
+  /// No description provided for @splashPartnerValldalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Teatr Valldal'**
+  String get splashPartnerValldalTitle;
+
+  /// No description provided for @splashPartnerValldalDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Teatr Komedii Valldal to niezależna, wielopokoleniowa społeczność teatralna z Gdyni, działająca od 2014 roku. Tworzy autorskie musicale i spektakle familijne, łączące humor z refleksją nad współczesnymi tematami społecznymi, m.in. „Wikingowie. Musical nieletni”, „Hejt School Musical” czy „Fauna. Musical nieludzki”.\n\nValldal to także przestrzeń edukacji i rozwoju twórczego – teatr prowadzi warsztaty aktorskie, wokalne i taneczne, budując otwartą społeczność osób w różnym wieku oraz łącząc sztukę z edukacją i działaniami społecznymi.'**
+  String get splashPartnerValldalDescription;
+
+  /// No description provided for @splashPartnerValldalLinkLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Website:'**
+  String get splashPartnerValldalLinkLabel;
+
   /// No description provided for @splashGoToWebsite.
   ///
   /// In en, this message translates to:

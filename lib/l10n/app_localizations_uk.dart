@@ -80,6 +80,36 @@ class AppLocalizationsUk extends AppLocalizations {
   String get splashPartnerPoprLinkLabel => 'Вебсайт:';
 
   @override
+  String get splashPartnerMenTitle => 'Ministerstwo Edukacji Narodowej';
+
+  @override
+  String get splashPartnerMenDescription =>
+      'Проєкт співфінансований Міністерством народної освіти в межах програми \"Młodzi Obywatele\" 2025';
+
+  @override
+  String get splashPartnerMenLinkLabel => 'Вебсайт:';
+
+  @override
+  String get splashPartnerWsTitle => 'Webgate Systems LTD';
+
+  @override
+  String get splashPartnerWsDescription =>
+      'Jesteśmy międzynarodowym zespołem doświadczonych specjalistów, wyspecjalizowanych w projektowaniu i utrzymaniu wysokowydajnych aplikacji webowych w skali przemysłowej. Realizujemy zarówno proste strony i niewielkie projekty, jak i złożone systemy o dużym ruchu, gdzie kluczowe znaczenie mają skalowalność, wysoka dostępność (HA) oraz architektury rozproszone pomiędzy centrami danych. Nasze kompetencje obejmują m.in. systemy CRM, platformy analityczne, sieci reklamowe czy rozwiązania bankowości online.\n\nPracujemy w oparciu o metodyki zwinne, umożliwiając klientom realny wpływ na kształt produktu на każdym etapie rozwoju – в regularnych, krótkich iteracjach.\n\nStosujemy automatyczne testy oraz podejście Behaviour Driven Development (BDD), co przekłada się на wysoką jakość kodu, łatwość rozwoju i aktualizacji oraz długoterminową odporność systemów на zagrożenia bezpieczeństwa.\n\nJakość kodu traktujemy bezkompromisowo – dlatego nie mamy oporów przed jego udostępnianiem. Jeśli umowa на to pozwala, tworzymy rozwiązania o otwartym kodzie źródłowym, z bardzo wysokim pokryciem testами. Projekt AKAdemy 2.0 jest tego naturalnym przykładem, a nie wyjątkiem.';
+
+  @override
+  String get splashPartnerWsLinkLabel => 'Вебсайт:';
+
+  @override
+  String get splashPartnerValldalTitle => 'Teatr Valldal';
+
+  @override
+  String get splashPartnerValldalDescription =>
+      'Teatr Komedii Valldal to niezależna, wielopokoleniowa społeczność teatralna z Gdyni, działająca od 2014 roku. Tworzy autorskie musicale i spektakle familijne, łączące humor z refleksją nad współczesnymi tematami społecznymi, m.in. „Wikingowie. Musical nieletni”, „Hejt School Musical” czy „Fauna. Musical nieludzki”.\n\nValldal to także przestrzeń edukacji i rozwoju twórczego – teatr prowadzi warsztaty aktorskie, wokalne i taneczne, budując otwartą społeczność osób w różnym wieku oraz łącząc sztukę z edukacją i działaniami społecznymi.';
+
+  @override
+  String get splashPartnerValldalLinkLabel => 'Вебсайт:';
+
+  @override
   String get splashGoToWebsite => 'Перейти на сайт';
 
   @override

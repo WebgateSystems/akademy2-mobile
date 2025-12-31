@@ -22,6 +22,15 @@
   "splashPartnerPoprTitle": "POPR",
   "splashPartnerPoprDescription": "Poszukiwawcze Ochotnicze Pogotowie Ratunkowe (POPR) — це асоціація з Гдині, що працює у сфері безпеки та рятувальних операцій. Організація спеціалізується на пошуку зниклих людей у відкритій місцевості та евакуації постраждалих із важкодоступних місць, а також проводить навчання з першої допомоги й правил поведінки у небезпечних ситуаціях.\n\nPOPR працює неприбутково, спираючись на волонтерів, і співпрацює з поліцією та іншими рятувальними службами, пропонуючи цілодобову підтримку там, де важлива швидка й ефективна допомога.",
   "splashPartnerPoprLinkLabel": "Вебсайт:",
+  "splashPartnerMenTitle": "Ministerstwo Edukacji Narodowej",
+  "splashPartnerMenDescription": "Проєкт співфінансований Міністерством народної освіти в межах програми \"Młodzi Obywatele\" 2025",
+  "splashPartnerMenLinkLabel": "Вебсайт:",
+  "splashPartnerWsTitle": "Webgate Systems LTD",
+  "splashPartnerWsDescription": "Jesteśmy międzynarodowym zespołem doświadczonych specjalistów, wyspecjalizowanych w projektowaniu i utrzymaniu wysokowydajnych aplikacji webowych w skali przemysłowej. Realizujemy zarówno proste strony i niewielkie projekty, jak i złożone systemy o dużym ruchu, gdzie kluczowe znaczenie mają skalowalność, wysoka dostępność (HA) oraz architektury rozproszone pomiędzy centrami danych. Nasze kompetencje obejmują m.in. systemy CRM, platformy analityczne, sieci reklamowe czy rozwiązania bankowości online.\n\nPracujemy w oparciu o metodyki zwinne, umożliwiając klientom realny wpływ na kształt produktu на każdym etapie rozwoju – в regularnych, krótkich iteracjach.\n\nStosujemy automatyczne testy oraz podejście Behaviour Driven Development (BDD), co przekłada się на wysoką jakość kodu, łatwość rozwoju i aktualizacji oraz długoterminową odporność systemów на zagrożenia bezpieczeństwa.\n\nJakość kodu traktujemy bezkompromisowo – dlatego nie mamy oporów przed jego udostępnianiem. Jeśli umowa на to pozwala, tworzymy rozwiązania o otwartym kodzie źródłowym, z bardzo wysokim pokryciem testами. Projekt AKAdemy 2.0 jest tego naturalnym przykładem, a nie wyjątkiem.",
+  "splashPartnerWsLinkLabel": "Вебсайт:",
+  "splashPartnerValldalTitle": "Teatr Valldal",
+  "splashPartnerValldalDescription": "Teatr Komedii Valldal to niezależna, wielopokoleniowa społeczność teatralna z Gdyni, działająca od 2014 roku. Tworzy autorskie musicale i spektakle familijne, łączące humor z refleksją nad współczesnymi tematami społecznymi, m.in. „Wikingowie. Musical nieletni”, „Hejt School Musical” czy „Fauna. Musical nieludzki”.\n\nValldal to także przestrzeń edukacji i rozwoju twórczego – teatr prowadzi warsztaty aktorskie, wokalne i taneczne, budując otwartą społeczność osób w różnym wieku oraz łącząc sztukę z edukacją i działaniami społecznymi.",
+  "splashPartnerValldalLinkLabel": "Вебсайт:",
   "splashGoToWebsite": "Перейти на сайт",
   "splashGoToFacebook": "Перейти у Facebook",
   "splashLinkOpenError": "Не вдалося відкрити посилання",
@@ -76,7 +85,7 @@
   "resultTitle": "Результат",
   "downloadsTitle": "Завантаження",
   "downloadsPlaceholder": "Заглушка завантажень (M1)",
-  "profileTitle": "Профіль",
+  "profileTitle": "Акаунт",
   "profilePlaceholder": "Заглушка профілю (M1)",
   "inviteToken": "Токен запрошення: {token}",
   "createAnAccount": "Створити обліковий запис",
@@ -210,7 +219,6 @@
       }
     }
   },
-  "profileTitle": "Акаунт",
   "profileFirstName": "Ім'я",
   "profileLastName": "Прізвище",
   "profileDob": "Дата народження",
@@ -218,11 +226,10 @@
   "profilePhone": "Телефон",
   "profilePin": "PIN код",
   "profilePinDialogTitle": "Змінити PIN",
-  "profilePinDialogMessage":
-      "Введіть новий 4-значний код PIN і підтвердіть його, щоб захистити акаунт.",
+  "profilePinDialogMessage": "Введіть новий 4-значний код PIN і підтвердіть його, щоб захистити акаунт.",
   "profilePinDialogStepNewPin": "Введіть новий PIN",
   "profilePinDialogStepConfirmPin": "Підтвердіть PIN",
-"profilePinDialogReady": "PIN готовий - натисніть Зберегти, щоб продовжити.",
+  "profilePinDialogReady": "PIN готовий - натисніть Зберегти, щоб продовжити.",
   "profilePinDialogMismatch": "PIN не співпадають. Спробуйте ще раз.",
   "profilePinDialogCancel": "Скасувати",
   "profilePinDialogSave": "Зберегти PIN",
@@ -304,10 +311,8 @@
   "quizResultDownloadMissing": "Сертифікат ще не готовий. Спробуйте пізніше.",
   "quizResultDownloadSuccess": "Сертифікат збережено у {path}.",
   "quizResultDownloadFailed": "Не вдалося завантажити сертифікат: {error}",
-  "quizResultDownloadPermissionDenied":
-      "Потрібен доступ до пам’яті для збереження сертифікату.",
-  "quizResultDownloadPermissionPermanentlyDenied":
-      "Дозвіл остаточно відхилено. Увімкніть доступ до пам’яті в налаштуваннях.",
+  "quizResultDownloadPermissionDenied": "Потрібен доступ до пам’яті для збереження сертифікату.",
+  "quizResultDownloadPermissionPermanentlyDenied": "Дозвіл остаточно відхилено. Увімкніть доступ до пам’яті в налаштуваннях.",
   "quizResultDownloadOpenSettings": "Відкрити налаштування",
   "@quizResultDownloadSuccess": {
     "placeholders": {
