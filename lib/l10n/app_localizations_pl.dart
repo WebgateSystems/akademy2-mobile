@@ -80,6 +80,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get splashPartnerPoprLinkLabel => 'Strona:';
 
   @override
+  String get splashGoToWebsite => 'Przejdź na stronę';
+
+  @override
+  String get splashGoToFacebook => 'Przejdź na Facebook';
+
+  @override
   String get splashLinkOpenError => 'Nie można otworzyć linku';
 
   @override

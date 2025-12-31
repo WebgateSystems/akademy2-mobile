@@ -22,6 +22,8 @@
   "splashPartnerPoprTitle": "POPR",
   "splashPartnerPoprDescription": "Poszukiwawcze Ochotnicze Pogotowie Ratunkowe (POPR) is an association from Gdynia working for safety and rescue. The organization specializes in searching for missing persons in open areas and evacuating the injured from hard-to-reach locations, and provides training in first aid and how to behave in dangerous situations.\n\nPOPR operates non-profit with community volunteers and cooperates with the police and other rescue services, offering around-the-clock support where fast and effective help is critical.",
   "splashPartnerPoprLinkLabel": "Website:",
+  "splashGoToWebsite": "Go to website",
+  "splashGoToFacebook": "Go to Facebook",
   "splashLinkOpenError": "Could not open link",
   "splashLinkGuardHint": "External link is protected by a parental gate.",
   "loginFailed": "Login failed: {error}",

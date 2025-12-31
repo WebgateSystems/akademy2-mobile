@@ -80,6 +80,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get splashPartnerPoprLinkLabel => 'Вебсайт:';
 
   @override
+  String get splashGoToWebsite => 'Перейти на сайт';
+
+  @override
+  String get splashGoToFacebook => 'Перейти у Facebook';
+
+  @override
   String get splashLinkOpenError => 'Не вдалося відкрити посилання';
 
   @override

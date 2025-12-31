@@ -232,6 +232,18 @@ abstract class AppLocalizations {
   /// **'Website:'**
   String get splashPartnerPoprLinkLabel;
 
+  /// No description provided for @splashGoToWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to website'**
+  String get splashGoToWebsite;
+
+  /// No description provided for @splashGoToFacebook.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Facebook'**
+  String get splashGoToFacebook;
+
   /// No description provided for @splashLinkOpenError.
   ///
   /// In en, this message translates to:

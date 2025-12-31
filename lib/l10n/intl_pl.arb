@@ -22,6 +22,8 @@
   "splashPartnerPoprTitle": "POPR",
   "splashPartnerPoprDescription": "Poszukiwawcze Ochotnicze Pogotowie Ratunkowe (POPR) to stowarzyszenie z Gdyni działające na rzecz bezpieczeństwa i ratownictwa. Organizacja specjalizuje się w poszukiwaniu osób zaginionych w terenach otwartych oraz ewakuacji poszkodowanych z trudno dostępnych miejsc, a także prowadzi szkolenia z pierwszej pomocy i zasad zachowania się w sytuacjach zagrożenia.\n\nPOPR działa non-profit w oparciu o społecznych ochotników i współpracuje z policją oraz innymi służbami ratowniczymi, oferując całodobowe wsparcie w sytuacjach, gdzie liczy się szybka i efektywna pomoc.",
   "splashPartnerPoprLinkLabel": "Strona:",
+  "splashGoToWebsite": "Przejdź na stronę",
+  "splashGoToFacebook": "Przejdź na Facebook",
   "splashLinkOpenError": "Nie można otworzyć linku",
   "splashLinkGuardHint": "Link zewnętrzny jest zabezpieczony bramką rodzicielską.",
   "loginFailed": "Logowanie nie powiodło się: {error}",

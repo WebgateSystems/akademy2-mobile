@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:academy_2_app/app/theme/tokens.dart';
+import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -335,30 +335,13 @@ class _SplashPageState extends ConsumerState<SplashPage> {
                         ),
                       ),
                       if (links.isNotEmpty) ...[
-                        SizedBox(height: 14.h),
+                        SizedBox(height: 6.h),
                         ...links.map(
                           (link) => Padding(
-                            padding: EdgeInsets.only(bottom: 8.h),
-                            child: RichText(
-                              text: TextSpan(
-                                style: AppTextStyles.b2(context).copyWith(
-                                  color: AppColors.contentSecondary(context),
-                                ),
-                                children: [
-                                  if (link.label != null &&
-                                      link.label!.isNotEmpty)
-                                    TextSpan(text: '${link.label} '),
-                                  TextSpan(
-                                    text: link.url,
-                                    style: AppTextStyles.b2(context).copyWith(
-                                      color: AppColors.blue60,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () => _onLinkTap(link.url),
-                                  ),
-                                ],
-                              ),
+                            padding: EdgeInsets.only(bottom: 2.h),
+                            child: ActionTextButtonWidget(
+                              text: _linkButtonText(link, l10n),
+                              onPressed: () => _onLinkTap(link.url),
                             ),
                           ),
                         ),
@@ -678,6 +661,14 @@ class _SplashPageState extends ConsumerState<SplashPage> {
         title: l10n.splashPartnerDefaultTitle,
         description: l10n.splashPartnerDefaultDescription,
       );
+
+  String _linkButtonText(_PartnerLink link, AppLocalizations l10n) {
+    final label = link.label?.toLowerCase() ?? '';
+    final url = link.url.toLowerCase();
+    final isFacebook =
+        url.contains('facebook.com') || label.contains('facebook');
+    return isFacebook ? l10n.splashGoToFacebook : l10n.splashGoToWebsite;
+  }
 }
 
 class _PartnerLogoConfig {
