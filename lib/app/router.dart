@@ -7,10 +7,10 @@ import '../core/auth/auth_provider.dart';
 import '../features/auth/auth_flow_models.dart';
 import '../features/auth/create_account_page.dart';
 import '../features/auth/enable_biometric_page.dart';
+import '../features/auth/forgot_password_page.dart';
 import '../features/auth/join_group_page.dart';
 import '../features/auth/login_page.dart';
 import '../features/auth/pin_pages.dart';
-import '../features/auth/tech_login_page.dart';
 import '../features/auth/unlock_page.dart';
 import '../features/auth/verify_email_page.dart';
 import '../features/auth/verify_phone_page.dart';
@@ -46,8 +46,8 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
       GoRoute(
-        path: '/tech-login',
-        builder: (context, state) => const TechLoginPage(),
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordPage(),
       ),
       GoRoute(
         path: '/login-pin',
@@ -188,7 +188,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final loggingIn = loc == '/login';
       final onLoginPin = loc == '/login-pin';
       final onUnlock = loc == '/unlock';
-      final onTechLogin = loc == '/tech-login';
+      final onForgotPassword = loc == '/forgot-password';
       final onSplash = loc == '/splash';
       final onCreateAccount = loc == '/create-account';
       final onVerifyPhone = loc == '/verify-phone';
@@ -208,7 +208,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         loggingIn,
         onLoginPin,
         onUnlock,
-        onTechLogin,
+        onForgotPassword,
         onCreateAccount,
         onVerifyPhone,
         onVerifyEmail,

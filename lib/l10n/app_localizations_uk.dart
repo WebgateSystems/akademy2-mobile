@@ -27,7 +27,26 @@ class AppLocalizationsUk extends AppLocalizations {
   String get loginCreateAccountCta => 'Створити';
 
   @override
+  String get loginForgotPassword => 'Забули пароль?';
+
+  @override
   String get privacyPolicy => 'Політика конфіденційності';
+
+  @override
+  String get forgotPasswordTitle => 'Скидання пароля';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'Введіть свою електронну адресу, і ми надішлемо вам інструкції для скидання пароля.';
+
+  @override
+  String get forgotPasswordEmailField => 'Електронна адреса';
+
+  @override
+  String get forgotPasswordSendButton => 'Надіслати інструкції';
+
+  @override
+  String get forgotPasswordBackToLogin => 'Повернутися до входу';
 
   @override
   String get splashPartnerDefaultTitle => 'Наші партнери';
@@ -237,13 +256,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get emailField => 'Email';
 
   @override
+  String get emailRequired => 'Електронна адреса обов’язкова';
+
+  @override
   String get phoneField => 'Телефон';
 
   @override
   String get dateOfBirthHintField => 'DD.MM.YYYY';
 
   @override
-  String get emailHintField => 'emily.corner@gmail.com';
+  String get emailHintField => 'name@school.edu';
 
   @override
   String get phoneHintField => '+48 XXX XXX XXX';

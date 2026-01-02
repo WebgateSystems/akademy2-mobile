@@ -140,6 +140,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 ),
               ),
               SizedBox(height: 16.h),
+              ActionTextButtonWidget(
+                onPressed: () => context.go('/forgot-password'),
+                text: l10n.loginForgotPassword,
+                fullWidth: true,
+              ),
               Center(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

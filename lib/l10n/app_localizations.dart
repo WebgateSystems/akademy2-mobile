@@ -136,11 +136,47 @@ abstract class AppLocalizations {
   /// **'Create account'**
   String get loginCreateAccountCta;
 
+  /// No description provided for @loginForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot your password?'**
+  String get loginForgotPassword;
+
   /// No description provided for @privacyPolicy.
   ///
   /// In en, this message translates to:
   /// **'Privacy policy'**
   String get privacyPolicy;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email address and we\'ll send you instructions to reset your password.'**
+  String get forgotPasswordSubtitle;
+
+  /// No description provided for @forgotPasswordEmailField.
+  ///
+  /// In en, this message translates to:
+  /// **'Email address'**
+  String get forgotPasswordEmailField;
+
+  /// No description provided for @forgotPasswordSendButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Instructions'**
+  String get forgotPasswordSendButton;
+
+  /// No description provided for @forgotPasswordBackToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to login'**
+  String get forgotPasswordBackToLogin;
 
   /// No description provided for @splashPartnerDefaultTitle.
   ///
@@ -514,6 +550,12 @@ abstract class AppLocalizations {
   /// **'Email'**
   String get emailField;
 
+  /// No description provided for @emailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email address is required'**
+  String get emailRequired;
+
   /// No description provided for @phoneField.
   ///
   /// In en, this message translates to:
@@ -529,7 +571,7 @@ abstract class AppLocalizations {
   /// No description provided for @emailHintField.
   ///
   /// In en, this message translates to:
-  /// **'emily.corner@gmail.com'**
+  /// **'name@school.edu'**
   String get emailHintField;
 
   /// No description provided for @phoneHintField.

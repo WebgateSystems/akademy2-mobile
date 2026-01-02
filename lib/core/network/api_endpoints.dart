@@ -5,6 +5,7 @@ class ApiEndpoints {
   static const session = 'v1/session';
   static const authRefresh = 'v1/auth/refresh';
   static const authLogout = 'v1/auth/logout';
+  static const forgotPassword = 'v1/passwords/forgot';
 
   // Registration
   static const registerFlow = 'v1/register/flow';
