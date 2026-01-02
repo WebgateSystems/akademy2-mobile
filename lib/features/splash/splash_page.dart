@@ -135,7 +135,7 @@ class _SplashPageState extends ConsumerState<SplashPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
-    final isTablet = MediaQuery.sizeOf(context).width > 800;
+    final isTablet = MediaQuery.sizeOf(context).width > 600;
 
     return Scaffold(
       backgroundColor: AppColors.blue05,

@@ -261,7 +261,7 @@ class _ModulePageState extends ConsumerState<ModulePage> {
 
         final downloadState = downloadMap[moduleId];
 
-        bool isTablet = MediaQuery.sizeOf(context).width > 800;
+        bool isTablet = MediaQuery.sizeOf(context).width > 600;
         final viewPadding = MediaQueryData.fromView(View.of(context)).padding;
         final leftInset = viewPadding.left == viewPadding.right
             ? viewPadding.left

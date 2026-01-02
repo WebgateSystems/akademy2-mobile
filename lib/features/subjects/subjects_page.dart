@@ -121,10 +121,10 @@ class _SubjectsPageState extends ConsumerState<SubjectsPage> {
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.w),
                 sliver: SliverGrid(
                   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 320.r,
+                    maxCrossAxisExtent: 280.r,
                     mainAxisSpacing: 2.r,
                     crossAxisSpacing: 12.r,
-                    childAspectRatio: isTablet ? 1.5 : 0.9,
+                    childAspectRatio: isTablet ? 1.2 : 0.9,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {

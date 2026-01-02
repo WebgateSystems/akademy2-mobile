@@ -117,18 +117,27 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             title: l10n.loginTitle,
             children: [
               SizedBox(height: 16.h),
-              EditTextWidget(
-                controller: _phoneCtl,
-                hint: l10n.phoneHintField,
-                label: l10n.phoneField,
-                keyboard: TextInputType.phone,
-                errorText: _phoneError,
-              ),
-              SizedBox(height: 16.h),
-              ActionButtonWidget(
-                onPressed: _goToPin,
-                text: l10n.loginTitle,
-                loading: isLoading,
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 600),
+                  child: Column(
+                    children: [
+                      EditTextWidget(
+                        controller: _phoneCtl,
+                        hint: l10n.phoneHintField,
+                        label: l10n.phoneField,
+                        keyboard: TextInputType.phone,
+                        errorText: _phoneError,
+                      ),
+                      SizedBox(height: 16.h),
+                      ActionButtonWidget(
+                        onPressed: _goToPin,
+                        text: l10n.loginTitle,
+                        loading: isLoading,
+                      ),
+                    ],
+                  ),
+                ),
               ),
               SizedBox(height: 16.h),
               Center(

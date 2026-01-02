@@ -595,7 +595,7 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
       _loadVideos(reset: true);
     });
 
-    bool isTablet = MediaQuery.sizeOf(context).width > 800;
+    bool isTablet = MediaQuery.sizeOf(context).width > 600;
 
     return Scaffold(
       body: Align(

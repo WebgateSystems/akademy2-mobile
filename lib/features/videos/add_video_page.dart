@@ -114,7 +114,7 @@ class _AddVideoPageState extends State<AddVideoPage> {
         _subjectId != null &&
         _titleCtrl.text.trim().isNotEmpty;
     final l10n = AppLocalizations.of(context)!;
-    bool isTablet = MediaQuery.sizeOf(context).width > 800;
+    bool isTablet = MediaQuery.sizeOf(context).width > 600;
     final viewPadding = MediaQueryData.fromView(View.of(context)).padding;
     final leftInset = viewPadding.left == viewPadding.right
         ? viewPadding.left

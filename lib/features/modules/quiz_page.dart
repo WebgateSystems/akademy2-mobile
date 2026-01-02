@@ -94,7 +94,7 @@ class _QuizPageState extends State<QuizPage> {
         final progress = '${_current + 1}/${_questions.length}';
         final canProceed = (_selected[question.id]?.isNotEmpty ?? false);
 
-        final isTablet = MediaQuery.sizeOf(context).width > 800;
+        final isTablet = MediaQuery.sizeOf(context).width > 600;
 
         Widget options;
         if (isTablet) {

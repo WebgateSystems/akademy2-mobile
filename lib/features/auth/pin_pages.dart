@@ -330,8 +330,8 @@ class _PinKeypad extends StatelessWidget {
       'back',
     ];
     return SizedBox(
-      width: 280.w,
-      height: 396.h,
+      width: 280.r,
+      height: 396.r,
       child: GridView.builder(
         physics: const NeverScrollableScrollPhysics(),
         itemCount: keys.length,

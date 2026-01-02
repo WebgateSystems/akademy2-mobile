@@ -24,7 +24,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get loginCreateAccountPrompt => 'Немає облікового запису?';
 
   @override
-  String get loginCreateAccountCta => 'Створити акаунт';
+  String get loginCreateAccountCta => 'Створити';
 
   @override
   String get privacyPolicy => 'Політика конфіденційності';

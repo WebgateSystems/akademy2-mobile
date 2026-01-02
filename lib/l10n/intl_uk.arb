@@ -5,7 +5,7 @@
   "loginPhoneRequired": "Введіть свій номер телефону",
   "loginPhoneInvalid": "Некоректний номер телефону.",
   "loginCreateAccountPrompt": "Немає облікового запису?",
-  "loginCreateAccountCta": "Створити акаунт",
+  "loginCreateAccountCta": "Створити",
   "privacyPolicy": "Політика конфіденційності",
   "splashPartnerDefaultTitle": "Наші партнери",
   "splashPartnerDefaultDescription": "Натисніть на логотип партнера, щоб дізнатися більше. Деталі для цієї організації з'являться згодом.",
