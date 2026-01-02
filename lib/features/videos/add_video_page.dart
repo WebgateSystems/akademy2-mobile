@@ -395,7 +395,7 @@ class _PreviewPicker extends StatelessWidget {
         }
 
         return Container(
-          height: calculatedHeight,
+          height: width / 2,
           width: width,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.r),
@@ -426,7 +426,7 @@ class _PreviewPicker extends StatelessWidget {
               else
                 Center(
                   child: CircleAvatar(
-                    radius: 48.w / 2,
+                    radius: 48.r / 2,
                     backgroundColor: AppColors.surfaceIcon(context),
                     child: Image.asset(
                       Theme.of(context).brightness == Brightness.dark
@@ -449,9 +449,7 @@ class _PreviewPicker extends StatelessWidget {
                   ),
                 ),
               if (hasVideo)
-                Positioned(
-                  bottom: 80.h,
-                  right: MediaQuery.of(context).size.width / 2 - 40.w,
+                Positioned.fill(
                   child: _PlayPauseButton(
                     isPlaying: controller!.value.isPlaying,
                     onPressed: onTogglePlayback,
@@ -476,18 +474,22 @@ class _PlayPauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.black54,
-      shape: const CircleBorder(),
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onPressed,
-        child: Padding(
-          padding: EdgeInsets.all(8.w),
-          child: Icon(
-            isPlaying ? Icons.pause : Icons.play_arrow,
-            color: Colors.white,
-            size: 20.w,
+    return Container(
+      child: Center(
+        child: Material(
+          color: Colors.black54,
+          shape: const CircleBorder(),
+          child: InkWell(
+            customBorder: const CircleBorder(),
+            onTap: onPressed,
+            child: Padding(
+              padding: EdgeInsets.all(8.w),
+              child: Icon(
+                isPlaying ? Icons.pause : Icons.play_arrow,
+                color: Colors.white,
+                size: 20.w,
+              ),
+            ),
           ),
         ),
       ),
