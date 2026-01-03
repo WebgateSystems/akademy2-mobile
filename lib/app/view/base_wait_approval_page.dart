@@ -12,7 +12,8 @@ class BaseWaitApprovalPage extends StatelessWidget {
       this.rejected = false,
       this.body,
       this.footer,
-      this.retry});
+      this.retry,
+      this.topRightAction});
 
   final String title;
   final String subtitle;
@@ -20,6 +21,7 @@ class BaseWaitApprovalPage extends StatelessWidget {
   final Widget? body;
   final Widget? footer;
   final VoidCallback? retry;
+  final Widget? topRightAction;
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +34,21 @@ class BaseWaitApprovalPage extends StatelessWidget {
         ),
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                if (topRightAction != null) ...[
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 32.r),
+                      child: topRightAction!,
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
+                ],
                 const Spacer(),
                 Text(
                   title,

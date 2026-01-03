@@ -24,6 +24,11 @@ class WaitApprovalPage extends ConsumerWidget {
     context.go('/join-group');
   }
 
+  Future<void> _logout(BuildContext context, WidgetRef ref) async {
+    await ref.read(authProvider.notifier).logout();
+    context.go('/login');
+  }
+
   Future<void> _handleCancel(BuildContext context, WidgetRef ref) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -72,11 +77,7 @@ class WaitApprovalPage extends ConsumerWidget {
             text: loc.waitApprovalCancelButton,
             onPressed: () => _handleCancel(context, ref),
           ),
-        ),
-        Positioned(
-          top: 20.h,
-          right: 20.w,
-          child: IconButton(
+          topRightAction: IconButton(
             padding: EdgeInsets.zero,
             constraints: BoxConstraints(
               minWidth: 32.w,
@@ -88,7 +89,7 @@ class WaitApprovalPage extends ConsumerWidget {
               width: 20.r,
               height: 20.r,
             ),
-            onPressed: () => context.go('/login'),
+            onPressed: () => _logout(context, ref),
           ),
         ),
       ],

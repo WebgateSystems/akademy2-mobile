@@ -96,7 +96,7 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
       ref.read(authProvider.notifier).setPendingJoin(true);
       await ref.read(authProvider.notifier).logout();
       if (!mounted) return;
-      context.go('/login');
+      context.go('/wait-approval');
     } on DioException catch (e) {
       final message = extractDioErrorMessage(e) ?? e.message ?? e.toString();
       setState(() => _error = l10n.joinGroupSubmitError(message));
