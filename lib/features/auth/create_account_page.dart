@@ -5,8 +5,10 @@ import 'package:academy_2_app/app/view/checkbox_widget.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/core/network/api_endpoints.dart';
 import 'package:academy_2_app/core/network/dio_provider.dart';
+import 'package:academy_2_app/core/utils/error_utils.dart';
 import 'package:academy_2_app/core/utils/phone_formatter.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -187,6 +189,13 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
         flowId: flowId,
       );
       context.push('/verify-phone', extra: args);
+    } on DioException catch (e) {
+      if (!mounted) return;
+      final message = extractDioErrorMessage(e) ??
+          'Registration failed. Please try again later.';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -205,9 +214,14 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 700),
           child: BasePageWithToolbar(
-            showBackButton: false,
+            showBackButton: true,
+            isOneToolbarRow: true,
             stickChildrenToBottom: true,
             title: loc?.createAnAccount ?? 'Create an Account',
+            onBack: () async {
+              final router = GoRouter.of(context);
+              router.go('/login');
+            },
             children: [
               SizedBox(height: 20.h),
               EditTextWidget(

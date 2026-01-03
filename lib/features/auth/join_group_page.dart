@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
+import 'package:academy_2_app/core/utils/error_utils.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -96,7 +97,7 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
       if (!mounted) return;
       context.go('/login');
     } on DioException catch (e) {
-      final message = _extractServerError(e) ?? e.message ?? e.toString();
+      final message = extractDioErrorMessage(e) ?? e.message ?? e.toString();
       setState(() => _error = l10n.joinGroupSubmitError(message));
     } catch (e) {
       setState(() => _error = l10n.joinGroupSubmitError(e.toString()));
@@ -118,17 +119,6 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
       });
       _scannerController.stop();
     }
-  }
-
-  String? _extractServerError(DioException e) {
-    final data = e.response?.data;
-    if (data is Map<String, dynamic>) {
-      final err = data['error'] ?? data['message'];
-      if (err is String && err.isNotEmpty) return err;
-    } else if (data is String && data.isNotEmpty) {
-      return data;
-    }
-    return null;
   }
 
   Future<void> _confirmLogout() async {
@@ -245,8 +235,8 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 240.w,
-                      height: 240.w,
+                      width: 240.r,
+                      height: 240.r,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.r),
                         child: Stack(

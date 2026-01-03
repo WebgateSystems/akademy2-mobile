@@ -3,6 +3,7 @@ import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/action_outlinedbutton_widget.dart';
 import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
+import 'package:academy_2_app/core/utils/error_utils.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,8 @@ class WaitApprovalPage extends ConsumerWidget {
       context.go('/join-group');
     } on DioException catch (e) {
       if (!context.mounted) return;
-      final errorMessage = _extractError(e);
+      final errorMessage =
+          extractDioErrorMessage(e) ?? e.message ?? e.toString();
       messenger.showSnackBar(
         SnackBar(content: Text(loc.waitApprovalCancelFailed(errorMessage))),
       );
@@ -53,17 +55,6 @@ class WaitApprovalPage extends ConsumerWidget {
         SnackBar(content: Text(loc.waitApprovalCancelFailed(e.toString()))),
       );
     }
-  }
-
-  String _extractError(DioException e) {
-    final data = e.response?.data;
-    if (data is Map<String, dynamic>) {
-      final message = data['message'] ?? data['error'];
-      if (message is String && message.isNotEmpty) {
-        return message;
-      }
-    }
-    return e.message ?? e.toString();
   }
 
   @override

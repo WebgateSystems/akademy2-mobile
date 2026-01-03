@@ -3,6 +3,7 @@ import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/core/network/api.dart';
+import 'package:academy_2_app/core/utils/error_utils.dart';
 import 'package:academy_2_app/core/utils/phone_formatter.dart';
 import 'package:academy_2_app/features/shared/parental_gate_dialog.dart';
 import 'package:dio/dio.dart';
@@ -240,7 +241,7 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
               : '/home');
       context.go(target);
     } on DioException catch (e) {
-      final serverError = _extractServerError(e);
+      final serverError = extractDioErrorMessage(e);
       if (!mounted) return;
       String message;
       if (e.response?.statusCode == 401) {
@@ -279,16 +280,5 @@ class _LoginPinPageState extends ConsumerState<LoginPinPage> {
       showProgress: _submitting,
       errorMessage: _errorMessage,
     );
-  }
-
-  String? _extractServerError(DioException e) {
-    final data = e.response?.data;
-    if (data is Map<String, dynamic>) {
-      final err = data['error'] ?? data['message'];
-      if (err is String && err.isNotEmpty) return err;
-    } else if (data is String && data.isNotEmpty) {
-      return data;
-    }
-    return null;
   }
 }

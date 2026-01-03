@@ -7,12 +7,14 @@ import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/features/auth/pin_pages.dart';
+import 'package:academy_2_app/core/utils/error_utils.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:dio/dio.dart';
 
 import '../../core/auth/auth_provider.dart';
 import '../../core/network/api_endpoints.dart';
@@ -168,6 +170,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         };
         _dirty = false;
       }
+    } on DioException catch (e) {
+      if (mounted) {
+        final message =
+            extractDioErrorMessage(e) ?? e.message ?? e.toString();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.profileSaveFailed(message))),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -221,6 +231,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       await dio.delete(ApiEndpoints.student(userId));
       await ref.read(authProvider.notifier).logout();
       if (mounted) context.go('/login');
+    } on DioException catch (e) {
+      if (mounted) {
+        final message =
+            extractDioErrorMessage(e) ?? e.message ?? e.toString();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.profileDeleteFailed(message))),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

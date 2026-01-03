@@ -10,6 +10,7 @@ import 'package:academy_2_app/app/view/circular_progress_widget.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
 import 'package:academy_2_app/app/view/toolbar_widget.dart';
 import 'package:academy_2_app/core/network/api.dart';
+import 'package:academy_2_app/core/utils/error_utils.dart';
 import 'package:academy_2_app/core/services/student_api_service.dart';
 import 'package:academy_2_app/features/modules/dialogs/network_video_preview_dialog.dart';
 import 'package:academy_2_app/features/modules/dialogs/youtube_preview_dialog.dart';
@@ -127,12 +128,15 @@ class _SchoolVideosPageState extends ConsumerState<SchoolVideosPage> {
     setState(() => _isLoadingMore = false);
 
     final l10n = AppLocalizations.of(context)!;
+    final serverMessage =
+        error is DioException ? extractDioErrorMessage(error) : null;
     final message = _isNetworkError(error)
         ? l10n.networkError
         : l10n.schoolVideosError(
-            error is DioException && (error.message?.isNotEmpty ?? false)
-                ? error.message!
-                : error.toString(),
+            serverMessage ??
+                (error is DioException && (error.message?.isNotEmpty ?? false)
+                    ? error.message!
+                    : error.toString()),
           );
 
     ScaffoldMessenger.of(context).showSnackBar(

@@ -17,6 +17,7 @@ class VerifyEmailPage extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: Center(
+        heightFactor: 1,
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 700),
           child: BasePageWithToolbar(

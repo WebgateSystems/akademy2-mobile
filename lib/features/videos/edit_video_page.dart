@@ -1,7 +1,9 @@
 import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/base_page_with_toolbar.dart';
 import 'package:academy_2_app/app/view/edit_text_widget.dart';
+import 'package:academy_2_app/core/utils/error_utils.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -52,6 +54,15 @@ class _EditVideoPageState extends State<EditVideoPage> {
       );
       if (!mounted) return;
       Navigator.of(context).pop(true);
+    } on DioException catch (e) {
+      if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
+        final message =
+            extractDioErrorMessage(e) ?? e.message ?? e.toString();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.schoolVideosError(message))),
+        );
+      }
     } catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
