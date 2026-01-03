@@ -373,6 +373,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get joinGroupCodeCaptured => 'Код зчитано';
 
   @override
+  String get joinGroupScanAgain => 'Сканувати ще раз';
+
+  @override
   String joinGroupSubmitError(String error) {
     return 'Не вдалося надіслати код: $error';
   }

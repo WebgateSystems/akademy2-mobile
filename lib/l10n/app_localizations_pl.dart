@@ -374,6 +374,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get joinGroupCodeCaptured => 'Kod zeskanowany';
 
   @override
+  String get joinGroupScanAgain => 'Zeskanuj ponownie';
+
+  @override
   String joinGroupSubmitError(String error) {
     return 'Nie udało się wysłać kodu: $error';
   }

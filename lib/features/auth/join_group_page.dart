@@ -49,6 +49,7 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
 
   bool _submitting = false;
   bool _scanPaused = false;
+  bool _keyboardVisible = false;
   String? _error;
 
   @override
@@ -118,6 +119,16 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
         _codeCtrl.text = raw;
       });
       _scannerController.stop();
+    }
+  }
+
+  void _updateScannerForKeyboard(bool isKeyboardOpen) {
+    if (_keyboardVisible == isKeyboardOpen) return;
+    _keyboardVisible = isKeyboardOpen;
+    if (isKeyboardOpen) {
+      _scannerController.stop();
+    } else if (!_scanPaused) {
+      _scannerController.start();
     }
   }
 
@@ -208,6 +219,10 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _updateScannerForKeyboard(isKeyboardOpen),
+    );
 
     return WillPopScope(
       onWillPop: _handleWillPop,
@@ -230,40 +245,64 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
                   errorText: _error,
                 ),
                 const Spacer(),
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 240.r,
-                      height: 240.r,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16.r),
-                        child: Stack(
-                          children: [
-                            MobileScanner(
-                              onDetect: _onDetect,
-                              controller: _scannerController,
-                            ),
-                            if (_scanPaused)
-                              Positioned.fill(
-                                child: Container(
-                                  color: Colors.black45,
-                                  child: Center(
-                                    child: Text(
-                                      l10n.joinGroupCodeCaptured,
-                                      style:
-                                          const TextStyle(color: Colors.white),
+                if (!isKeyboardOpen)
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 240.r,
+                        height: 240.r,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16.r),
+                          child: Stack(
+                            children: [
+                              MobileScanner(
+                                onDetect: _onDetect,
+                                controller: _scannerController,
+                              ),
+                              if (_scanPaused)
+                                Positioned.fill(
+                                  child: Container(
+                                    color: Colors.black45,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            l10n.joinGroupCodeCaptured,
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                          SizedBox(height: 20.h),
+                                          Padding(
+                                            padding: EdgeInsets.all(20.h),
+                                            child: ActionOutlinedButtonWidget(
+                                              height: 36.r,
+                                              color: Colors.white,
+                                              onPressed: () {
+                                                setState(() {
+                                                  _scanPaused = false;
+                                                  _error = null;
+                                                });
+                                                _scannerController.start();
+                                              },
+                                              text: l10n.joinGroupScanAgain,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  )
+                else
+                  SizedBox(height: 24.h),
                 const Spacer(),
                 ActionButtonWidget(
                   onPressed: _canSubmit ? _submit : null,

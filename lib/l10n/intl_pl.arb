@@ -154,6 +154,7 @@
   "joinGroupSubtitle": "Ostatni krok. Wpisz kod lub zeskanuj kod QR, aby dołączyć 🚀",
   "joinGroupHint": "PPSW1286GR",
   "joinGroupCodeCaptured": "Kod zeskanowany",
+  "joinGroupScanAgain": "Zeskanuj ponownie",
   "joinGroupSubmitError": "Nie udało się wysłać kodu: {error}",
   "@joinGroupSubmitError": {
     "placeholders": {

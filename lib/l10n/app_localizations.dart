@@ -754,6 +754,12 @@ abstract class AppLocalizations {
   /// **'Code captured'**
   String get joinGroupCodeCaptured;
 
+  /// No description provided for @joinGroupScanAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan again'**
+  String get joinGroupScanAgain;
+
   /// No description provided for @joinGroupSubmitError.
   ///
   /// In en, this message translates to:

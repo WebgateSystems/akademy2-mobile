@@ -372,6 +372,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get joinGroupCodeCaptured => 'Code captured';
 
   @override
+  String get joinGroupScanAgain => 'Scan again';
+
+  @override
   String joinGroupSubmitError(String error) {
     return 'Failed to submit code: $error';
   }
