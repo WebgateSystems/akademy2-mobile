@@ -16,6 +16,7 @@ import '../../app/theme/tokens.dart';
 import '../../app/view/action_outlinedbutton_widget.dart';
 import '../../core/auth/auth_provider.dart';
 import '../../core/auth/join_repository.dart';
+import '../../core/auth/pending_join_storage.dart';
 import '../../core/storage/secure_storage.dart';
 
 class JoinGroupPage extends ConsumerStatefulWidget {
@@ -39,8 +40,8 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
   }
 
   Future<void> _restorePending() async {
-    final storage = SecureStorage();
-    final pending = await storage.read('pendingJoinId');
+    final pending = await PendingJoinStorage.readId();
+    debugPrint('JoinGroupPage: restorePending pendingId=$pending');
     if (pending != null && pending.isNotEmpty && mounted) {
       ref.read(authProvider.notifier).setPendingJoin(true);
       context.go('/wait-approval');
@@ -91,10 +92,9 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
     try {
       final repo = JoinRepository();
       final pendingId = await repo.joinWithCode(code);
-      await SecureStorage().write('pendingJoinId', pendingId);
-      await SecureStorage().write('pendingJoinCode', code);
+      await PendingJoinStorage.save(pendingId, code);
+      debugPrint('JoinGroupPage: saved pendingId=$pendingId code=$code');
       ref.read(authProvider.notifier).setPendingJoin(true);
-      await ref.read(authProvider.notifier).logout();
       if (!mounted) return;
       context.go('/wait-approval');
     } on DioException catch (e) {

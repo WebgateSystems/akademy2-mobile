@@ -3,6 +3,7 @@ import 'package:academy_2_app/app/view/action_button_widget.dart';
 import 'package:academy_2_app/app/view/action_outlinedbutton_widget.dart';
 import 'package:academy_2_app/app/view/action_textbutton_widget.dart';
 import 'package:academy_2_app/app/view/base_wait_approval_page.dart';
+import 'package:academy_2_app/core/auth/pending_join_storage.dart';
 import 'package:academy_2_app/core/utils/error_utils.dart';
 import 'package:academy_2_app/l10n/app_localizations.dart';
 import 'package:dio/dio.dart';
@@ -19,13 +20,15 @@ class WaitApprovalPage extends ConsumerWidget {
 
   Future<void> _retry(BuildContext context, WidgetRef ref) async {
     await JoinRepository().clearPending();
+    final owner = ref.read(authProvider).userId;
+    await PendingJoinStorage.clearCurrent(owner: owner);
     ref.read(authProvider.notifier).setPendingJoin(false);
     if (!context.mounted) return;
     context.go('/join-group');
   }
 
   Future<void> _logout(BuildContext context, WidgetRef ref) async {
-    await ref.read(authProvider.notifier).logout();
+    await ref.read(authProvider.notifier).logout(clearPendingJoin: false);
     context.go('/login');
   }
 
@@ -40,17 +43,40 @@ class WaitApprovalPage extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
 
     try {
+      final currentOwner = ref.read(authProvider).userId;
+      final pendingId = await PendingJoinStorage.readId(owner: currentOwner);
+      debugPrint(
+          'WaitApprovalPage: cancelEnrollment owner=$currentOwner pendingId=$pendingId');
       await JoinRepository().cancelEnrollment();
       if (!context.mounted) return;
+      final owner = ref.read(authProvider).userId;
+      await PendingJoinStorage.clearCurrent(owner: owner);
       ref.read(authProvider.notifier).setPendingJoin(false);
+      await ref.read(authProvider.notifier).clearSchoolBinding();
+      ref.read(authProvider.notifier).requireUnlock();
       messenger.showSnackBar(
         SnackBar(content: Text(loc.waitApprovalCancelSuccess)),
       );
       context.go('/join-group');
+      // Ensure navigation happens even if ScaffoldMessenger is mid-animation.
+      await Future<void>.delayed(Duration.zero);
+      if (context.mounted) {
+        context.go('/join-group');
+      }
     } on DioException catch (e) {
       if (!context.mounted) return;
-      final errorMessage =
-          extractDioErrorMessage(e) ?? e.message ?? e.toString();
+      final status = e.response?.statusCode;
+      final fallbackByStatus = switch (status) {
+        401 => 'Unauthenticated',
+        403 => 'User is not a student',
+        404 => 'Enrollment belongs to another student',
+        422 => 'Enrollment not pending',
+        _ => null,
+      };
+      final errorMessage = extractDioErrorMessage(e) ??
+          fallbackByStatus ??
+          e.message ??
+          e.toString();
       messenger.showSnackBar(
         SnackBar(content: Text(loc.waitApprovalCancelFailed(errorMessage))),
       );

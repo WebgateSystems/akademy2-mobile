@@ -25,7 +25,7 @@ class ApiEndpoints {
   static String studentEnrollmentStatus(String requestId) =>
       'v1/student/enrollments/join/$requestId/status';
   static String studentEnrollmentCancel(String requestId) =>
-      'v1/student/enrollments/join/$requestId/cancel';
+      'v1/student/enrollments/$requestId/cancel';
   static String quizCertificates(String requestId) =>
       'v1/certificates/$requestId/download';
 

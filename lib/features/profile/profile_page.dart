@@ -229,7 +229,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         throw Exception('User ID not found');
       }
       await dio.delete(ApiEndpoints.student(userId));
-      await ref.read(authProvider.notifier).logout();
+      await ref
+          .read(authProvider.notifier)
+          .logout(clearPendingJoin: true);
       if (mounted) context.go('/login');
     } on DioException catch (e) {
       if (mounted) {

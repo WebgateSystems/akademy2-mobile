@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 
 import '../network/api_endpoints.dart';
 import '../network/dio_provider.dart';
-import '../storage/secure_storage.dart';
+import 'pending_join_storage.dart';
 
 class JoinRepository {
   JoinRepository({Dio? dio}) : _dio = dio ?? DioProviderSingleton.dio;
@@ -45,19 +46,16 @@ class JoinRepository {
   }
 
   Future<void> clearPending() async {
-    final storage = SecureStorage();
-    await storage.delete('pendingJoinId');
-    await storage.delete('pendingJoinCode');
+    await PendingJoinStorage.clearCurrent();
   }
 
   Future<void> cancelEnrollment() async {
-    final storage = SecureStorage();
-    final requestId = await storage.read('pendingJoinId');
+    final requestId = await PendingJoinStorage.readId();
     if (requestId == null || requestId.isEmpty) {
       throw Exception('No pending enrollment to cancel');
     }
-    await _dio
-        .delete(ApiEndpoints.studentEnrollmentCancel(requestId));
+    debugPrint('JoinRepository: cancelEnrollment requestId=$requestId');
+    await _dio.delete(ApiEndpoints.studentEnrollmentCancel(requestId));
     await clearPending();
   }
 

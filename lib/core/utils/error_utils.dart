@@ -45,7 +45,7 @@ String? _extractFromData(dynamic data) {
     }
   } else if (data is String) {
     final message = data.trim();
-    if (message.isNotEmpty) return message;
+    if (message.isNotEmpty && !_looksLikeHtml(message)) return message;
   }
   return null;
 }
@@ -64,4 +64,13 @@ String? _stringFromErrors(dynamic errors) {
     return errors.trim();
   }
   return null;
+}
+
+bool _looksLikeHtml(String text) {
+  final lower = text.toLowerCase();
+  return lower.contains('<html') ||
+      lower.contains('<!doctype') ||
+      lower.contains('<head') ||
+      lower.contains('<body') ||
+      lower.contains('</html>');
 }
