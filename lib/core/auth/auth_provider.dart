@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart';
 
 import '../../core/storage/secure_storage.dart';
 import '../db/isar_service.dart';
@@ -10,6 +11,7 @@ import '../network/api_endpoints.dart';
 import '../network/dio_provider.dart';
 import '../services/student_api_service.dart';
 import 'pending_join_storage.dart';
+import 'join_repository.dart';
 
 enum StudentEnrollmentStatusType {
   unknown,
@@ -81,7 +83,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
     var schoolId = await _storage.read('schoolId');
     final pendingJoinId =
         schoolId == null ? await PendingJoinStorage.readId() : null;
-    debugPrint('AuthNotifier.load: token=$token schoolId=$schoolId pendingId=$pendingJoinId');
+    final validatedPendingId = await _validatePendingJoin(pendingJoinId);
+    debugPrint(
+        'AuthNotifier.load: token=$token schoolId=$schoolId pendingId=$validatedPendingId');
+    final effectivePendingId =
+        schoolId == null ? null : validatedPendingId;
+    if (schoolId == null && validatedPendingId != null) {
+      await _clearPendingJoinStorage();
+    }
     final fallbackStatus = schoolId != null
         ? StudentEnrollmentStatusType.ready
         : StudentEnrollmentStatusType.needsSchool;
@@ -89,7 +98,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
         ? await _determineEnrollmentStatus(fallback: fallbackStatus)
         : StudentEnrollmentStatusType.unknown;
     if (enrollmentStatus == StudentEnrollmentStatusType.waitingForClasses &&
-        (pendingJoinId ?? '').isEmpty) {
+        (effectivePendingId ?? '').isEmpty) {
       await _storage.delete('schoolId');
       schoolId = null;
       enrollmentStatus = StudentEnrollmentStatusType.needsSchool;
@@ -100,7 +109,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       isUnlocked: false,
       userId: token != null ? 'me' : null,
       schoolId: schoolId,
-      hasPendingJoin: (pendingJoinId ?? '').isNotEmpty,
+      hasPendingJoin: (effectivePendingId ?? '').isNotEmpty,
       studentStatus: enrollmentStatus,
     );
   }
@@ -129,10 +138,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
         if (accessToken != null) {
           var schoolId = attributes?['school_id'] as String?;
           await _resetCacheIfOwnerChanged(userId ?? phone);
-          final pendingJoinId = schoolId == null
-              ? await PendingJoinStorage.readId()
-              : null;
-          debugPrint('AuthNotifier.login: userId=$userId phone=$phone schoolId=$schoolId pendingId=$pendingJoinId');
+          final pendingJoinId =
+              schoolId == null ? await PendingJoinStorage.readId() : null;
+          final validatedPendingId = await _validatePendingJoin(pendingJoinId);
+          final effectivePendingId =
+              schoolId == null ? null : validatedPendingId;
+          if (schoolId == null && validatedPendingId != null) {
+            await _clearPendingJoinStorage();
+          }
+          debugPrint(
+              'AuthNotifier.login: userId=$userId phone=$phone schoolId=$schoolId pendingId=$effectivePendingId');
           await _storage.write('accessToken', accessToken);
           if (refreshToken != null) {
             await _storage.write('refreshToken', refreshToken);
@@ -153,7 +168,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
               await _determineEnrollmentStatus(fallback: fallbackStatus);
           if (enrollmentStatus ==
                   StudentEnrollmentStatusType.waitingForClasses &&
-              (pendingJoinId ?? '').isEmpty) {
+              (effectivePendingId ?? '').isEmpty) {
             await _storage.delete('schoolId');
             schoolId = null;
             enrollmentStatus = StudentEnrollmentStatusType.needsSchool;
@@ -164,7 +179,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
             userId: userId ?? phone,
             schoolId: schoolId,
             isLoading: false,
-            hasPendingJoin: (pendingJoinId ?? '').isNotEmpty,
+            hasPendingJoin: (effectivePendingId ?? '').isNotEmpty,
             studentStatus: enrollmentStatus,
           );
           _invalidateDashboard();
@@ -186,7 +201,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
     var effectiveSchoolId = schoolId;
     final pendingJoinId =
         effectiveSchoolId == null ? await PendingJoinStorage.readId() : null;
-    debugPrint('AuthNotifier.setTokens: userId=$userId schoolId=$effectiveSchoolId pendingId=$pendingJoinId');
+    final validatedPendingId = await _validatePendingJoin(pendingJoinId);
+    final effectivePendingId =
+        effectiveSchoolId == null ? null : validatedPendingId;
+    if (effectiveSchoolId == null && validatedPendingId != null) {
+      await _clearPendingJoinStorage();
+    }
+    debugPrint(
+        'AuthNotifier.setTokens: userId=$userId schoolId=$effectiveSchoolId pendingId=$effectivePendingId');
     await _storage.write('accessToken', accessToken);
     if (refreshToken != null) {
       await _storage.write('refreshToken', refreshToken);
@@ -200,7 +222,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     var enrollmentStatus =
         await _determineEnrollmentStatus(fallback: fallbackStatus);
     if (enrollmentStatus == StudentEnrollmentStatusType.waitingForClasses &&
-        (pendingJoinId ?? '').isEmpty) {
+        (effectivePendingId ?? '').isEmpty) {
       await _storage.delete('schoolId');
       effectiveSchoolId = null;
       enrollmentStatus = StudentEnrollmentStatusType.needsSchool;
@@ -211,7 +233,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       isLoading: false,
       userId: userId ?? 'me',
       schoolId: effectiveSchoolId,
-      hasPendingJoin: (pendingJoinId ?? '').isNotEmpty,
+      hasPendingJoin: (effectivePendingId ?? '').isNotEmpty,
       studentStatus: enrollmentStatus,
     );
     _invalidateDashboard();
@@ -368,6 +390,30 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
 
     await _storage.write('cacheOwnerId', userId);
+  }
+
+  Future<String?> _validatePendingJoin(String? pendingId) async {
+    if (pendingId == null || pendingId.isEmpty) return null;
+    try {
+      final status = await JoinRepository().checkStatus(pendingId);
+      if (status.status.toLowerCase() == 'pending') return pendingId;
+      await _clearPendingJoinStorage();
+      return null;
+    } on DioException catch (e) {
+      final code = e.response?.statusCode ?? 0;
+      if (code == 404 || code == 422) {
+        await _clearPendingJoinStorage();
+        return null;
+      }
+      // For 401 we just drop pending and let login flow re-auth.
+      if (code == 401) {
+        await _clearPendingJoinStorage();
+        return null;
+      }
+      return pendingId;
+    } catch (_) {
+      return pendingId;
+    }
   }
 }
 
