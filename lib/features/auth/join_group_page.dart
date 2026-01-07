@@ -17,7 +17,6 @@ import '../../app/view/action_outlinedbutton_widget.dart';
 import '../../core/auth/auth_provider.dart';
 import '../../core/auth/join_repository.dart';
 import '../../core/auth/pending_join_storage.dart';
-import '../../core/storage/secure_storage.dart';
 
 class JoinGroupPage extends ConsumerStatefulWidget {
   const JoinGroupPage({super.key});
@@ -75,7 +74,10 @@ class _JoinGroupPageState extends ConsumerState<JoinGroupPage>
 
   @override
   void deactivate() {
-    _scannerController.stop();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _scannerController.stop();
+    });
     super.deactivate();
   }
 
