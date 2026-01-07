@@ -99,8 +99,7 @@ class _AddVideoPageState extends State<AddVideoPage> {
     } on DioException catch (e) {
       if (mounted) {
         final l10n = AppLocalizations.of(context)!;
-        final message =
-            extractDioErrorMessage(e) ?? e.message ?? e.toString();
+        final message = extractDioErrorMessage(e) ?? e.message ?? e.toString();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.addVideoUploadFailed(message)),
@@ -157,52 +156,68 @@ class _AddVideoPageState extends State<AddVideoPage> {
   }
 
   Widget _buildPortraitPhoneLayout(AppLocalizations l10n, bool canSubmit) {
-    return Column(
-      children: [
-        SizedBox(height: 16.h),
-        _PreviewPicker(
-          isTablet: false,
-          controller: _controller,
-          onPick: _pickFile,
-          onTogglePlayback: () {
-            setState(() {
-              if (_controller?.value.isPlaying ?? false) {
-                _controller?.pause();
-              } else {
-                _controller?.play();
-              }
-            });
-          },
+    return LayoutBuilder(builder: (context, constraints) {
+      return SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(minHeight: constraints.maxHeight),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: [
+                  SizedBox(height: 16.h),
+                  _PreviewPicker(
+                    isTablet: false,
+                    controller: _controller,
+                    onPick: _pickFile,
+                    onTogglePlayback: () {
+                      setState(() {
+                        if (_controller?.value.isPlaying ?? false) {
+                          _controller?.pause();
+                        } else {
+                          _controller?.play();
+                        }
+                      });
+                    },
+                  ),
+                  SizedBox(height: 16.h),
+                  _dropdown<String>(
+                    label: l10n.addVideoPageTopicLabel,
+                    value: _subjectId,
+                    items: _subjects
+                        .map((s) =>
+                            DropdownMenuItem(value: s.id, child: Text(s.title)))
+                        .toList(),
+                    onChanged: (v) => setState(() => _subjectId = v),
+                  ),
+                  SizedBox(height: 8.h),
+                  EditTextWidget(
+                    controller: _titleCtrl,
+                    label: l10n.addVideoPageTitleFieldLabel,
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  SizedBox(height: 8.h),
+                  EditTextWidget(
+                    controller: _descCtrl,
+                    maxLines: 3,
+                    label: l10n.addVideoPageDescriptionFieldLabel,
+                  ),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 16.h, bottom: 16.h),
+                child: ActionButtonWidget(
+                  onPressed: canSubmit && !_saving ? _submit : null,
+                  loading: _saving,
+                  text: l10n.addVideoPageSubmitButton,
+                ),
+              ),
+            ],
+          ),
         ),
-        SizedBox(height: 16.h),
-        _dropdown<String>(
-          label: l10n.addVideoPageTopicLabel,
-          value: _subjectId,
-          items: _subjects
-              .map((s) => DropdownMenuItem(value: s.id, child: Text(s.title)))
-              .toList(),
-          onChanged: (v) => setState(() => _subjectId = v),
-        ),
-        SizedBox(height: 8.h),
-        EditTextWidget(
-          controller: _titleCtrl,
-          label: l10n.addVideoPageTitleFieldLabel,
-          onChanged: (_) => setState(() {}),
-        ),
-        SizedBox(height: 8.h),
-        EditTextWidget(
-          controller: _descCtrl,
-          maxLines: 3,
-          label: l10n.addVideoPageDescriptionFieldLabel,
-        ),
-        Spacer(),
-        ActionButtonWidget(
-          onPressed: canSubmit && !_saving ? _submit : null,
-          loading: _saving,
-          text: l10n.addVideoPageSubmitButton,
-        ),
-      ],
-    );
+      );
+    });
   }
 
   Widget _buildTabletsLayout(AppLocalizations l10n, bool canSubmit) {
@@ -212,19 +227,22 @@ class _AddVideoPageState extends State<AddVideoPage> {
           child: Column(
             children: [
               SizedBox(height: 16.h),
-              _PreviewPicker(
-                isTablet: true,
-                controller: _controller,
-                onPick: _pickFile,
-                onTogglePlayback: () {
-                  setState(() {
-                    if (_controller?.value.isPlaying ?? false) {
-                      _controller?.pause();
-                    } else {
-                      _controller?.play();
-                    }
-                  });
-                },
+              Flexible(
+                fit: FlexFit.loose,
+                child: _PreviewPicker(
+                  isTablet: true,
+                  controller: _controller,
+                  onPick: _pickFile,
+                  onTogglePlayback: () {
+                    setState(() {
+                      if (_controller?.value.isPlaying ?? false) {
+                        _controller?.pause();
+                      } else {
+                        _controller?.play();
+                      }
+                    });
+                  },
+                ),
               ),
             ],
           ),
@@ -233,6 +251,7 @@ class _AddVideoPageState extends State<AddVideoPage> {
         Flexible(
           child: LayoutBuilder(builder: (context, constraints) {
             return SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: EdgeInsets.only(bottom: 16.h),
               child: ConstrainedBox(
                 constraints: BoxConstraints(minHeight: constraints.maxHeight),
